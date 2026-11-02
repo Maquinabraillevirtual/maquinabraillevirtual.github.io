@@ -1,0 +1,55 @@
+MÁQUINA BRAILLE VIRTUAL - VERSIÓN WEB
+Escritura braille a seis teclas
+=====================================
+
+Contenido de esta carpeta
+- index.html .............. la aplicación completa (con los sonidos incluidos)
+- manifest.webmanifest .... nombre e iconos para instalarla como aplicación
+- sw.js ................... permite usarla sin conexión a internet
+- iconos .................. iconos de la aplicación
+- LEEME.txt ............... estas instrucciones
+
+IMPORTANTE: los archivos deben publicarse juntos, en la misma carpeta.
+Abrir index.html con doble clic también funciona, pero así no se puede
+instalar ni usar sin conexión: para eso tiene que estar en un sitio web (https).
+
+No funciona abriéndola desde Google Drive, OneDrive o la vista previa de
+Archivos del iPad: esos servicios muestran la página pero no ejecutan el
+programa. Hay que publicarla en un sitio web o abrir index.html con doble
+clic en una computadora.
+
+
+CÓMO PUBLICARLA EN NETLIFY (gratis)
+1. Crea una cuenta gratuita en https://app.netlify.com/signup
+   (sin cuenta, el sitio se borra al cabo de una hora).
+2. Ya dentro, en la sección de sitios (Sites o Projects), elige publicar
+   a mano: "Deploy manually" o la zona de arrastrar y soltar.
+3. Arrastra la carpeta "maquina-braille-virtual" completa (descomprimida).
+4. En la configuración del sitio, "Change site name": escribe por ejemplo
+   maquina-braille-virtual. La dirección será
+   https://maquina-braille-virtual.netlify.app
+
+
+CÓMO LA INSTALAN LOS ESTUDIANTES
+- Windows / Mac / Chromebook (Chrome o Edge): abrir la dirección y pulsar
+  el botón "Instalar" de la barra de direcciones, o el menú del navegador
+  > "Instalar Máquina Braille Virtual".
+- Android (Chrome): menú > "Añadir a pantalla de inicio" o "Instalar aplicación".
+- iPad / iPhone (Safari): botón Compartir > "Añadir a pantalla de inicio".
+Una vez abierta por primera vez, funciona sin internet.
+
+
+AL PUBLICAR UNA VERSIÓN NUEVA
+1. Reemplaza index.html por el nuevo.
+2. En sw.js cambia el texto de VERSION (por ejemplo 'mbv-2026-11-15-1').
+3. En Netlify, entra en tu sitio > pestaña Deploys y arrastra otra vez la
+   carpeta completa. La dirección sigue siendo la misma.
+Los equipos reciben la versión nueva la próxima vez que abran la aplicación
+con internet.
+
+
+DIFERENCIAS CON LA VERSIÓN DENTRO DE CLAUDE
+- "Exportar a BRF", "Exportar a braille ASCII español (.bra)" y "Exportar a
+  braille ANSI español (.ban)" descargan directamente el archivo (sin .zip).
+- Lo escrito se guarda en el navegador de cada equipo, igual que antes.
+- No aparece ningún botón de Claude alrededor de la aplicación.
