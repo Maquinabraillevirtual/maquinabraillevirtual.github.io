@@ -3928,7 +3928,7 @@ function checkDoc(){
   });
   const OPEN_NAME = {'(':'paréntesis','[':'corchete','{':'llave','⟨':'paréntesis angular','¿':'interrogación','¡':'exclamación','“':'comillas'};
   st.aux.forEach(o=>all.push({line:o.line, a:o.a, b:o.b, level:'error', msg:'Falta cerrar el paréntesis auxiliar, puntos 35.'}));
-  st.del.forEach(o=>all.push({line:o.line, a:o.a, b:o.b, level:'error', msg:'Falta cerrar '+(o.t==='Res'?'el '+EKNAME[o.ek||'res']:o.t==='¿'?'la interrogación':o.t==='¡'?'la exclamación':o.t==='“'?'las comillas':'el '+(OPEN_NAME[o.t]||'delimitador'))+'.'}));
+  st.del.forEach(o=>all.push({line:o.line, a:o.a, b:o.b, level:'error', msg:'Falta cerrar '+(o.t==='Res'?'el '+EKNAME[o.ek||'res']:o.t==='¿'?'la interrogación':o.t==='¡'?'la exclamación':o.t==='“'?'las comillas':o.t==='{'?'la llave':'el '+(OPEN_NAME[o.t]||'delimitador'))+'.'}));
   /* Un solo aviso por celda, primero los errores */
   const seen = new Set();
   return all.sort((x,y)=> x.line-y.line || x.a-y.a || (x.level==='error'?-1:1))
