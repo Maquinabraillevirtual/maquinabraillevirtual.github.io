@@ -121,6 +121,7 @@ select{font:inherit;font-size:13px;padding:6px 8px;border-radius:8px;border:1px 
 .sheet-wrap:focus-within{outline:2.5px solid var(--accent);outline-offset:2px}
 .ink mark.rd{background:var(--accent-soft);color:inherit;border-radius:3px;box-shadow:0 0 0 2px var(--accent-soft)}
 .ink em.res{font-style:italic;font-weight:700;color:var(--accent)}
+.ink u.lnk{text-decoration:underline;color:var(--accent)}
 .ink .perr{text-decoration:underline wavy var(--bell) 2px;text-underline-offset:4px;background:color-mix(in srgb,var(--bell) 14%,transparent)}
 .ink .psug{text-decoration:underline dotted var(--accent) 2px;text-underline-offset:4px}
 .cell.perr .dots{box-shadow:0 0 0 2px var(--bell);border-radius:3px}
@@ -264,6 +265,9 @@ dialog input[type="text"]:focus-visible{outline:2px solid var(--accent);outline-
       <li role="none"><button class="mb" role="menuitem" id="mbFormat" aria-haspopup="menu" aria-expanded="false" aria-controls="mFormat" aria-keyshortcuts="Alt+O" tabindex="-1"><span>F<u>o</u>rmato</span></button>
         <ul class="menu" role="menu" id="mFormat" aria-label="Formato" hidden>
           <li role="none"><button role="menuitem" tabindex="-1" data-cmd="size"><span class="chk"></span>Tamaño de hoja…</button></li>
+          <li role="separator"></li>
+          <li role="none"><button role="menuitemradio" tabindex="-1" data-cmd="orientV" aria-checked="true"><span class="chk" aria-hidden="true">●</span>Orientación vertical</button></li>
+          <li role="none"><button role="menuitemradio" tabindex="-1" data-cmd="orientH" aria-checked="false"><span class="chk" aria-hidden="true"></span>Orientación horizontal</button></li>
         </ul>
       </li>
       <li role="none"><button class="mb" role="menuitem" id="mbSign" aria-haspopup="menu" aria-expanded="false" aria-controls="mSign" aria-keyshortcuts="Alt+S" tabindex="-1"><span><u>S</u>ignografía</span></button>
@@ -300,7 +304,7 @@ dialog input[type="text"]:focus-visible{outline:2px solid var(--accent);outline-
           <li>Pulsa a la vez las teclas de los puntos de la celda y suéltalas: la celda se marca al soltar todas.</li>
           <li><b>Barra espaciadora:</b> deja una celda en blanco y lee la palabra que acabas de escribir.</li>
           <li><b>Enter:</b> pasa a la línea siguiente. <b>Retroceso:</b> borra la última celda.</li>
-          <li>Cuando quedan 6 celdas para terminar la línea suena la campanita.</li>
+          <li>Cuando quedan 6 celdas para terminar la línea suena la campanita, según las celdas por línea elegidas en Formato › Tamaño de hoja. Al llegar con Enter a la última línea de la hoja, después del cambio de línea se oye un doble golpe más agudo y se avisa «Última línea de la hoja» (las Perkins no tienen este aviso; es una ayuda de la aplicación). Con el siguiente Enter se avisa «Hoja nueva».</li>
           <li><b>Mayúsculas:</b> el signo 46 pone en mayúscula la letra siguiente. Repetido (46 46) pone en mayúsculas toda la palabra, como en las siglas: ONU, ONCE, OEA.</li>
           <li><b>Cursiva, negrita y otros resaltes:</b> la palabra o las palabras resaltadas se encierran entre puntos 35, uno al comienzo y otro al final. En la vista en tinta se ven en cursiva y negrita; al escribir se anuncia «comienza resalte» y «termina resalte», y al releer con F4 o F8 se dice dónde empieza y termina. El resalte puede seguir en la línea siguiente. Un 35 suelto entre espacios es un asterisco.</li>
         </ul>
@@ -352,7 +356,9 @@ dialog input[type="text"]:focus-visible{outline:2px solid var(--accent);outline-
           <li><b>Archivo › Exportar a BRF</b> crea un archivo para imprimir en una impresora braille. <b>Exportar a braille Unicode</b> crea un texto con los signos braille.</li>
           <li><b>Exportar a braille ASCII español (.bra)</b> crea un archivo en el formato habitual de la ONCE y <b>Exportar a braille ANSI español (.ban)</b> uno con la tabla ANSI española de la Comisión Braille Española (documento técnico V 1). Ambos se abren y se imprimen con el Visualizador Braille de la ONCE.</li>
           <li>BRF, .bra y .ban guardan los puntos de cada celda, no el texto: conservan tal cual lo escrito en braille integral, estenografía o matemáticas. Al volver a abrirlos se pierde qué signografía tenía cada bloque; para seguir un trabajo, usa Guardar (.pks).</li>
-          <li><b>Formato › Tamaño de hoja</b> cambia las celdas por línea y las líneas por hoja.</li>
+          <li><b>Formato › Tamaño de hoja</b> elige el papel (hoja braille de la máquina Perkins, A4 o carta), la orientación y las celdas por línea y líneas por hoja. Al elegir un papel se ponen las medidas que caben en él, y puedes ajustarlas a mano para tu impresora braille (el papel pasa a «Personalizado»).</li>
+          <li><b>Formato › Orientación vertical</b> (la habitual, por defecto) u <b>Orientación horizontal</b> giran la hoja, como en las opciones de impresión de las impresoras braille: en horizontal las líneas son más largas y caben menos por hoja. Por ejemplo, en A4 vertical caben 30 celdas y 27 líneas, y en horizontal 44 celdas y 18 líneas. La hoja de la Perkins es casi cuadrada y al girarla cambia muy poco (40 × 25 en vertical, 40 × 24 en horizontal).</li>
+          <li>El papel y la orientación se guardan con el trabajo (.pks) y se usan al exportar a BRF, .bra y .ban: los saltos de hoja caen según las líneas por hoja.</li>
         </ul>
       </section>
       <section>
@@ -471,8 +477,16 @@ dialog input[type="text"]:focus-visible{outline:2px solid var(--accent);outline-
 <tr><th scope="row">0</th><td>3456 – 245</td><td class="bc" aria-hidden="true">⠼⠚</td></tr>
 <tr><th scope="row">Coma decimal (25,50)</th><td>3456 – 12 – 15 – 2 – 15 – 245</td><td class="bc" aria-hidden="true">⠼⠃⠑⠂⠑⠚</td></tr>
 <tr><th scope="row">Punto de millares (1.250)</th><td>3456 – 1 – 3 – 12 – 15 – 245</td><td class="bc" aria-hidden="true">⠼⠁⠄⠃⠑⠚</td></tr>
+<tr><th scope="row">Hora (7:30)</th><td>3456 – 1245 – 25 – 14 – 245</td><td class="bc" aria-hidden="true">⠼⠛⠒⠉⠚</td></tr>
+<tr><th scope="row">Fecha con guion (12-10-1492): se repite el signo de número tras el guion</th><td>3456 – 1 – 12 – 36 – 3456 – 1 – 245 – 36 – 3456 – 1 – 145 – 24 – 12</td><td class="bc" aria-hidden="true">⠼⠁⠃⠤⠼⠁⠚⠤⠼⠁⠙⠊⠃</td></tr>
+<tr><th scope="row">Fecha con barra (12/10/1492): barra oblicua 6 – 2</th><td>3456 – 1 – 12 – 6 – 2 – 3456 – 1 – 245 – 6 – 2 – 3456 – 1 – 145 – 24 – 12</td><td class="bc" aria-hidden="true">⠼⠁⠃⠠⠂⠼⠁⠚⠠⠂⠼⠁⠙⠊⠃</td></tr>
+<tr><th scope="row">Ordinal masculino (1.º)</th><td>3456 – 2 – 135</td><td class="bc" aria-hidden="true">⠼⠂⠕</td></tr>
+<tr><th scope="row">Ordinal femenino (2.ª)</th><td>3456 – 23 – 1</td><td class="bc" aria-hidden="true">⠼⠆⠁</td></tr>
+<tr><th scope="row">Ordinal forma corta (3.er, tercer)</th><td>3456 – 25 – 1235</td><td class="bc" aria-hidden="true">⠼⠒⠗</td></tr>
+<tr><th scope="row">Número romano (XXI): un solo signo de mayúscula al comienzo</th><td>46 – 1346 – 1346 – 24</td><td class="bc" aria-hidden="true">⠨⠭⠭⠊</td></tr>
+<tr><th scope="row">Romano por mil (V̅ = 5000): 25 después de las cifras afectadas; 25 – 25, por un millón</th><td>46 – 1236 – 25</td><td class="bc" aria-hidden="true">⠨⠧⠒</td></tr>
 </tbody></table>
-<p class="tnote">El signo de número (3456) se escribe una sola vez delante de cada número: 25 es 3456 – 12 – 15. Las cifras son las letras de la a a la j. Dentro del número, el punto 2 es la coma decimal (céntimos y centavos: S/ 25,50) y el punto 3 separa los millares.</p>
+<p class="tnote">El signo de número (3456) se escribe una sola vez delante de cada número: 25 es 3456 – 12 – 15. Las cifras son las letras de la a a la j. Dentro del número, el punto 2 es la coma decimal (céntimos y centavos: S/ 25,50) y el punto 3 separa los millares. En las horas, los dos puntos (25) separan horas y minutos sin repetir el signo de número: 7:30 se lee «7 y 30», y 8:00, «8 en punto». En las <b>fechas</b> cada número lleva su signo de número (12-10-1492: 3456 a b, 36, 3456 a j, 36, 3456 a d i b); si falta, F7 lo sugiere. En <b>números de cuenta y teléfonos</b> el guion no corta el número y no se repite el signo de número (321-1456789-01). Los <b>ordinales</b> se escriben con el signo de número y las cifras en posición baja (las de la a a la j bajadas: 1 es el punto 2, 2 los puntos 23…), seguidas de <b>o</b> (masculino), <b>a</b> (femenino) o <b>r</b> (primer, tercer): 1.º se lee «primero», 2.ª «segunda», 3.er «tercer». Los <b>números romanos</b> llevan un solo signo de mayúscula al comienzo (siglo XXI, Felipe II) y se leen como número («siglo 21»); tras un nombre propio, del I al X se leen como ordinal («Felipe segundo»). El 25 después de las letras multiplica por mil (en tinta, raya encima) y 25 25 por un millón. «Mi», «Vi», «Di» o una sola letra en mayúscula sólo se toman como romanos después de palabras como siglo, capítulo, tomo o un nombre propio.</p>
         <h4>Signos auxiliares</h4>
 <table class="signs" aria-labelledby="tA">
 <caption id="tA">Signos auxiliares</caption>
@@ -484,6 +498,12 @@ dialog input[type="text"]:focus-visible{outline:2px solid var(--accent);outline-
 <tr><th scope="row">Signo de número</th><td>3456</td><td class="bc" aria-hidden="true">⠼</td></tr>
 <tr><th scope="row">Interruptor (separa números de letras: 27cm)</th><td>5</td><td class="bc" aria-hidden="true">⠐</td></tr>
 <tr><th scope="row">Potencia o exponente (m²)</th><td>16</td><td class="bc" aria-hidden="true">⠡</td></tr>
+<tr><th scope="row">Grado (°): 9°18′27″</th><td>356</td><td class="bc" aria-hidden="true">⠴</td></tr>
+<tr><th scope="row">Grado Celsius (25 °C: espacio entre el número y el signo)</th><td>356 – 46 – 14</td><td class="bc" aria-hidden="true">⠴⠨⠉</td></tr>
+<tr><th scope="row">Grado Fahrenheit (65 °F)</th><td>356 – 46 – 124</td><td class="bc" aria-hidden="true">⠴⠨⠋</td></tr>
+<tr><th scope="row">Kelvin (300 K)</th><td>46 – 13</td><td class="bc" aria-hidden="true">⠨⠅</td></tr>
+<tr><th scope="row">Minuto (′), tras una cifra</th><td>1256</td><td class="bc" aria-hidden="true">⠳</td></tr>
+<tr><th scope="row">Segundo (″), tras una cifra</th><td>1256 – 1256</td><td class="bc" aria-hidden="true">⠳⠳</td></tr>
 </tbody></table>
         <h4>Signos de puntuación</h4>
 <table class="signs" aria-labelledby="tP">
@@ -507,6 +527,41 @@ dialog input[type="text"]:focus-visible{outline:2px solid var(--accent);outline-
 <tr><th scope="row">Asterisco (*)</th><td>35</td><td class="bc" aria-hidden="true">⠔</td></tr>
 <tr><th scope="row">Arroba (@)</th><td>5</td><td class="bc" aria-hidden="true">⠐</td></tr>
 </tbody></table>
+        <h4>Otros signos (documento B 2)</h4>
+<table class="signs" aria-labelledby="tB2">
+<caption id="tB2">Otros signos</caption>
+<thead><tr><th scope="col">Signo</th><th scope="col">Puntos</th><th scope="col"><span aria-hidden="true">Celda</span></th></tr></thead>
+<tbody>
+<tr><th scope="row">Moneda: bolívar (Bs)</th><td>456 – 12 – 234</td><td class="bc" aria-hidden="true">⠸⠃⠎</td></tr>
+<tr><th scope="row">Moneda: colón (₡)</th><td>456 – 14</td><td class="bc" aria-hidden="true">⠸⠉</td></tr>
+<tr><th scope="row">Moneda: peso ($)</th><td>456 – 1234</td><td class="bc" aria-hidden="true">⠸⠏</td></tr>
+<tr><th scope="row">Moneda: real (R$)</th><td>456 – 1235</td><td class="bc" aria-hidden="true">⠸⠗</td></tr>
+<tr><th scope="row">Moneda: yen (¥)</th><td>456 – 13456</td><td class="bc" aria-hidden="true">⠸⠽</td></tr>
+<tr><th scope="row">Moneda: bitcóin (₿)</th><td>456 – 12</td><td class="bc" aria-hidden="true">⠸⠃</td></tr>
+<tr><th scope="row">Moneda: marco alemán (DM)</th><td>456 – 134</td><td class="bc" aria-hidden="true">⠸⠍</td></tr>
+<tr><th scope="row">Centavo (¢)</th><td>45 – 14</td><td class="bc" aria-hidden="true">⠘⠉</td></tr>
+<tr><th scope="row">Libra esterlina (£)</th><td>5 – 2346</td><td class="bc" aria-hidden="true">⠐⠮</td></tr>
+<tr><th scope="row">Por mil (‰)</th><td>456 – 356 – 356</td><td class="bc" aria-hidden="true">⠸⠴⠴</td></tr>
+<tr><th scope="row">Comillas simples (‘ ’)</th><td>6 – 236</td><td class="bc" aria-hidden="true">⠠⠦</td></tr>
+<tr><th scope="row">Doble barra (//)</th><td>6 – 26 – 2</td><td class="bc" aria-hidden="true">⠠⠢⠂</td></tr>
+<tr><th scope="row">Barra inversa (\)</th><td>5 – 3</td><td class="bc" aria-hidden="true">⠐⠄</td></tr>
+<tr><th scope="row">Barra vertical (|), entre espacios</th><td>456</td><td class="bc" aria-hidden="true">⠸</td></tr>
+<tr><th scope="row">Doble barra vertical (‖)</th><td>456 – 123</td><td class="bc" aria-hidden="true">⠸⠇</td></tr>
+<tr><th scope="row">Párrafo (§12), delante del número</th><td>346</td><td class="bc" aria-hidden="true">⠬</td></tr>
+<tr><th scope="row">Sección (¶12)</th><td>146</td><td class="bc" aria-hidden="true">⠩</td></tr>
+<tr><th scope="row">Cruz, fallecido (†)</th><td>5 – 1235</td><td class="bc" aria-hidden="true">⠐⠗</td></tr>
+<tr><th scope="row">Y comercial (&)</th><td>6 – 12346</td><td class="bc" aria-hidden="true">⠠⠯</td></tr>
+<tr><th scope="row">Asterisco de forma incorrecta (*haiga), pegado a la palabra</th><td>256</td><td class="bc" aria-hidden="true">⠲</td></tr>
+<tr><th scope="row">Segundo resalte, dentro de otro (al comienzo y al final)</th><td>35 – 35</td><td class="bc" aria-hidden="true">⠔⠔</td></tr>
+<tr><th scope="row">Tercer resalte</th><td>56 – 35</td><td class="bc" aria-hidden="true">⠰⠔</td></tr>
+<tr><th scope="row">Tachado (al comienzo y al final)</th><td>5 – 2</td><td class="bc" aria-hidden="true">⠐⠂</td></tr>
+<tr><th scope="row">Enlace (al comienzo y al final del texto enlazado)</th><td>6 – 36</td><td class="bc" aria-hidden="true">⠠⠤</td></tr>
+<tr><th scope="row">Antes de Cristo (a. C.)</th><td>1 – 46 – 14</td><td class="bc" aria-hidden="true">⠁⠨⠉</td></tr>
+<tr><th scope="row">Después de Cristo (d. C.)</th><td>145 – 46 – 14</td><td class="bc" aria-hidden="true">⠙⠨⠉</td></tr>
+<tr><th scope="row">Número (n.º)</th><td>1345 – 3 – 135</td><td class="bc" aria-hidden="true">⠝⠄⠕</td></tr>
+<tr><th scope="row">María (M.ª)</th><td>46 – 134 – 3 – 1</td><td class="bc" aria-hidden="true">⠨⠍⠄⠁</td></tr>
+<tr><th scope="row">Doña (D.ª)</th><td>46 – 145 – 3 – 1</td><td class="bc" aria-hidden="true">⠨⠙⠄⠁</td></tr>
+</tbody></table>
 <p class="tnote">Abre y cierra interrogación, exclamación y comillas usan el mismo signo: la aplicación decide por su posición. Los corchetes comparten puntos con á y ú, y la arroba con el interruptor: la aplicación los distingue por el contexto.</p>
         <h4>Operaciones y por ciento</h4>
 <table class="signs" aria-labelledby="tO">
@@ -516,7 +571,8 @@ dialog input[type="text"]:focus-visible{outline:2px solid var(--accent);outline-
 <tr><th scope="row">Más (+)</th><td>235</td><td class="bc" aria-hidden="true">⠖</td></tr>
 <tr><th scope="row">Menos (−)</th><td>36</td><td class="bc" aria-hidden="true">⠤</td></tr>
 <tr><th scope="row">Multiplicado por (×)</th><td>236</td><td class="bc" aria-hidden="true">⠦</td></tr>
-<tr><th scope="row">Dividido entre (÷)</th><td>256</td><td class="bc" aria-hidden="true">⠲</td></tr>
+<tr><th scope="row">Dividido entre (÷), como en el Código Matemático Unificado</th><td>256</td><td class="bc" aria-hidden="true">⠲</td></tr>
+<tr><th scope="row">Dividido entre (÷), según el documento B 2 de la ONCE</th><td>5 – 2</td><td class="bc" aria-hidden="true">⠐⠂</td></tr>
 <tr><th scope="row">Igual (=)</th><td>2356</td><td class="bc" aria-hidden="true">⠶</td></tr>
 <tr><th scope="row">Por ciento (%)</th><td>456 – 356</td><td class="bc" aria-hidden="true">⠸⠴</td></tr>
 </tbody></table>
@@ -663,6 +719,7 @@ dialog input[type="text"]:focus-visible{outline:2px solid var(--accent);outline-
         <ul>
           <li><b>Acentuador:</b> qué, cómo, cuál, cuándo, cuánto, dónde, quién, porqué, sólo, éste y aquél llevan un punto 5 delante de su abreviatura.</li>
           <li><b>Signos de apertura</b> ¿ ¡ “ ( - y tipografía especial ante una palabra en minúscula: un punto 5 delante del signo (ante mayúscula o número no hace falta).</li>
+          <li><b>Números romanos:</b> se escriben con signo de mayúscula y las letras en braille literal (siglo XXI). Se reconocen tras palabras como siglo, capítulo o tomo, o tras un nombre propio (Felipe II). También se acepta el <b>signo diferenciador 56</b> de los manuales anteriores delante del número (56 46 1346 1346 24 = XXI), que lo identifica siempre como romano; el B 16-1 actual ya no lo menciona.</li>
           <li><b>Signos de cierre</b> de interrogación, comillas y tipografía especial: siempre con punto 5 delante. Con varios signos de cierre, un punto 5 antes del primero.</li>
           <li><b>Cursiva, negrita y otros resaltes</b> (tipografía especial, 35): se abre con 5-35 ante minúscula (35 solo ante mayúscula o número, o tras el punto 5 de una palabra en braille literal) y se cierra siempre con 5-35. Así no se confunde con la contracción <i>in</i> (35). Lo resaltado se ve en cursiva en la vista en tinta, y se anuncia «comienza resalte» y «termina resalte».</li>
           <li>Coma tras una palabra que acaba en <i>ab</i> y punto y coma tras una palabra que acaba en <i>-bre</i>: con punto 5 delante.</li>
@@ -1598,11 +1655,17 @@ dialog input[type="text"]:focus-visible{outline:2px solid var(--accent);outline-
   <dialog id="dlgSize" aria-labelledby="dlgSizeT">
     <form method="dialog">
       <h2 id="dlgSizeT">Tamaño de hoja</h2>
+      <label class="field">Papel
+        <select id="paper"><option value="perkins">Hoja braille (máquina Perkins)</option><option value="a4">A4 (21 × 29,7 cm)</option><option value="carta">Carta (21,6 × 27,9 cm)</option><option value="custom">Personalizado</option></select>
+      </label>
+      <label class="field">Orientación
+        <select id="orient"><option value="v">Vertical</option><option value="h">Horizontal</option></select>
+      </label>
       <label class="field">Celdas por línea
-        <select id="width"><option>28</option><option>30</option><option>32</option><option>34</option><option>36</option><option>38</option><option selected>40</option><option>42</option></select>
+        <select id="width"><option>20</option><option>21</option><option>22</option><option>23</option><option>24</option><option>25</option><option>26</option><option>27</option><option>28</option><option>29</option><option>30</option><option>31</option><option>32</option><option>33</option><option>34</option><option>35</option><option>36</option><option>37</option><option>38</option><option>39</option><option selected>40</option><option>41</option><option>42</option><option>43</option><option>44</option><option>45</option><option>46</option><option>47</option><option>48</option></select>
       </label>
       <label class="field">Líneas por hoja
-        <select id="pageLines"><option>20</option><option>21</option><option>22</option><option>23</option><option>24</option><option selected>25</option><option>26</option><option>27</option><option>28</option><option>29</option><option>30</option></select>
+        <select id="pageLines"><option>15</option><option>16</option><option>17</option><option>18</option><option>19</option><option>20</option><option>21</option><option>22</option><option>23</option><option>24</option><option selected>25</option><option>26</option><option>27</option><option>28</option><option>29</option><option>30</option><option>31</option><option>32</option><option>33</option><option>34</option><option>35</option></select>
       </label>
       <div class="dlg-btns"><button class="btn" value="cancel">Cancelar</button><button class="btn primary" value="ok">Aceptar</button></div>
     </form>
@@ -1964,6 +2027,8 @@ function decodeWord(cells){
 /* ---------------- Línea completa: puntuación, mayúsculas, números y punto 5 ---------------- */
 let INTEGRAL = null, BRE = new Set();
 function setIntegral(fn){ INTEGRAL = fn; }
+let ROMAN = null, ROMAN_CTXRE = null;
+function setRoman(fn, ctx){ ROMAN = fn; ROMAN_CTXRE = ctx; }
 function setBre(list){ BRE = new Set(list); }
 const C5 = m('5'), CAP = m('46'), NUM = m('3456');
 const OPEN = {[m('26')]:'¿', [m('235')]:'¡', [m('236')]:'“', [m('126')]:'(', [m('35')]:'*', [m('36')]:'-'};
@@ -2020,6 +2085,24 @@ function translateLine(cells){
     /* --- núcleo --- */
     let core = W.slice(s, e), off = a + s;
     if (!core.length) return;
+    /* Números romanos. Signo diferenciador 56 de los manuales antiguos (⠰⠨xxi); sin él, sólo con mayúscula y tras
+       palabras como siglo, capítulo o tomo, o tras un nombre propio */
+    if (ROMAN){
+      if (core[0]===m('56') && core.length===1){ out[off] = {t:'', sig:'Rom', say:'signo de número romano', spk:''}; return; }
+      if (core[0]===m('56') && core.length>1){
+        const r = ROMAN(core.slice(1), true);
+        if (r){ out[off] = {t:'', sig:'Rom', say:'signo de número romano', spk:''}; put(off+1, r); return; }
+      }
+      if (core[0]===CAP && core[1]!==C5){
+        let q = off-1; while (q>=0 && out[q] && out[q].t===' ') q--;
+        let txt = ''; while (q>=0 && out[q] && out[q].t!==' '){ txt = (out[q].t||'') + txt; q--; }
+        const prev = txt.replace(/[^\p{L}]/gu,'');
+        if (prev && !/[.!?…:;]$/.test(txt) && (ROMAN_CTXRE.test(prev) || /^\p{Lu}\p{Ll}/u.test(prev))){
+          const r = ROMAN(core, true);
+          if (r){ put(off, r); return; }
+        }
+      }
+    }
     /* punto 5 al comienzo: forma tónica (qué, cómo…; con mayúscula delante o detrás) o palabra en braille literal */
     let mode = 0;
     if (core[0]===CAP && core[1]===C5){ mode = 1; out[off] = {t:'', sig:'May', say:'mayúscula'}; core = core.slice(1); off++; }
@@ -2038,7 +2121,7 @@ function translateLine(cells){
     /* mayúsculas: 46 una letra, 46 46 toda la palabra (siglas: braille literal); números */
     if (core[0]===CAP && core[1]===CAP){ put(off, literal(core)); return; }
     const caps = core.filter(c=>c===CAP).length;
-    const isNumber = core.some((c,k)=>c===NUM && DIGIT.has(core[k+1]));          // 3456 seguido de cifra: número; si no, -ión o «número»
+    const isNumber = core.some((c,k)=>c===NUM && (DIGIT.has(core[k+1]) || (!(core[k+1]&9) && DIGIT.has(core[k+1]>>1))));   // también ordinales: 3456 + cifra baja          // 3456 seguido de cifra: número; si no, -ión o «número»
     if (isNumber || caps > 1 || (caps===1 && core[0]!==CAP)){ put(off, literal(core)); return; }
     if (core[0]===CAP){ mode = 1; out[off] = {t:'', sig:'May', say:'mayúscula'}; core = core.slice(1); off++; if (!core.length) return; }
     /* punto y coma o terminación -bre */
@@ -2062,7 +2145,7 @@ function translateLine(cells){
   return out;
 }
 
-const api = {translateLine, setIntegral, setBre, encodeWithPieces, phonoPenalty, m, dk, key, LETTER, LETTER_CELL, PRINC, TERM, SEQ, CONTR_C, CONTR_BY_CELL, setWords, setLexicon, setOverrides, encode, decodeWord, candidates,
+const api = {translateLine, setIntegral, setRoman, setBre, encodeWithPieces, phonoPenalty, m, dk, key, LETTER, LETTER_CELL, PRINC, TERM, SEQ, CONTR_C, CONTR_BY_CELL, setWords, setLexicon, setOverrides, encode, decodeWord, candidates,
   get WORDS(){ return WORDS; }, get WORD_BY_KEY(){ return WORD_BY_KEY; }};
 if (typeof module !== 'undefined' && module.exports) module.exports = api; else root.STENO = api;
 })(typeof window !== 'undefined' ? window : globalThis);
@@ -2168,9 +2251,33 @@ function speakable(text, skipMath){
     if (+E===0 && cw) return cw;                                           // S/ 0,90 → 90 céntimos
     return E + ' ' + (E==='1' ? unit[0] : unit[1]) + (cw ? ' con ' + cw : ''); };
   const SOL = [['sol','soles'],['céntimo','céntimos']], USD = [['dólar','dólares'],['centavo','centavos']], EUR = [['euro','euros'],['céntimo','céntimos']];
+  /* Otras monedas del B 2 (cap. 13): bolívar, colón, peso, real, marco, yen, bitcoin, libra; y el centavo ¢ */
+  const CENT = [['céntimo','céntimos']], CTV = [['centavo','centavos']];
+  const OTHER = [['¤PESO',[['peso','pesos'],...CTV]], ['Bs',[['bolívar','bolívares'],...CTV]], ['₡',[['colón','colones'],['céntimo','céntimos']]],
+    ['R\\$',[['real','reales'],...CTV]], ['DM',[['marco','marcos'],['pfennig','pfennigs']]], ['¥',[['yen','yenes'],['sen','sen']]], ['₿',[['bitcóin','bitcoines'],['satoshi','satoshis']]], ['£',[['libra','libras'],['penique','peniques']]]];
+  for (const [sym, names] of OTHER){
+    text = text.replace(new RegExp(sym+'\\s*(\\d[\\d.]*(?:,\\d+)?)','g'), (a,n)=>money(n,...names))
+               .replace(new RegExp('(\\d[\\d.]*(?:,\\d+)?)\\s*'+sym,'g'), (a,n)=>money(n,...names));
+  }
+  text = text.replace(/¤PESO/g,'pesos').replace(/(\d+)\s*¢/g, (a,n)=> n+(n==='1'?' centavo':' centavos')).replace(/¢/g,'centavos');
+  text = text.replace(/\bR\$/g,'R$');
   text = text.replace(/S\/\s*(\d[\d.]*(?:,\d+)?)/g, (a,n)=>money(n,...SOL)).replace(/S\//g,'soles')
     .replace(/(\d[\d.]*(?:,\d+)?)\s*€/g, (a,n)=>money(n,...EUR)).replace(/(\d[\d.]*(?:,\d+)?)\s*\$/g, (a,n)=>money(n,...USD))
     .replace(/\$\s*(\d[\d.]*(?:,\d+)?)/g, (a,n)=>money(n,...USD)).replace(/€\s*(\d[\d.]*(?:,\d+)?)/g, (a,n)=>money(n,...EUR));
+  /* Fechas: 12-10-1492 o 12/10/1492 → «12 de octubre de 1492» (día, mes y año) */
+  text = text.replace(/(^|[^\d,.\/-])(\d{1,2})[-\/](\d{1,2})[-\/](\d{2}|\d{4})(?![\d\/-]|[,.]\d)/g, (a,pre,d,mo,y)=>{
+    const MES = ['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
+    if (+d<1 || +d>31 || +mo<1 || +mo>12) return a;
+    return pre + (+d===1 ? '1' : String(+d)) + ' de ' + MES[+mo-1] + ' de ' + y; });
+  /* Símbolos del B 2 */
+  text = text.replace(/‰/g,' por mil').replace(/§\s*/g,'párrafo ').replace(/¶\s*/g,'sección ').replace(/†/g,'cruz').replace(/&/g,' y ')
+    .replace(/(^|\s)\*(?=\p{L})/gu,'$1asterisco, ').replace(/‖/g,'doble barra vertical').replace(/ \| /g,' barra vertical ').replace(/\\\\/g,' doble barra inversa ').replace(/\\/g,' barra inversa ').replace(/\/\//g,' doble barra ');
+  /* Temperaturas y ángulos: 25 °C, 65 °F, 300 K, 9°18′27″ */
+  text = text.replace(/(\d)\s*°\s*C\b/g, (a,d)=> d+' grados Celsius').replace(/(\d)\s*°\s*F\b/g, (a,d)=> d+' grados Fahrenheit')
+    .replace(/(\d)\s+K\b/g, '$1 kelvin').replace(/(\d)°/g, '$1 grados ').replace(/(\d)″/g, '$1 segundos ').replace(/(\d)′/g, '$1 minutos ')
+    .replace(/°\s*C\b/g,' grados Celsius').replace(/°\s*F\b/g,' grados Fahrenheit').replace(/ ([.,;:])/g,'$1').replace(/(^|\D)1 grados/g, '$11 grado').replace(/(^|\D)1 minutos/g, '$11 minuto').replace(/(^|\D)1 segundos/g, '$11 segundo').replace(/ {2,}/g,' ');
+  /* Horas: 7:30 → «7 y 30», 7:05 → «7 y 5», 7:00 → «7 en punto» */
+  text = text.replace(/(^|[^\d,.])(\d{1,2}):([0-5]\d)(?!\d|[,.]\d)(?:\s*h(?![a-záéíóúñü]))?/gi, (a,pre,h,mi)=> pre+h+(mi==='00' ? ' en punto' : ' y '+(+mi)));
   text = text.replace(/(\d)\s*%/g,'$1 por ciento').replace(/\s*×\s*/g,' por ').replace(/\s*÷\s*/g,' entre ').replace(/\s*−\s*/g,' menos ').replace(/\s*\+\s*/g,' más ').replace(/\s*=\s*/g,' igual a ');
   text = text.replace(/(^|[^a-záéíóúñü])(mm|cm|dm|dam|hm|km|um|nm|ft|in|mi|yd|m)([²³])(?![⁰¹²³⁴⁵⁶⁷⁸⁹])/gi,
     (all, pre, u, e) => pre + (UNIT_NAMES[u.toLowerCase()]||u) + (e==='²' ? ' cuadrados' : ' cúbicos'));
@@ -2182,8 +2289,15 @@ function speakable(text, skipMath){
 /* Operaciones sencillas dentro del texto: + (235), − (36), × (236), ÷ (256), = (2356), % (456 356).
    235, 36 y 236 también son ¡!, guion y comillas: se leen como operación sólo entre números. */
 const PRE456 = { [m('356')]:'%', [m('234')]:'$', [m('15')]:'€' };
+/* [celdas tras el 456, tinta, anuncio, lectura, sólo al comienzo de palabra y antes de número o espacio] */
+const CUR456 = [
+  ['356-356','‰','por mil'], ['356','%','por ciento'], ['234','$','dólar'], ['15','€','euro'],
+  ['12-234','Bs','bolívar','',true], ['1234','$','peso','¤PESO',true], ['14','₡','colón','',true], ['1235','R$','real','',true],
+  ['134','DM','marco alemán','',true], ['13456','¥','yen','',true], ['12','₿','bitcóin','',true]
+];
 const MIDNUM = { [m('235')]:'+', [m('36')]:'-', [m('236')]:'×', [m('256')]:'÷', [m('2356')]:'=' };
-PUNCT[m('6')] = '_'; PUNCT[m('256')] = '÷'; PUNCT[m('2356')] = '=';
+PUNCT[m('6')] = '_'; PUNCT[m('356')] = '°';   // grado (B 2, 14.1): 25 °C = 3456 b e, 356 46 c
+ PUNCT[m('256')] = '÷'; PUNCT[m('2356')] = '=';
 function resolveMath(cells, out){
   const OPS = { [m('235')]:'+', [m('36')]:'−', [m('236')]:'×' };
   const isNum = it => it && /^[0-9⁰¹²³⁴⁵⁶⁷⁸⁹)]$/.test(it.t||'');
@@ -2201,6 +2315,112 @@ function resolveMath(cells, out){
   out.forEach((it,i)=>{ if (it.t==='-' && cells[i-1]===0 && cells[i+1]===0){ let p=i-2; let n=i+2;
     if (hasOp && p>=0 && isNum(out[p]) && n<cells.length && (cells[n]===NUM || isNum(out[n]))) out[i] = {t:'−'}; } });
 }
+
+/* ---------- Números ordinales y romanos (B 2, Signografía básica, 8.3 y 8.5) ---------- */
+/* Ordinal: signo de número + cifras en posición baja (5.ª serie) + a / o / r → 1.º, 2.ª, 3.er */
+const LOWDIG = {}; for (const k in DIGITS) LOWDIG[(+k)<<1] = DIGITS[k];
+const ORD_END = { [m('1')]:'a', [m('135')]:'o', [m('1235')]:'r' };
+function ordinalAt(cells, i){
+  if (cells[i]!==NUM) return 0;
+  let j = i+1; while (j<cells.length && cells[j] in LOWDIG) j++;
+  if (j===i+1 || !(cells[j] in ORD_END)) return 0;
+  const nx = cells[j+1]; if (nx!==undefined && nx!==0 && (nx in L2CH)) return 0;
+  return j - i + 1;                                         // celdas que ocupa
+}
+function ordinalWord(n, g){
+  if (!(n>0 && n<1000)) return n + (g==='a' ? '.ª' : g==='r' ? '.er' : '.º');
+  const U = ['','primero','segundo','tercero','cuarto','quinto','sexto','séptimo','octavo','noveno'];
+  const T = ['','décimo','vigésimo','trigésimo','cuadragésimo','quincuagésimo','sexagésimo','septuagésimo','octogésimo','nonagésimo'];
+  const H = ['','centésimo','ducentésimo','tricentésimo','cuadringentésimo','quingentésimo','sexcentésimo','septingentésimo','octingentésimo','noningentésimo'];
+  const h = Math.floor(n/100), t = Math.floor(n%100/10), u = n%10, w = [];
+  if (h) w.push(H[h]);
+  if (t===1 && u===1) w.push('undécimo'); else if (t===1 && u===2) w.push('duodécimo');
+  else if (t===1 && u) w.push('decimo'+U[u]);
+  else { if (t) w.push(T[t]); if (u) w.push(U[u]); }
+  let last = w.length-1;
+  if (g==='a') return w.map(x=>x.replace(/o$/,'a')).join(' ');
+  if (g==='r') w[last] = w[last].replace(/(prim|terc)ero$/,'$1er');
+  return w.join(' ');
+}
+/* Abreviaturas con signos propios (B 2, cap. 12): a{c = a. C., d{c = d. C., n.o = n.º, {m.a = M.ª, {d.a = D.ª */
+function resolveAbbrev(cells, out){
+  const ABR = [
+    ['1-46-14', ['a. ','','C.'], 'antes de Cristo'], ['145-46-14', ['d. ','','C.'], 'después de Cristo'],
+    ['1345-3-135', ['n','.','º'], 'número'], ['46-134-3-1', ['','M','.','ª'], 'María'], ['46-145-3-1', ['','D','.','ª'], 'doña']
+  ].map(([d,t,spk])=>[d.split('-').map(m), t, spk]);
+  for (let i=0;i<cells.length;i++){
+    if (i>0 && cells[i-1]!==0 && !(out[i-1] && /^[(¿¡“«\[—‘-]$/.test(out[i-1].t||''))) continue;
+    for (const [ks, ts, spk] of ABR){
+      if (!ks.every((k,q)=>cells[i+q]===k)) continue;
+      const nx = cells[i+ks.length]; if (nx!==undefined && nx!==0 && (nx in L2CH)) continue;
+      const tt = ts.slice(); if (nx===m('3') && /\.$/.test(tt[tt.length-1])) tt[tt.length-1] = tt[tt.length-1].slice(0,-1);   // «d. C.» + punto final: un solo punto
+      ks.forEach((k,q)=>{ out[i+q] = {t:tt[q], say: q===ks.length-1 ? spk : (out[i+q]||{}).say, spk: q===0 ? spk : ''}; if (tt[q]==='' && k===CAP) out[i+q].sig = 'Mayús'; });
+      i += ks.length-1; break;
+    }
+  }
+}
+/* Romano suelto (para la estenografía): celdas con o sin 46 delante; force = sin exigir contexto. null si no es romano */
+function romanCells(cells, force){
+  const c2 = cells[0]===CAP ? cells : [CAP, ...cells];
+  const it = Translators.integral(c2, false);
+  if (!it.some(x=>x.rom==='num') && force) resolveRoman(c2, it, true);
+  if (!it.some(x=>x.rom==='num')) return null;
+  const words = it.filter(x=>x.t===' ').length; if (words) return null;
+  return c2===cells ? it : it.slice(1);
+}
+/* Romanos: en braille basta un signo de mayúscula al comienzo (⠨xii = XII); 25 tras las letras multiplica por mil
+   (una raya encima) y 25 25 por un millón. */
+const ROMAN_RE = /^M{0,3}(CM|CD|D?C{0,3})(XC|XL|L?X{0,3})(IX|IV|V?I{0,3})$/;
+const ROMAN_VAL = {I:1,V:5,X:10,L:50,C:100,D:500,M:1000};
+const ROMAN_CTX = /^(siglos?|cap|caps|capítulos?|tomos?|vol|volúmenes|volumen|partes?|libros?|actos?|escenas?|temas?|unidad|unidades|lecciones|lección|bloques?|títulos?|secciones|sección|niveles?|ciclos?|fascículos?|concilio|papa|rey|reina|edición|congreso|olimpiada|juegos|apéndice|anexo|grupo|fase|etapa)$/i;
+function romanValue(s){ let v=0; for (let k=0;k<s.length;k++){ const a=ROMAN_VAL[s[k]], b=ROMAN_VAL[s[k+1]]||0; v += a<b ? -a : a; } return v; }
+function resolveRoman(cells, out, force){
+  const ROM = new Set(['i','v','x','l','c','d','m'].map(ch=>m(LETTERS[ch]))), C25 = m('25');
+  for (let i=0;i<cells.length;i++){
+    if (cells[i]!==CAP || (i>0 && cells[i-1]!==0 && !(out[i-1] && /^[(¿¡“«\[—-]$/.test(out[i-1].t||'')))) continue;
+    const dbl = cells[i+1]===CAP, a = i + (dbl?2:1);
+    let j = a; const groups = []; let g = '';
+    while (j<cells.length){
+      if (ROM.has(cells[j])){ g += L2CH[cells[j]].toUpperCase(); j++; continue; }
+      if (cells[j]===C25 && g){
+        const two = cells[j+1]===C25, after = cells[j+(two?2:1)];
+        /* 25 suelto al final de la palabra (IV: …) son dos puntos; 25 25, o 25 seguido de más cifras, multiplica */
+        if (!two && !(after!==undefined && ROM.has(after))) break;
+        groups.push([g, two?1e6:1e3, j, two]); g=''; j += two?2:1; continue;
+      }
+      break;
+    }
+    if (g) groups.push([g, 1, j, false]);
+    if (!groups.length || j===a) continue;
+    if (j<cells.length && cells[j]!==0 && (cells[j] in L2CH)) continue;      // la palabra sigue con otras letras
+    if (!groups.every(([x])=>ROMAN_RE.test(x))) continue;
+    const plain = groups.map(x=>x[0]).join(''), one = groups.length===1;
+    /* Palabra anterior: da el contexto (siglo XXI, capítulo IV, Felipe II) */
+    let p = i-1; while (p>=0 && cells[p]===0) p--; let q = p; while (q>=0 && cells[q]!==0) q--;
+    const prevRaw = out.slice(q+1,p+1).map(it=>it.t).join(''), prev = prevRaw.replace(/[^\p{L}]/gu,'');
+    const ctx = ROMAN_CTX.test(prev), proper = /^\p{Lu}\p{Ll}/u.test(prev) && !ctx && !/[.!?…:;]$/.test(prevRaw);
+    /* Palabras comunes que también son romanos válidos: sólo con contexto */
+    if (!force && one && (plain.length===1 || /^(MI|DI|VI|LI|CD|DC|CV|CC|CL|MC|MD|MM|DM|ML|XL|MIX|DIV|LIV|CID)$/.test(plain)) && !(ctx || proper)) continue;
+    let val = 0; groups.forEach(([x,mul])=>{ val += romanValue(x)*mul; });
+    /* Tinta: mayúsculas, con raya encima (U+0305) o doble raya (U+033F) en las cifras multiplicadas */
+    let gi = 0;
+    for (let k=a; k<j; k++){
+      if (cells[k]===C25){
+        const two = cells[k+1]===C25;
+        out[k] = {t:'', sig: two ? '×1 000 000' : '×1000', say: two ? 'por un millón' : 'por mil'};
+        if (two){ k++; out[k] = {t:'', sig:'', say:''}; }
+        gi++; continue;
+      }
+      const mul = groups[gi][1], mark = mul===1e6 ? '\u033F' : mul===1e3 ? '\u0305' : '';
+      out[k] = {t: L2CH[cells[k]].toUpperCase() + mark};
+    }
+    for (let c=i; c<a; c++) out[c] = {t:'', sig:'Mayús', say:'signo de mayúscula'};
+    const spoken = (proper && val<=10 && !ctx) ? ordinalWord(val,'o') : String(val);
+    out[a].spk = spoken; for (let c=a+1;c<j;c++) out[c].spk = '';
+    out[a].rom = 'num'; out[a].romVal = val;
+    i = j-1;
+  }
+}
 const Translators = {
   integral(cells, startEm){
     const out = []; let num=false, cap=0;
@@ -2213,26 +2433,112 @@ const Translators = {
       /* Raya de diálogo (36 36) */
       if (c===m('36') && cells[i+1]===m('36') && !(out[i-1] && out[i-1].sig==='Raya')){ out.push({t:'',sig:'Raya',say:'guion'}); continue; }
       if (c===m('36') && out[i-1] && out[i-1].sig==='Raya'){ out.push({t:'—'}); num=false; continue; }
-      if (c===NUM){ num=true; out.push({t:'',sig:'Núm',say:'signo de número'}); continue; }
+      if (c===NUM){
+        const n = ordinalAt(cells, i);
+        if (n){                                                    // ordinal: 1.º, 2.ª, 3.er
+          const digs = cells.slice(i+1, i+n-1).map(x=>LOWDIG[x]).join(''), g = ORD_END[cells[i+n-1]];
+          out.push({t:'',sig:'Núm',say:'signo de número', spk: ordinalWord(+digs, g)});
+          for (let k=1;k<n-1;k++) out.push({t:LOWDIG[cells[i+k]], say:LOWDIG[cells[i+k]]+' en posición baja', spk:''});
+          out.push({t: g==='a' ? '.ª' : g==='o' ? '.º' : '.er', say: g==='a' ? 'ordinal femenino' : g==='o' ? 'ordinal masculino' : 'ordinal, forma corta', spk:''});
+          i += n-1; num=false; cap=0; continue;
+        }
+        num=true; out.push({t:'',sig:'Núm',say:'signo de número'}); continue; }
       if (c===POW){ out.push({t:'',sig:'Pot',say:'elevado a'}); continue; }   // mantiene el modo número: 2⠡⠃ = 2²
+      if (num && c in LOWDIG && (cells[i-1]===NUM || (out.length && out[out.length-1].low))){   // ordinal a medio escribir
+        out.push({t:LOWDIG[c], say:LOWDIG[c]+' en posición baja', low:true}); continue; }
       if (num){
         if (c in DIGITS){ out.push({t:DIGITS[c]}); continue; }
         if (c===m('3')){ out.push({t:'.', say:'punto de millar'}); continue; }
         if (c===m('2')){ out.push({t:',', say:'coma decimal'}); continue; }
+        /* Horas: 7:30 se escribe 3456 g 25 c j (el signo de número no se repite tras los dos puntos) */
+        if (c===m('25') && cells[i+1] in DIGITS && cells[i+2] in DIGITS){ out.push({t:':', say:'dos puntos'}); continue; }
+        if (c===m('6') && cells[i+1]===m('2') && cells[i+2] in DIGITS){ out.push({t:'',sig:'/',say:'barra'},{t:'/'}); i++; continue; }   // 12/10/1492 sin repetir el signo de número
         if (c in MIDNUM){ out.push({t:MIDNUM[c]}); continue; }      // 5+3, 8−2, 4×2, 6÷3, 2=2 dentro del número
+        if (c===INT && cells[i+1]===m('2') && (cells[i+2] in DIGITS || cells[i+2]===NUM || i+2===cells.length)){ out.push({t:'',sig:'÷',say:'dividido entre'},{t:'÷'}); i++; if (cells[i+1]===NUM) num=false; continue; }   // ÷ según B 2 (5 2); también 256
         if (c===INT){ num=false; if (intIsArroba(cells,i)) out.push({t:'@'}); else out.push({t:'',sig:'Int',say:'interruptor'}); continue; }
         num=false;
       }
       /* Sol peruano S/ (234 6 2): signo no oficial, usado por imprentas braille del Perú; sólo al comienzo de palabra */
       if (c===m('234') && cells[i+1]===m('6') && cells[i+2]===m('2') && (i===0 || cells[i-1]===0 || cells[i-1]===CAP || cells[i-1] in PAIRED || cells[i-1]===m('126'))){
         out.push({t:'',sig:'S/',say:'s'},{t:'',sig:'',say:'guion bajo'},{t:'S/'}); i+=2; num=false; cap=0; continue; }
+      /* División 5 2 (B 2) entre números separados por espacios: 6 ÷ 3 */
+      if (c===INT && cells[i+1]===m('2')){
+        let p = out.length-1; while (p>=0 && out[p].t===' ') p--;
+        let n = i+2; while (n<cells.length && cells[n]===0) n++;
+        if (p>=0 && /[\d)]$/.test(out[p].t||'') && (n>=cells.length || cells[n]===NUM || cells[n] in DIGITS || cells[n]===m('126'))){ out.push({t:'',sig:'÷',say:'dividido entre'},{t:'÷'}); i++; num=false; cap=0; continue; }
+      }
+      /* Minutos y segundos tras una cifra o un grado: 9°18′27″ (1256 y 1256 1256); si no, ü */
+      if (c===m('1256') && out.length && /[\d°]$/.test(out[out.length-1].t||'')){
+        if (cells[i+1]===m('1256')){ out.push({t:'',sig:'″',say:'segundos'},{t:'″',say:'segundos'}); i++; }
+        else out.push({t:'′', say:'minutos'});
+        num=false; cap=0; continue; }
+      /* Barra oblicua (6 2): fechas 12/10/1492, y/o, km/h */
+      if (c===m('6') && cells[i+1]===m('2') && i>0 && cells[i-1]!==0){ out.push({t:'',sig:'/',say:'barra'},{t:'/'}); i++; num=false; cap=0; continue; }
       /* Signos con prefijo 456: % (456 356), $ (456 234), € (456 15) */
-      if (c===m('456') && cells[i+1] in PRE456){ out.push({t:'',sig:'456',say:'prefijo'}); continue; }
-      if (cells[i-1]===m('456') && c in PRE456 && i>0){ out.push({t:PRE456[c]}); continue; }
+      /* Prefijo 456: monedas (B 2, cap. 13), ‰, %. La coincidencia más larga primero */
+      if (c===m('456')){
+        const wordStart = i===0 || cells[i-1]===0 || OPENERS.has(prevOut) || cells[i-1]===NUM;
+        let hit = null;
+        for (const [seq, sym, say, spk, needStart] of CUR456){
+          const ks = seq.split('-').map(m);
+          if (!ks.every((k,q)=>cells[i+1+q]===k)) continue;
+          const nx = cells[i+1+ks.length];
+          if (needStart && (!wordStart || !(nx===undefined || nx===0 || nx===NUM || nx in PUNCT))) continue;
+          hit = [ks.length, sym, say, spk]; break;
+        }
+        if (hit){
+          const [n, sym, say, spk] = hit;
+          out.push({t:'',sig:'456',say:'prefijo'});
+          for (let q=1;q<n;q++) out.push({t:'', say:''});
+          const it = {t:sym, say}; if (spk) it.spk = spk; out.push(it);
+          i += n; num=false; cap=0; continue;
+        }
+      }
+      /* Centavo ¢ (45 14), libra £ (5 2346), cruz † (5 1235), y (6 12346) & */
+      if (c===m('45') && cells[i+1]===m('14')){ out.push({t:'',sig:'¢',say:'centavo'},{t:'¢',say:'centavos'}); i++; num=false; continue; }
+      if (c===INT && cells[i+1]===m('2346') && (i===0 || cells[i-1]===0 || OPENERS.has(prevOut))){ out.push({t:'',sig:'£',say:'libra'},{t:'£',say:'libras'}); i++; num=false; continue; }
+      if (c===INT && cells[i+1]===m('1235') && (i===0 || cells[i-1]===0) && (cells[i+2]===undefined || cells[i+2]===0 || cells[i+2] in PUNCT)){ out.push({t:'',sig:'†',say:'cruz'},{t:'†',say:'cruz, fallecido'}); i++; continue; }
+      if (c===m('6') && cells[i+1]===m('12346')){ out.push({t:'',sig:'&',say:'y comercial'},{t:'&',say:'y comercial'}); i++; num=false; continue; }
+      /* § (346) y ¶ (146) delante de un número: §12, ¶3 */
+      if ((c===m('346') || c===m('146')) && cells[i+1]===NUM && (i===0 || cells[i-1]===0 || OPENERS.has(prevOut))){ out.push(c===m('346') ? {t:'§',say:'párrafo'} : {t:'¶',say:'sección'}); continue; }
+      /* Doble barra // (6 26 2), barra inversa \ (5 3) y doble barra inversa (5 35 3) */
+      if (c===m('6') && cells[i+1]===m('26') && cells[i+2]===m('2')){ out.push({t:'',sig:'//',say:'doble barra'},{t:'',say:''},{t:'//',say:'doble barra'}); i+=2; num=false; continue; }
+      if (c===INT && cells[i+1]===m('35') && cells[i+2]===m('3')){ out.push({t:'',sig:'\\\\',say:'doble barra inversa'},{t:'',say:''},{t:'\\\\',say:'doble barra inversa'}); i+=2; num=false; continue; }
+      if (c===INT && cells[i+1]===m('3') && i>0 && cells[i-1]!==0 && cells[i+2]!==undefined && cells[i+2]!==0){ out.push({t:'',sig:'\\',say:'barra inversa'},{t:'\\',say:'barra inversa'}); i++; num=false; continue; }
+      /* Comillas simples ‘ ’ (6 236) */
+      if (c===m('6') && cells[i+1]===m('236')){ const open = i===0 || cells[i-1]===0 || OPENERS.has(prevOut); out.push({t:'',sig:'‘',say: open ? 'abre comillas simples' : 'cierra comillas simples'},{t: open ? '‘' : '’', say: open ? 'abre comillas simples' : 'cierra comillas simples'}); i++; num=false; continue; }
+      /* Barra vertical | (456) y doble ‖ (456 123), entre espacios */
+      if (c===m('456') && (i===0 || cells[i-1]===0)){
+        if (cells[i+1]===undefined || cells[i+1]===0){ out.push({t:'|',say:'barra vertical'}); continue; }
+        if (cells[i+1]===m('123') && (cells[i+2]===undefined || cells[i+2]===0)){ out.push({t:'',sig:'‖',say:'doble barra vertical'},{t:'‖',say:'doble barra vertical'}); i++; continue; }
+      }
+      /* Asterisco de forma incorrecta (256 pegado delante de una palabra): *haiga */
+      if (c===m('256') && (i===0 || cells[i-1]===0) && cells[i+1] in L2CH){ out.push({t:'*',say:'asterisco, forma incorrecta'}); continue; }
+
       if (c in L2CH){
         let ch = L2CH[c];
         if (cap){ ch = ch.toUpperCase(); if (cap===1) cap=0; }
         out.push({t:ch}); continue;
+      }
+      /* Segundo (35 35) y tercer (56 35) cambio de tipografía (B 2, 9.1): resalte dentro de otro resalte */
+      if ((c===m('35') && cells[i+1]===m('35')) || (c===m('56') && cells[i+1]===m('35'))){
+        const lv = c===m('56') ? 3 : 2, name = lv===2 ? 'segundo resalte' : 'tercer resalte';
+        const prevBlank = i===0 || cells[i-1]===0 || /^[¿¡“«(\[—‘-]$/.test(prevOut||'');
+        const open = prevBlank;
+        out.push({t:'', sig: open ? 'Res'+lv : '/Res'+lv, say: (open ? 'comienza ' : 'termina ')+name, em: open ? 'open' : 'close', ek:'res'+lv},
+                 {t:'', say:(open ? 'comienza ' : 'termina ')+name}); i++; continue;
+      }
+      /* Tachado (5 2 al comienzo y al final, B 2 12.1) y enlace (6 36, B 2 15.4) */
+      if ((c===INT && cells[i+1]===m('2')) || (c===m('6') && cells[i+1]===m('36'))){
+        const kind = c===INT ? 'tach' : 'link', name = kind==='tach' ? 'tachado' : 'enlace';
+        const prevBlank = i===0 || cells[i-1]===0 || /^[¿¡“«(\[—‘-]$/.test(prevOut||'');
+        const nextIsText = cells[i+2]!==undefined && cells[i+2]!==0;
+        const prevIsText = i>0 && cells[i-1]!==0;
+        if ((prevBlank && nextIsText) || (!prevBlank && prevIsText && kind==='link') || (!prevBlank && prevIsText && !(prevOut && /\d/.test(prevOut)))){
+          const open = prevBlank;
+          out.push({t:'', sig: (open?'':'/')+(kind==='tach'?'Tach':'Enl'), say:(open?'comienza ':'termina ')+name, em: open?'open':'close', ek:kind},{t:'', say:(open?'comienza ':'termina ')+name});
+          i++; num=false; continue;
+        }
       }
       /* Resalte (cursiva, negrita…): 35 al comienzo de una palabra abre y al final la cierra; suelto entre espacios, asterisco */
       if (c===m('35')){
@@ -2250,9 +2556,20 @@ const Translators = {
     resolveBrackets(cells, out);
     resolvePowers(cells, out);
     resolveMath(cells, out);
+    resolveRoman(cells, out);
+    resolveAbbrev(cells, out);
     /* marca de resalte en las letras entre la apertura y el cierre (puede venir de líneas anteriores del bloque) */
-    let st = !!startEm;
-    out.forEach(it=>{ if (it.em==='open') st = true; else if (it.em==='close') st = false; else if (st) it.emph = true; });
+    let st = startEm || false;
+    /* varios niveles: res (35), res2 (35 35), res3 (56 35), tach (tachado) y link (enlace) */
+    const open = new Set(st && typeof st==='object' ? st : (st ? ['res'] : []));
+    out.forEach(it=>{
+      if (it.em==='open'){ open.add(it.ek||'res'); return; }
+      if (it.em==='close'){ open.delete(it.ek||'res'); return; }
+      if (open.has('res') || open.has('res2') || open.has('res3')) it.emph = true;
+      if (open.has('tach')) it.strike = true;
+      if (open.has('link')) it.link = true;
+    });
+    st = open.size ? [...open] : false;
     out.endEm = st;
     return out;
   }
@@ -2364,6 +2681,11 @@ const MX = (()=>{
     for (let i=0; i<cells.length; ){
       const c = cells[i];
       if (c===0){ out[i] = {t:' '}; T.push({k:'sp', a:i, b:i+1}); i++; continue; }
+      if (c===NUM && ordinalAt(cells, i)){                     // ordinal (5.ª serie + a, o, r): 1.º, 2.ª, 3.er
+        const n = ordinalAt(cells, i), it = Translators.integral(cells.slice(i, i+n), false);
+        for (let k=0;k<n;k++) out[i+k] = it[k];
+        T.push({k:'let', a:i, b:i+n, ch:it.map(x=>x.t).join('')}); i += n; continue;
+      }
       if (c===NUM){
         /* ¿Hay algo antes del número en la misma expresión? (operación, raíz, letra, paréntesis…) — salvo un menos inicial
            (−2⁄7) o un número pegado (número mixto 3 1⁄7) */
@@ -2605,6 +2927,7 @@ window.__perkinsMath = MX;
 /* ---------- Estenografía (Documento técnico B 16-1 de la CBE) ---------- */
 STENO.setWords(STENO_DATA.lista); STENO.setOverrides(STENO_DATA.overrides); STENO.setBre(STENO_DATA.bre);
 STENO.setIntegral(cells => Translators.integral(cells));
+STENO.setRoman(romanCells, ROMAN_CTX);
 Translators.steno = cells => STENO.translateLine(cells);
 /* Resalte en estenografía: 35 (o 5-35) abre la tipografía especial y 5-35 la cierra (B 16-1, tablas 21 y 22);
    se marca igual que en integral y puede abarcar varias líneas del mismo bloque */
@@ -2616,7 +2939,7 @@ Translators.steno = cells => STENO.translateLine(cells);
       if (it.say==='tipografía especial'){ it.t=''; it.sig='Res'; it.say='comienza resalte'; it.em='open'; }
       else if (it.say==='fin de tipografía especial'){ it.t=''; it.sig='/Res'; it.say='termina resalte'; it.em='close'; }
     });
-    let st = !!startEm;
+    let st = startEm || false;
     out.forEach(it=>{ if(!it) return; if(it.em==='open') st=true; else if(it.em==='close') st=false; else if(st) it.emph=true; });
     out.endEm = st; return out;
   };
@@ -2684,7 +3007,7 @@ function save(){
   /* Las preferencias se guardan siempre, aunque la hoja tenga todavía el texto de ejemplo */
   try{ localStorage.setItem(STORE+'-prefs', JSON.stringify({view,showTr,showEmpty,sound,voice,cellSize,volume,grade,contrast,zoom,warnErrors})); }catch(e){}
   if (isExample) return;
-  try{ localStorage.setItem(STORE, JSON.stringify({lines:doc.lines,lg:doc.lines.map((l,i)=>effGrade(i)),width:doc.width,pageLines:LINES_PER_PAGE,fileName:doc.fileName||'',savedSig:doc.savedSig||'',prefs:{view,showTr,showEmpty,sound,voice,cellSize,volume,grade,contrast,zoom}})); }catch(e){}
+  try{ localStorage.setItem(STORE, JSON.stringify({lines:doc.lines,lg:doc.lines.map((l,i)=>effGrade(i)),width:doc.width,pageLines:LINES_PER_PAGE,orient:curOrient(),paper:curPaper(),fileName:doc.fileName||'',savedSig:doc.savedSig||'',prefs:{view,showTr,showEmpty,sound,voice,cellSize,volume,grade,contrast,zoom}})); }catch(e){}
 }
 
 /* ---------- Audio: sonidos reales grabados de una Perkins ---------- */
@@ -2761,10 +3084,25 @@ function playCarriage(frac){
 }
 function carriageReturn(col){
   if (!sound) return; if (!audio()) return;
-  if (col===0){ play('lfDown'); play('lfUp', .18); return; }
+  if (col===0){ play('lfDown'); play('lfUp', .18); return .3; }
   const frac = col==null ? 1 : col / Math.max(1, doc.width);
   const t = playCarriage(frac);
   play('lfDown', t + .03); play('lfUp', t + .21);
+  return t + .33;
+}
+/* Aviso de fin de hoja (las Perkins no lo tienen): el golpe del cambio de línea, más agudo y acentuado, dos veces */
+function playSharp(kind, delay, rate, gain){
+  const a = ac; if (!a) return;
+  const list = (BUF[kind]||[]).filter(Boolean); if (!list.length){ synthClack(true); return; }
+  const src = a.createBufferSource(); src.buffer = list[0]; src.playbackRate.value = rate;
+  const g = a.createGain(); g.gain.value = (GAIN[kind]||1) * gain;
+  src.connect(g).connect(master); src.start(a.currentTime + (delay||0));
+}
+function pageEndSound(delay){
+  if (!sound || !audio()) return;
+  const d = delay||0;
+  playSharp('lfDown', d, 1.6, 1.8); playSharp('lfUp', d + .09, 1.75, 1.8);
+  playSharp('lfDown', d + .26, 1.6, 1.8); playSharp('lfUp', d + .35, 1.75, 1.8);
 }
 function setVolume(v){ volume = v; if (master) master.gain.value = v; }
 /* Todo lo que se dice va al lector de pantalla (región viva) y, si «Voz» está activada, también a la voz del navegador */
@@ -2786,7 +3124,7 @@ function stopReading(quiet){
   if (!quiet) announce('Lectura detenida', true);
   return true;
 }
-const NAMES = {'_':'guion bajo','—':'raya','S/':'soles','/':'barra','$':'dólar','€':'euro','+':'más','−':'menos','×':'por','÷':'entre','=':'igual','%':'por ciento','[':'abre corchete',']':'cierra corchete','@':'arroba','.':'punto',',':'coma',';':'punto y coma',':':'dos puntos','-':'guion','*':'asterisco','(':'abre paréntesis',')':'cierra paréntesis',
+const NAMES = {'‰':'por mil','§':'párrafo','¶':'sección','†':'cruz','&':'y comercial','‘':'abre comillas simples','’':'cierra comillas simples','\\':'barra inversa','|':'barra vertical','‖':'doble barra vertical','¢':'centavos','£':'libras','¥':'yenes','₡':'colones','₿':'bitcóin','°':'grados','′':'minutos','″':'segundos','º':'ordinal masculino','ª':'ordinal femenino','_':'guion bajo','—':'raya','S/':'soles','/':'barra','$':'dólar','€':'euro','+':'más','−':'menos','×':'por','÷':'entre','=':'igual','%':'por ciento','[':'abre corchete',']':'cierra corchete','@':'arroba','.':'punto',',':'coma',';':'punto y coma',':':'dos puntos','-':'guion','*':'asterisco','(':'abre paréntesis',')':'cierra paréntesis',
   '¿':'abre interrogación','?':'cierra interrogación','¡':'abre exclamación','!':'cierra exclamación','“':'abre comillas','”':'cierra comillas'};
 function describe(it, cell){
   if (cell===0) return 'espacio';
@@ -2803,7 +3141,7 @@ function speakItem(it, cell){ say(describe(it, cell)); }
 /* Texto legible de una línea para el lector: signos desconocidos como «puntos …» */
 function lineText(line){
   const items = translate(line);
-  const t = items.map((it,i)=> it.unk ? ' (puntos '+dotsOf(line[i]).join(' ')+') ' : it.em==='open' ? ' comienza resalte, ' : it.em==='close' ? ', termina resalte ' : it.t).join('').replace(/ +/g,' ').replace(/ ([,.;:])/g,'$1').trim();
+  const t = items.map((it,i)=> it.unk ? ' (puntos '+dotsOf(line[i]).join(' ')+') ' : it.em==='open' ? ' '+it.say+', ' : it.em==='close' ? ', '+it.say+' ' : ('spk' in it ? (it.spk ? ' '+it.spk+' ' : '') : it.t)).join('').replace(/ +/g,' ').replace(/ ([,.;:])/g,'$1').trim();
   return t || 'línea vacía';
 }
 /* F4: la línea donde está el cursor (de lectura o de escritura), sin moverlo */
@@ -2849,14 +3187,20 @@ function lastWord(line){
   let s = line.length; while (s>0 && line[s-1]!==0) s--;
   if (s===line.length) return '';
   const items = translate(line);
-  return items.slice(s).map((it,i)=> it.unk ? ' (puntos '+dotsOf(line[s+i]).join(' ')+') ' : it.t).join('').replace(/ +/g,' ').trim();
+  return items.slice(s).map((it,i)=> it.unk ? ' (puntos '+dotsOf(line[s+i]).join(' ')+') ' : ('spk' in it ? (it.spk ? ' '+it.spk+' ' : '') : it.t)).join('').replace(/ +/g,' ').trim();
 }
 function newLine(){
   clearExample();
   if (hasSel()) deleteSelection(false);
   if (readPos) return editEnter();
   const w = isExample ? '' : lastWord(cur()), col = isExample ? 0 : cur().length;
-  { const nl = []; lgSet(nl, blockGrade(doc.lines.length-1)); doc.lines.push(nl); } carriageReturn(col); render(); save(); sayRaw(speakable((w ? w+'. ' : '')+'Línea '+doc.lines.length)+'.'+lineWarning(doc.lines.length-2));
+  { const nl = []; lgSet(nl, blockGrade(doc.lines.length-1)); doc.lines.push(nl); } const crEnd = carriageReturn(col) || 0; render(); save();
+  /* Fin de la hoja según Formato › Tamaño de hoja: aviso con el timbre en la última línea y al pasar a una hoja nueva */
+  const n = doc.lines.length, inPage = (n-1) % LINES_PER_PAGE + 1, page = Math.floor((n-1)/LINES_PER_PAGE) + 1;
+  let pageMsg = '';
+  if (inPage===LINES_PER_PAGE){ pageEndSound(crEnd + .1); flashMsg('Última línea de la hoja'); pageMsg = ' Última línea de la hoja '+page+'.'; }
+  else if (inPage===1 && n>1){ flashMsg('Hoja '+page); pageMsg = ' Hoja nueva: hoja '+page+'.'; }
+  sayRaw(speakable((w ? w+'. ' : '')+'Línea '+n)+'.'+pageMsg+lineWarning(n-2));
 }
 function backspace(){
   clearExample();
@@ -3035,7 +3379,7 @@ function wordAt(text, col){
   let a=col, b=col; while (a>0 && text[a-1]!==' ') a--; while (b<text.length && text[b]!==' ') b++;
   return {a, b, w:text.slice(a,b)};
 }
-function charName(ch){ if (ch===undefined) return 'final de línea'; if (SUP_REV[ch]) return 'exponente '+SUP_REV[ch]; if (ch===' ') return 'espacio'; if (NAMES[ch]) return NAMES[ch]; if (/[⠀-⣿]/.test(ch)) return 'puntos '+dotsOf(ch.charCodeAt(0)-0x2800).join(' '); return ch!==ch.toLowerCase() ? ch.toLowerCase()+' mayúscula' : ch; }
+function charName(ch){ if (ch===undefined) return 'final de línea'; if (ch==='\u0305') return 'por mil'; if (ch==='\u033F') return 'por un millón'; if (SUP_REV[ch]) return 'exponente '+SUP_REV[ch]; if (ch===' ') return 'espacio'; if (NAMES[ch]) return NAMES[ch]; if (/[⠀-⣿]/.test(ch)) return 'puntos '+dotsOf(ch.charCodeAt(0)-0x2800).join(' '); return ch!==ch.toLowerCase() ? ch.toLowerCase()+' mayúscula' : ch; }
 function computeSel(){
   readSel = null; if (!readPos) return;
   const {line:li, col} = readPos, text = inkTexts[li]||'', map = charMaps[li]||[], line = doc.lines[li]||[], items = translate(line);
@@ -3056,7 +3400,7 @@ function moveRead(kind, dir){
       for (let li=p.line, c=p.col-1; li>=0 && !found; li--, c=(L[li]||'').length-1) for (; c>=0; c--) if (isWordStart(L[li],c)){ found={line:li,col:c}; break; }
       if (!found){ const w = readPos && wordAt(L[readPos.line], readPos.col); say('Principio del texto' + (w ? '. '+w.w : '')); return; }
     }
-    p = found; out = wordAt(L[p.line], p.col).w;
+    p = found; { const w = wordAt(L[p.line], p.col); out = spokenRange(p.line, w.a, w.b); }
   } else if (kind==='char'){
     if (dir>0){ if (p.col < L[p.line].length) p.col++; else if (p.line < L.length-1){ p.line++; p.col=0; } }
     else { if (p.col>0) p.col--; else if (p.line>0){ p.line--; p.col=L[p.line].length; } else { say('Principio del texto'); } }
@@ -3065,11 +3409,11 @@ function moveRead(kind, dir){
   } else if (kind==='line'){
     const nl = p.line + dir;
     if (nl<0){ say('Primera línea'); return; }
-    if (nl>=L.length){ readPos=null; say('Última línea. Línea '+L.length+': '+(L[L.length-1].trim()||'vacía')); return finishMove(); }
-    p = {line:nl, col:0}; out = (L[nl].trim()||'vacía');
+    if (nl>=L.length){ readPos=null; say('Última línea. Línea '+L.length+': '+(spokenRange(L.length-1, 0, L[L.length-1].length)||'vacía')); return finishMove(); }
+    p = {line:nl, col:0}; out = (spokenRange(nl, 0, L[nl].length)||'vacía');
   } else if (kind==='home'){ p.col = 0; out = charName(L[p.line][0]); }
   else if (kind==='end'){ p.col = L[p.line].length; out = 'final de línea'; }
-  else if (kind==='top'){ p = {line:0,col:0}; out = 'Principio. ' + (L[0].trim()||'vacía'); }
+  else if (kind==='top'){ p = {line:0,col:0}; out = 'Principio. ' + (spokenRange(0, 0, L[0].length)||'vacía'); }
   else if (kind==='bottom'){ readPos = null; say('Punto de escritura. Línea '+L.length+', celda '+cur().length); return finishMove(); }
   if (p.line===L.length-1 && p.col>=L[p.line].length && kind!=='end'){ readPos = null; }
   else readPos = p;
@@ -3077,6 +3421,16 @@ function moveRead(kind, dir){
   finishMove();
 }
 function finishMove(){ computeSel(); renderSheet(); }
+/* Lo que se dice de un tramo de la tinta (columnas ca..cb de la línea li): ordinales y romanos con su lectura (sexto, 21) */
+function spokenRange(li, ca, cb){
+  const text = inkTexts[li]||'', seg = text.slice(ca, cb), line = doc.lines[li]||[], items = translate(line), map = charMaps[li]||[];
+  if (!items.some(it=>it && 'spk' in it)) return seg;
+  let a = map[ca], b = map[Math.min(cb, text.length)-1];
+  if (a===undefined || b===undefined) return seg;
+  while (a>0 && line[a-1]!==0 && items[a-1] && items[a-1].t==='') a--;
+  while (b+1<items.length && line[b+1]!==0 && items[b+1] && items[b+1].t==='') b++;
+  return items.slice(a, b+1).map(it=> 'spk' in it ? (it.spk ? ' '+it.spk+' ' : '') : it.t).join('').replace(/ +/g,' ').replace(/ ([,.;:])/g,'$1').trim();
+}
 
 /* ---------- Edición en el cursor de lectura ----------
    Retroceso borra el signo anterior al cursor, Supr el signo sobre el cursor;
@@ -3111,7 +3465,9 @@ function editInsert(c){
   line.splice(at, 0, c);
   const items = translate(line), it = items[at];
   readPos.cell = at+1;
-  say(c===0 ? 'espacio' : describe(it, c));
+  let text = c===0 ? 'espacio' : describe(it, c);
+  if (line.length === doc.width - 6){ bell(); flashMsg('Quedan 6 celdas'); text += '. Quedan 6 celdas'; }
+  say(text);
   $('sLast').textContent = c===0 ? 'espacio' : UNI(c) + ' ' + (it.sig || it.t) + ' · ' + dotsOf(c).join('-');
   afterEdit();
 }
@@ -3170,6 +3526,8 @@ function renderSheet(){
       const pm = PM[idx] || {};
       body = '<div class="ink">' + items.map((it,i)=>{ let t = it.unk ? '<span class="unk">'+esc(it.t)+'</span>' : esc(it.t);
         if (it.emph && t && it.t!==' ') t = '<em class="res">'+t+'</em>';
+        if (it.strike && t && it.t!==' ') t = '<s>'+t+'</s>';
+        if (it.link && t && it.t!==' ') t = '<u class="lnk">'+t+'</u>';
         if (pm[i]) t = '<span class="'+(pm[i]==='error'?'perr':'psug')+'">'+(t && t!==' ' ? t : '\u2009')+'</span>';
         if (t && inSel(idx,i)) t = '<span class="sel">'+t+'</span>';
         if (rs && i===rs.a) t = '<mark class="rd">'+t; if (rs && i===rs.b) t += '</mark>'; if (i===cc) t = '<span class="caret"></span>'+t; return t; }).join('') + (cc>=items.length?'<span class="caret"></span>':'') + '</div>';
@@ -3360,7 +3718,7 @@ window.__perkinsExport = { toBRF, toUnicode, zip1, toBAN, parseBAN, toBRA, parse
    En Chrome y Edge (versión web) se usa el selector de archivos del sistema y Guardar sobrescribe el mismo archivo;
    en los demás casos el trabajo se descarga. Dentro de Claude se guarda como .pks.json (el visor no admite .pks). */
 const PKS_EXT = '.pks';
-const WIDTHS = [28,30,32,34,36,38,40,42];
+const WIDTHS = [28,30,32,34,36,38,40,42,44,46,48];
 let fileHandle = null;
 const sigOf = () => JSON.stringify(doc.lines);
 function isDirty(){ return !isExample && doc.lines.some(l=>l.length) && sigOf() !== (doc.savedSig||''); }
@@ -3370,7 +3728,7 @@ function markSaved(name){ doc.fileName = name; doc.savedSig = sigOf(); save(); s
 function toPKS(name){
   return JSON.stringify({formato:'perkins-virtual', version:1, titulo:name||doc.fileName||'', signografia:blockGrade(0),
     signografias: doc.lines.map((l,i)=>effGrade(i)),
-    ancho:doc.width, lineasPorHoja:LINES_PER_PAGE, guardado:new Date().toISOString(),
+    ancho:doc.width, lineasPorHoja:LINES_PER_PAGE, orientacion:ORIENT_NAME[curOrient()], papel:curPaper(), guardado:new Date().toISOString(),
     lineas: doc.lines.map(l=>l.map(UNI).join(''))}, null, 1);
 }
 const canPickFiles = () => !dl && window.self===window.top;
@@ -3432,9 +3790,9 @@ function parsePKS(text){
   if (!o || o.formato!=='perkins-virtual' || !Array.isArray(o.lineas)) return null;
   const lines = o.lineas.map(s=>[...String(s)].map(cellOfUni).filter(c=>c>=0));
   const longest = Math.max(0, ...lines.map(l=>l.length));
-  const width = WIDTHS.includes(+o.ancho) && longest <= +o.ancho ? +o.ancho : fitWidth(lines);
+  const width = +o.ancho>=20 && +o.ancho<=48 && longest <= +o.ancho ? +o.ancho : fitWidth(lines);
   return {kind:'pks', lines, width, grade: Translators[o.signografia] ? o.signografia : null,
-    grades: Array.isArray(o.signografias) && o.signografias.length===lines.length ? o.signografias : null, pageLines: (+o.lineasPorHoja>=15 && +o.lineasPorHoja<=40) ? +o.lineasPorHoja : null};
+    grades: Array.isArray(o.signografias) && o.signografias.length===lines.length ? o.signografias : null, pageLines: (+o.lineasPorHoja>=15 && +o.lineasPorHoja<=40) ? +o.lineasPorHoja : null, orient: o.orientacion==='horizontal' ? 'h' : 'v', paper: PAPERS[o.papel] ? o.papel : (o.papel ? 'custom' : null)};
 }
 function splitLines(text){ const ls = text.replace(/\f/g,'').split(/\r?\n/); while (ls.length>1 && ls[ls.length-1]==='') ls.pop(); return ls; }
 function parseUnicode(text){
@@ -3467,6 +3825,9 @@ async function loadFile(f, handle){
   doc.lines = res.lines.length ? res.lines : [[]];
   doc.width = res.width;
   if (res.pageLines){ LINES_PER_PAGE = res.pageLines; doc.pageLines = res.pageLines; }
+  doc.orient = res.orient || 'v'; doc.paper = res.paper || (res.kind==='pks' && !res.orient ? 'perkins' : 'custom');
+  if (doc.paper==='perkins' && (doc.width!==40 || LINES_PER_PAGE!==25) && curOrient()==='v') doc.paper = 'custom';
+  syncOrientMenu();
   const pks = res.kind==='pks';
   doc.lines.forEach((l,i)=>lgSet(l, res.grades && Translators[res.grades[i]] ? res.grades[i] : (res.grade || grade)));
   const used = [...new Set(doc.lines.map((l,i)=>l.length ? blockGrade(i) : null).filter(Boolean))];
@@ -3486,6 +3847,7 @@ window.__perkinsFiles = { toPKS, parsePKS, parseBRF, parseUnicode };
    Braille integral: signos no reconocidos, mayúscula o número sin nada detrás, ¿? ¡! () “” sin pareja.
    Las celdas con problemas se subrayan; F7 va al siguiente y Mayúsculas + F7 al anterior. */
 let warnErrors = true;
+const EKNAME = {res:'resalte, puntos 35', res2:'segundo resalte, puntos 35 35', res3:'tercer resalte, puntos 56 35', tach:'tachado, puntos 5 2', link:'enlace, puntos 6 36'};
 function checkIntegral(cells, st){
   const items = translate(cells), P = [], add = (a,b,msg,level)=>P.push({a,b,msg,level:level||'error'});
   const PAIRS = {'¿':'?','¡':'!','(':')','“':'”'}, CLOSE = {'?':'¿','!':'¡',')':'(','”':'“'};
@@ -3494,10 +3856,35 @@ function checkIntegral(cells, st){
     const c = cells[i], it = items[i] || {};
     if (it.unk) add(i,i+1,'Signo que no reconoce el braille integral: puntos '+dotsOf(c).join(' ')+'.');
     if (c===CAP && !(cells[i+1] in L2CH) && cells[i+1]!==CAP && !(it.t && it.t!=='')) add(i,i+1,'Signo de mayúscula sin letra detrás.');
-    if (c===NUM && !(cells[i+1] in DIGITS)) add(i,i+1,'Signo de número sin cifras detrás.');
+    if (c===NUM && !(cells[i+1] in DIGITS) && !ordinalAt(cells,i) && !(cells[i+1] in LOWDIG)) add(i,i+1,'Signo de número sin cifras detrás.');
+    /* Fechas (día, mes y año): cada número lleva su signo de número después del guion o de la barra.
+       En números de cuenta y teléfonos el guion no corta el número y no se sugiere nada. */
+    if (c===NUM && cells[i+1] in DIGITS){
+      const groups = []; let j = i+1, g = '', seps = [];
+      while (j < cells.length){
+        if (cells[j] in DIGITS){ g += DIGITS[cells[j]]; j++; continue; }
+        if (g && cells[j]===m('36') && cells[j+1] in DIGITS){ groups.push(g); g=''; seps.push(j); j++; continue; }
+        if (g && cells[j]===m('6') && cells[j+1]===m('2') && cells[j+2] in DIGITS){ groups.push(g); g=''; seps.push(j); j+=2; continue; }
+        break;
+      }
+      if (g) groups.push(g);
+      if (groups.length===3 && groups[0].length<=2 && groups[1].length<=2 && (groups[2].length===2 || groups[2].length===4) && +groups[0]>=1 && +groups[0]<=31 && +groups[1]>=1 && +groups[1]<=12)
+        add(i, j, 'Si es una fecha, cada número lleva su signo de número: escribe 3456 después de cada '+(cells[seps[0]]===m('36') ? 'guion' : 'barra')+'.', 'sug');
+    }
+    /* Ordinal escrito con la cifra en posición alta (6o, 6.o, 2a con punto): se sugiere la forma correcta */
+    if (c===NUM && cells[i+1] in DIGITS){
+      let j = i+1; while (cells[j] in DIGITS) j++;
+      const dot = cells[j]===m('3') ? 1 : 0, end = cells[j+dot], after = cells[j+dot+1];
+      const isEnd = after===undefined || after===0 || !(after in L2CH);
+      if (isEnd && (end===m('135') || end===m('1235'))){
+        const g = end===m('1') ? 'a' : end===m('135') ? 'o' : 'r', digs = cells.slice(i+1,j).map(x=>DIGITS[x]).join('');
+        const low = cells.slice(i+1,j).map(x=>dotsOf((+x)<<1).join('')).join(', ');
+        add(i, j+dot+1, 'Si es el ordinal '+digs+(g==='a'?'.ª':g==='o'?'.º':'.er')+', la cifra va en posición baja: 3456, '+low+', '+(g==='a'?'1':g==='o'?'135':'1235')+'.', 'sug');
+      }
+    }
     const t = it.t;
-    if (it.em==='open') st.del.push({line:st.line, a:i, b:i+1, t:'Res'});
-    else if (it.em==='close'){ const k = st.del.map(x=>x.t).lastIndexOf('Res'); if (k>=0) st.del.splice(k,1); else add(i,i+1,'Cierre de resalte, puntos 35, sin apertura.'); }
+    if (it.em==='open') st.del.push({line:st.line, a:i, b:i+1, t:'Res', ek:it.ek||'res'});
+    else if (it.em==='close'){ const ek = it.ek||'res'; let k = -1; st.del.forEach((x,q)=>{ if (x.t==='Res' && (x.ek||'res')===ek) k = q; }); if (k>=0) st.del.splice(k,1); else add(i,i+1,'Cierre de '+EKNAME[ek]+' sin apertura.'); }
     if (PAIRS[t]) st.del.push({line:st.line, a:i, b:i+1, t});
     else if (CLOSE[t]){
       const k = st.del.map(x=>x.t).lastIndexOf(CLOSE[t]);
@@ -3515,8 +3902,8 @@ function checkSteno(cells, st){
   const seen = new Set();
   items.forEach((it,i)=>{
     const t = it.t;
-    if (it.em==='open') st.del.push({line:st.line, a:i, b:i+1, t:'Res'});
-    else if (it.em==='close'){ const k = st.del.map(x=>x.t).lastIndexOf('Res'); if (k>=0) st.del.splice(k,1); else add(i,i+1,'Cierre de resalte, puntos 35, sin apertura.'); }
+    if (it.em==='open') st.del.push({line:st.line, a:i, b:i+1, t:'Res', ek:it.ek||'res'});
+    else if (it.em==='close'){ const ek = it.ek||'res'; let k = -1; st.del.forEach((x,q)=>{ if (x.t==='Res' && (x.ek||'res')===ek) k = q; }); if (k>=0) st.del.splice(k,1); else add(i,i+1,'Cierre de '+EKNAME[ek]+' sin apertura.'); }
     if (PAIRS[t]) st.del.push({line:st.line, a:i, b:i+1, t});
     else if (CLOSE[t]){ const k = st.del.map(x=>x.t).lastIndexOf(CLOSE[t]); if (k>=0) st.del.splice(k,1); else add(i,i+1,'Falta el signo de apertura de '+NAME[CLOSE[t]]+'.'); }
     if (it.word && !seen.has(it.a)){
@@ -3541,7 +3928,7 @@ function checkDoc(){
   });
   const OPEN_NAME = {'(':'paréntesis','[':'corchete','{':'llave','⟨':'paréntesis angular','¿':'interrogación','¡':'exclamación','“':'comillas'};
   st.aux.forEach(o=>all.push({line:o.line, a:o.a, b:o.b, level:'error', msg:'Falta cerrar el paréntesis auxiliar, puntos 35.'}));
-  st.del.forEach(o=>all.push({line:o.line, a:o.a, b:o.b, level:'error', msg:'Falta cerrar '+(o.t==='Res'?'el resalte, puntos 35':o.t==='¿'?'la interrogación':o.t==='¡'?'la exclamación':o.t==='“'?'las comillas':'el '+(OPEN_NAME[o.t]||'delimitador'))+'.'}));
+  st.del.forEach(o=>all.push({line:o.line, a:o.a, b:o.b, level:'error', msg:'Falta cerrar '+(o.t==='Res'?'el '+EKNAME[o.ek||'res']:o.t==='¿'?'la interrogación':o.t==='¡'?'la exclamación':o.t==='“'?'las comillas':'el '+(OPEN_NAME[o.t]||'delimitador'))+'.'}));
   /* Un solo aviso por celda, primero los errores */
   const seen = new Set();
   return all.sort((x,y)=> x.line-y.line || x.a-y.a || (x.level==='error'?-1:1))
@@ -3594,14 +3981,58 @@ $('dlgNew').addEventListener('close', ()=>{
   } else say('Cancelado');
   $('dlgNew').returnValue=''; backToSheet();
 });
-function openSize(){ $('width').value = String(doc.width); $('pageLines').value = String(LINES_PER_PAGE); openDialog($('dlgSize')); }
+/* Papel y orientación. Celdas y líneas que caben en cada papel (celda de 6,2 mm, línea de 10,16 mm, márgenes de 1 cm);
+   la hoja de la Perkins es casi cuadrada y por eso cambia poco al girarla. */
+const PAPERS = {
+  perkins:{name:'hoja braille', v:[40,25], h:[40,24]},
+  a4:{name:'A4', v:[30,27], h:[44,18]},
+  carta:{name:'carta', v:[31,25], h:[41,19]}
+};
+const ORIENT_NAME = {v:'vertical', h:'horizontal'};
+function curOrient(){ return doc.orient==='h' ? 'h' : 'v'; }
+function curPaper(){ return PAPERS[doc.paper] ? doc.paper : 'custom'; }
+/* Girar una hoja personalizada: se intercambian sus medidas físicas */
+function rotateSize(w, l){ return [Math.max(20,Math.min(48,Math.floor(l*10.16/6.2))), Math.max(15,Math.min(35,Math.floor(w*6.2/10.16)))]; }
+function sizeFor(paper, o, w, l){
+  if (PAPERS[paper]) return PAPERS[paper][o];
+  return o===curOrient() ? [w,l] : rotateSize(w,l);
+}
+function syncOrientMenu(){
+  [['orientV','v'],['orientH','h']].forEach(([cmd,o])=>{ const b = document.querySelector('[data-cmd="'+cmd+'"]'); if (!b) return;
+    const on = curOrient()===o; b.setAttribute('aria-checked', on); b.querySelector('.chk').textContent = on ? '●' : ''; });
+}
+function overMsg(){ const over = doc.lines.filter(l=>l.length>doc.width).length;
+  return over ? '. Atención: '+over+(over===1?' línea tiene':' líneas tienen')+' más celdas que el nuevo ancho' : ''; }
+function applySize(w, l, o, paper){
+  doc.width = w; LINES_PER_PAGE = l; doc.pageLines = l; doc.orient = o; doc.paper = paper;
+  syncOrientMenu(); render(); save();
+}
+function setOrient(o){
+  if (o===curOrient()){ say('La hoja ya está en orientación '+ORIENT_NAME[o]+': '+doc.width+' celdas por línea y '+LINES_PER_PAGE+' líneas'); return; }
+  const [w,l] = sizeFor(curPaper(), o, doc.width, LINES_PER_PAGE);
+  applySize(w, l, o, curPaper());
+  say('Orientación '+ORIENT_NAME[o]+': '+w+' celdas por línea y '+l+' líneas por hoja'+overMsg());
+}
+function openSize(){
+  $('paper').value = curPaper(); $('orient').value = curOrient();
+  $('width').value = String(doc.width); $('pageLines').value = String(LINES_PER_PAGE); openDialog($('dlgSize'));
+}
+/* En el diálogo: elegir papel u orientación rellena celdas y líneas; cambiarlas a mano pasa a «Personalizado» */
+{
+  $('dlgSize').addEventListener('focusin', ()=>{ if (!$('dlgSize').dataset.o) $('dlgSize').dataset.o = $('orient').value; });
+  const fill = (w,l)=>{ $('width').value = String(w); $('pageLines').value = String(l); };
+  $('paper').addEventListener('change', ()=>{ const p = $('paper').value; if (PAPERS[p]) fill(...PAPERS[p][$('orient').value]); $('dlgSize').dataset.o = $('orient').value; });
+  $('orient').addEventListener('change', ()=>{ const p = $('paper').value, o = $('orient').value, prevO = $('dlgSize').dataset.o || curOrient();
+    if (PAPERS[p]) fill(...PAPERS[p][o]); else if (o!==prevO) fill(...rotateSize(+$('width').value, +$('pageLines').value));
+    $('dlgSize').dataset.o = o; });
+  ['width','pageLines'].forEach(id=>$(id).addEventListener('change', ()=>{ $('paper').value = 'custom'; })); }
 $('dlgSize').addEventListener('close', ()=>{
   if ($('dlgSize').returnValue==='ok'){
-    doc.width = +$('width').value; LINES_PER_PAGE = +$('pageLines').value; doc.pageLines = LINES_PER_PAGE;
-    const over = doc.lines.filter(l=>l.length>doc.width).length;
-    render(); save();
-    say('Hoja de '+doc.width+' celdas por línea y '+LINES_PER_PAGE+' líneas'+(over ? '. Atención: '+over+(over===1?' línea tiene':' líneas tienen')+' más celdas que el nuevo ancho' : ''));
+    const paper = $('paper').value, o = $('orient').value;
+    applySize(+$('width').value, +$('pageLines').value, o, paper);
+    say('Hoja '+(PAPERS[paper] ? PAPERS[paper].name+' ' : '')+ORIENT_NAME[o]+' de '+doc.width+' celdas por línea y '+LINES_PER_PAGE+' líneas'+overMsg());
   } else say('Cancelado');
+  delete $('dlgSize').dataset.o;
   $('dlgSize').returnValue=''; backToSheet();
 });
 
@@ -3806,7 +4237,7 @@ const COMMANDS = {
   expBrf: exportBRF, expUni: exportUni, expBan: exportBAN, expBra: exportBRA,
   cut: ()=>menuCopy(true), copy: ()=>menuCopy(false), paste: menuPaste, selAll: selectAll, copyBr: copyBraille,
   viewInk: ()=>setView('ink'), viewBr: ()=>setView('braille'),
-  size: openSize,
+  size: openSize, orientV: ()=>setOrient('v'), orientH: ()=>setOrient('h'),
   exit: exitApp,
   contrast: ()=>toggleContrast(), voice: ()=>toggleVoice(), brRead: ()=>toggleBrailleMode(), zoomIn: ()=>setZoom(+1), zoomOut: ()=>setZoom(-1), zoomReset: ()=>setZoom(0),
   gIntegral: ()=>setGrade('integral'), gSteno: ()=>setGrade('steno'), gMath: ()=>setGrade('math'),
@@ -3980,6 +4411,8 @@ $('vol').value = String(Math.round(volume*100));
 $('width').value = String(doc.width);
 if (doc.pageLines >= 15 && doc.pageLines <= 40) LINES_PER_PAGE = doc.pageLines;
 $('pageLines').value = String(LINES_PER_PAGE);
+if (!doc.paper) doc.paper = (doc.width===40 && LINES_PER_PAGE===25) ? 'perkins' : 'custom';
+syncOrientMenu();
 $('optTr').checked=showTr; $('optEmpty').checked=showEmpty; $('optSound').checked=sound; $('optVoice').checked=voice; syncVoiceUI();
 syncViewMenu();
 if (prefs.grade && Translators[prefs.grade]) grade = prefs.grade;
@@ -4012,7 +4445,6 @@ setTimeout(()=>{ $('focusHint').hidden = document.hasFocus(); }, 1300);
 window.__perkinsTest = { translate: c=>Translators.integral(c), example };
 })();
 </script>
-
 <script>
 /* Versión web: se puede instalar y usar sin conexión (sw.js guarda una copia en el equipo) */
 if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
