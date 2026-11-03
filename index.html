@@ -719,7 +719,7 @@ dialog input[type="text"]:focus-visible{outline:2px solid var(--accent);outline-
         <ul>
           <li><b>Acentuador:</b> qué, cómo, cuál, cuándo, cuánto, dónde, quién, porqué, sólo, éste y aquél llevan un punto 5 delante de su abreviatura.</li>
           <li><b>Signos de apertura</b> ¿ ¡ “ ( - y tipografía especial ante una palabra en minúscula: un punto 5 delante del signo (ante mayúscula o número no hace falta).</li>
-          <li><b>Números romanos:</b> se escriben con signo de mayúscula y las letras en braille literal (siglo XXI). Se reconocen tras palabras como siglo, capítulo o tomo, o tras un nombre propio (Felipe II). También se acepta el <b>signo diferenciador 56</b> de los manuales anteriores delante del número (56 46 1346 1346 24 = XXI), que lo identifica siempre como romano; el B 16-1 actual ya no lo menciona.</li>
+          <li><b>Números romanos:</b> se marcan con un punto 5 delante, como las palabras en braille literal, seguido del signo de mayúscula y las letras: 5 46 1346 1346 24 = XXI, que se lee «21». Una sola letra o formas como «Mi» o «Vi» se toman como romanos sólo tras palabras como siglo, capítulo o tomo, o tras un nombre propio (Felipe V). Sin el punto 5 se leen como estenografía.</li>
           <li><b>Signos de cierre</b> de interrogación, comillas y tipografía especial: siempre con punto 5 delante. Con varios signos de cierre, un punto 5 antes del primero.</li>
           <li><b>Cursiva, negrita y otros resaltes</b> (tipografía especial, 35): se abre con 5-35 ante minúscula (35 solo ante mayúscula o número, o tras el punto 5 de una palabra en braille literal) y se cierra siempre con 5-35. Así no se confunde con la contracción <i>in</i> (35). Lo resaltado se ve en cursiva en la vista en tinta, y se anuncia «comienza resalte» y «termina resalte».</li>
           <li>Coma tras una palabra que acaba en <i>ab</i> y punto y coma tras una palabra que acaba en <i>-bre</i>: con punto 5 delante.</li>
@@ -2085,24 +2085,7 @@ function translateLine(cells){
     /* --- núcleo --- */
     let core = W.slice(s, e), off = a + s;
     if (!core.length) return;
-    /* Números romanos. Signo diferenciador 56 de los manuales antiguos (⠰⠨xxi); sin él, sólo con mayúscula y tras
-       palabras como siglo, capítulo o tomo, o tras un nombre propio */
-    if (ROMAN){
-      if (core[0]===m('56') && core.length===1){ out[off] = {t:'', sig:'Rom', say:'signo de número romano', spk:''}; return; }
-      if (core[0]===m('56') && core.length>1){
-        const r = ROMAN(core.slice(1), true);
-        if (r){ out[off] = {t:'', sig:'Rom', say:'signo de número romano', spk:''}; put(off+1, r); return; }
-      }
-      if (core[0]===CAP && core[1]!==C5){
-        let q = off-1; while (q>=0 && out[q] && out[q].t===' ') q--;
-        let txt = ''; while (q>=0 && out[q] && out[q].t!==' '){ txt = (out[q].t||'') + txt; q--; }
-        const prev = txt.replace(/[^\p{L}]/gu,'');
-        if (prev && !/[.!?…:;]$/.test(txt) && (ROMAN_CTXRE.test(prev) || /^\p{Lu}\p{Ll}/u.test(prev))){
-          const r = ROMAN(core, true);
-          if (r){ put(off, r); return; }
-        }
-      }
-    }
+    if (core.length===1 && core[0]===C5){ out[off] = {t:'', sig:'@', say:'punto 5'}; return; }   // punto 5 recién escrito, antes de la palabra
     /* punto 5 al comienzo: forma tónica (qué, cómo…; con mayúscula delante o detrás) o palabra en braille literal */
     let mode = 0;
     if (core[0]===CAP && core[1]===C5){ mode = 1; out[off] = {t:'', sig:'May', say:'mayúscula'}; core = core.slice(1); off++; }
@@ -2113,6 +2096,16 @@ function translateLine(cells){
         const w = capWord(tk, mode);
         core.forEach((c,k)=>{ out[off+k] = {t: k===core.length-1 ? w : '', say:w, sig: k===capAt ? 'May' : undefined}; });
         return;
+      }
+      /* Números romanos: punto 5 (braille literal) + mayúscula + letras romanas: @XXI. Tras siglo, capítulo, tomo
+         o un nombre propio también una sola letra o «Mi», «Vi»… (Felipe @V) */
+      if (ROMAN && rest[0]===CAP){
+        let q = off-1; while (q>=0 && out[q] && out[q].t===' ') q--;
+        let txt = ''; while (q>=0 && out[q] && out[q].t!==' '){ txt = (out[q].t||'') + txt; q--; }
+        const prev = txt.replace(/[^\p{L}]/gu,'');
+        const ctx = !!prev && !/[.!?…:;]$/.test(txt) && (ROMAN_CTXRE.test(prev) || /^\p{Lu}\p{Ll}/u.test(prev));
+        const r = ROMAN(rest, ctx);
+        if (r){ out[off] = {t:'', sig:'@', say:'número romano', spk:''}; put(off+1, r); return; }
       }
       out[off] = {t:'', sig:'@', say:'sin estenografiar'};
       put(off+1, literal(rest));
