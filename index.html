@@ -350,15 +350,15 @@ dialog input[type="text"]:focus-visible{outline:2px solid var(--accent);outline-
         <h4>Guardar e imprimir</h4>
         <ul>
           <li>Mientras trabajas, la hoja actual se guarda sola en este navegador, en esta computadora.</li>
-          <li><b>Archivo › Guardar</b> (Control + G) guarda el trabajo en un archivo de la Máquina Braille Virtual (.pks) que puedes llevar a otra computadora o entregar a tu profesor. <b>Guardar como</b> (Control + Mayúsculas + G) lo guarda con otro nombre.</li>
-          <li><b>Archivo › Abrir</b> (Control + O) abre un trabajo .pks para continuarlo donde lo dejaste. También abre archivos BRF, .bra y .ban, y textos en braille Unicode.</li>
+          <li><b>Archivo › Guardar</b> (Control + G) guarda el trabajo en un archivo de la Máquina Braille Virtual (.mbv) que puedes llevar a otra computadora o entregar a tu profesor. <b>Guardar como</b> (Control + Mayúsculas + G) lo guarda con otro nombre.</li>
+          <li><b>Archivo › Abrir</b> (Control + O) abre un trabajo .mbv para continuarlo donde lo dejaste (también los trabajos .pks guardados con versiones anteriores). También abre archivos BRF, .bra y .ban, y textos en braille Unicode.</li>
           <li>En Chrome y Edge, Guardar actualiza el mismo archivo. En otros navegadores, cada vez se descarga una copia nueva.</li>
           <li><b>Archivo › Exportar a BRF</b> crea un archivo para imprimir en una impresora braille. <b>Exportar a braille Unicode</b> crea un texto con los signos braille.</li>
           <li><b>Exportar a braille ASCII español (.bra)</b> crea un archivo en el formato habitual de la ONCE y <b>Exportar a braille ANSI español (.ban)</b> uno con la tabla ANSI española de la Comisión Braille Española (documento técnico V 1). Ambos se abren y se imprimen con el Visualizador Braille de la ONCE.</li>
           <li>BRF, .bra y .ban guardan los puntos de cada celda, no el texto: conservan tal cual lo escrito en braille integral, estenografía o matemáticas. Al volver a abrirlos se pierde qué signografía tenía cada bloque; para seguir un trabajo, usa Guardar (.pks).</li>
           <li><b>Formato › Tamaño de hoja</b> elige el papel (hoja braille de la máquina Perkins, A4 o carta), la orientación y las celdas por línea y líneas por hoja. Al elegir un papel se ponen las medidas que caben en él, y puedes ajustarlas a mano para tu impresora braille (el papel pasa a «Personalizado»).</li>
           <li><b>Formato › Orientación vertical</b> (la habitual, por defecto) u <b>Orientación horizontal</b> giran la hoja, como en las opciones de impresión de las impresoras braille: en horizontal las líneas son más largas y caben menos por hoja. Por ejemplo, en A4 vertical caben 30 celdas y 27 líneas, y en horizontal 44 celdas y 18 líneas. La hoja de la Perkins es casi cuadrada y al girarla cambia muy poco (40 × 25 en vertical, 40 × 24 en horizontal).</li>
-          <li>El papel y la orientación se guardan con el trabajo (.pks) y se usan al exportar a BRF, .bra y .ban: los saltos de hoja caen según las líneas por hoja.</li>
+          <li>El papel y la orientación se guardan con el trabajo (.mbv) y se usan al exportar a BRF, .bra y .ban: los saltos de hoja caen según las líneas por hoja.</li>
         </ul>
       </section>
       <section>
@@ -1674,7 +1674,7 @@ dialog input[type="text"]:focus-visible{outline:2px solid var(--accent);outline-
     <form method="dialog">
       <h2 id="dlgSaveT">Guardar trabajo</h2>
       <label class="field">Nombre del trabajo <input id="saveName" type="text" maxlength="80" autocomplete="off" spellcheck="false"></label>
-      <p id="dlgSaveD">Se descargará un archivo de la Máquina Braille Virtual (<span id="saveExt">.pks</span>). Para continuar después, ábrelo con Archivo › Abrir (Control + O).</p>
+      <p id="dlgSaveD">Se descargará un archivo de la Máquina Braille Virtual (<span id="saveExt">.mbv</span>). Para continuar después, ábrelo con Archivo › Abrir (Control + O).</p>
       <div class="dlg-btns"><button class="btn" value="cancel">Cancelar</button><button class="btn primary" value="ok">Guardar</button></div>
     </form>
   </dialog>
@@ -1685,7 +1685,7 @@ dialog input[type="text"]:focus-visible{outline:2px solid var(--accent);outline-
       <div class="dlg-btns"><button class="btn" value="cancel" autofocus>Cancelar</button><button class="btn" value="save">Guardar primero</button><button class="btn danger-fill" value="ok">Abrir sin guardar</button></div>
     </form>
   </dialog>
-  <input type="file" id="fileIn" accept=".pks,.json,.brf,.brl,.bra,.ban,.txt" hidden>
+  <input type="file" id="fileIn" accept=".mbv,.pks,.json,.brf,.brl,.bra,.ban,.txt" hidden>
   <dialog id="dlgNew" aria-labelledby="dlgNewT" aria-describedby="dlgNewD">
     <form method="dialog">
       <h2 id="dlgNewT">Nueva hoja</h2>
@@ -3705,21 +3705,21 @@ function exportBAN(){ if (emptySheet()) return; const n = 'maquina-braille_'+sta
   dlReady.then(()=> dl ? offer(n+'.zip', zip1(n+'.ban', bytes)) : offer(n+'.ban', new Blob([bytes],{type:'application/octet-stream'}))); }
 window.__perkinsExport = { toBRF, toUnicode, zip1, toBAN, parseBAN, toBRA, parseBRA };
 
-/* ---------- Guardar y abrir trabajos (.pks) ----------
+/* ---------- Guardar y abrir trabajos (.mbv; también abre los .pks de versiones anteriores) ----------
    Formato propio de la Máquina Braille Virtual: un JSON con las celdas de cada línea en braille Unicode,
    el ancho de línea, las líneas por hoja y la signografía. Abrir también acepta .brf y braille Unicode (.txt).
    En Chrome y Edge (versión web) se usa el selector de archivos del sistema y Guardar sobrescribe el mismo archivo;
-   en los demás casos el trabajo se descarga. Dentro de Claude se guarda como .pks.json (el visor no admite .pks). */
-const PKS_EXT = '.pks';
+   en los demás casos el trabajo se descarga. Dentro de Claude se guarda como .mbv.json (el visor no admite .mbv). */
+const PKS_EXT = '.mbv';
 const WIDTHS = [28,30,32,34,36,38,40,42,44,46,48];
 let fileHandle = null;
 const sigOf = () => JSON.stringify(doc.lines);
 function isDirty(){ return !isExample && doc.lines.some(l=>l.length) && sigOf() !== (doc.savedSig||''); }
-function cleanName(n){ return (n||'').replace(/(\.pks)?\.(pks|json|brf|brl|txt)$/i,'').replace(/[\\/:*?"<>|\u0000-\u001f]/g,'').replace(/\s+/g,' ').trim().slice(0,80) || 'trabajo'; }
+function cleanName(n){ return (n||'').replace(/(\.(pks|mbv))?\.(pks|mbv|json|brf|brl|bra|ban|txt)$/i,'').replace(/[\\/:*?"<>|\u0000-\u001f]/g,'').replace(/\s+/g,' ').trim().slice(0,80) || 'trabajo'; }
 function setDocTitle(){ document.title = (doc.fileName ? doc.fileName+' — ' : '') + 'Máquina Braille Virtual'; }
 function markSaved(name){ doc.fileName = name; doc.savedSig = sigOf(); save(); setDocTitle(); }
 function toPKS(name){
-  return JSON.stringify({formato:'perkins-virtual', version:1, titulo:name||doc.fileName||'', signografia:blockGrade(0),
+  return JSON.stringify({formato:'maquina-braille-virtual', version:1, titulo:name||doc.fileName||'', signografia:blockGrade(0),
     signografias: doc.lines.map((l,i)=>effGrade(i)),
     ancho:doc.width, lineasPorHoja:LINES_PER_PAGE, orientacion:ORIENT_NAME[curOrient()], papel:curPaper(), guardado:new Date().toISOString(),
     lineas: doc.lines.map(l=>l.map(UNI).join(''))}, null, 1);
@@ -3743,11 +3743,11 @@ async function saveWork(asNew){
     return backToSheet();
   }
   if (doc.fileName && !asNew) return downloadWork(doc.fileName);
-  $('saveName').value = doc.fileName || ''; $('saveExt').textContent = dl ? '.pks.json' : PKS_EXT;
+  $('saveName').value = doc.fileName || ''; $('saveExt').textContent = dl ? '.mbv.json' : PKS_EXT;
   openDialog($('dlgSave')); setTimeout(()=>{ $('saveName').focus(); $('saveName').select(); }, 0);
 }
 async function downloadWork(name){
-  const ok = await offer(name + (dl ? '.pks.json' : PKS_EXT), toPKS(name));
+  const ok = await offer(name + (dl ? '.mbv.json' : PKS_EXT), toPKS(name));
   if (ok){ markSaved(name); say('Guardado: '+name); }
   backToSheet();
 }
@@ -3767,7 +3767,7 @@ async function pickFile(){
   if (canPickFiles() && window.showOpenFilePicker){
     try{
       const [h] = await window.showOpenFilePicker({types:[{description:'Trabajos de la Máquina Braille Virtual y archivos braille',
-        accept:{'application/octet-stream':['.pks','.brf','.brl','.ban','.bra'], 'text/plain':['.txt'], 'application/json':['.json']}}]});
+        accept:{'application/octet-stream':['.mbv','.pks','.brf','.brl','.ban','.bra'], 'text/plain':['.txt'], 'application/json':['.json']}}]});
       const f = await h.getFile(); await loadFile(f, h);
     }catch(e){ if (e && e.name==='AbortError') say('Cancelado'); else say('No se pudo abrir el archivo'); backToSheet(); }
     return;
@@ -3780,7 +3780,7 @@ function fitWidth(lines){ const mx = Math.max(0, ...lines.map(l=>l.length)); ret
 const cellOfUni = ch => { const c = ch.codePointAt(0) - 0x2800; return c>=0 && c<64 ? c : (ch===' ' ? 0 : -1); };
 function parsePKS(text){
   let o; try{ o = JSON.parse(text); }catch(e){ return null; }
-  if (!o || o.formato!=='perkins-virtual' || !Array.isArray(o.lineas)) return null;
+  if (!o || (o.formato!=='maquina-braille-virtual' && o.formato!=='perkins-virtual') || !Array.isArray(o.lineas)) return null;
   const lines = o.lineas.map(s=>[...String(s)].map(cellOfUni).filter(c=>c>=0));
   const longest = Math.max(0, ...lines.map(l=>l.length));
   const width = +o.ancho>=20 && +o.ancho<=48 && longest <= +o.ancho ? +o.ancho : fitWidth(lines);
@@ -3825,7 +3825,7 @@ async function loadFile(f, handle){
   doc.lines.forEach((l,i)=>lgSet(l, res.grades && Translators[res.grades[i]] ? res.grades[i] : (res.grade || grade)));
   const used = [...new Set(doc.lines.map((l,i)=>l.length ? blockGrade(i) : null).filter(Boolean))];
   const gradeMsg = used.length ? ' Signografía: '+used.map(g=>GRADES[g]).join(' y ')+'.' : '';
-  fileHandle = pks ? handle : null;            // un BRF abierto se guarda después como trabajo nuevo (.pks)
+  fileHandle = pks ? handle : null;            // un BRF abierto se guarda después como trabajo nuevo (.mbv)
   doc.fileName = name; doc.savedSig = pks ? sigOf() : '';
   $('sLast').textContent = '—';
   render(); save(); setDocTitle();
