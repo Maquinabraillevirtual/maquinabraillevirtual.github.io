@@ -225,6 +225,7 @@ dialog input[type="text"]:focus-visible{outline:2px solid var(--accent);outline-
           <li role="none"><button role="menuitem" tabindex="-1" data-cmd="save" aria-keyshortcuts="Control+G"><span class="chk"></span>Guardar<span class="sc">Ctrl+G</span></button></li>
           <li role="none"><button role="menuitem" tabindex="-1" data-cmd="saveAs" aria-keyshortcuts="Control+Shift+G"><span class="chk"></span>Guardar como…<span class="sc">Ctrl+Mayús+G</span></button></li>
           <li role="separator"></li>
+          <li role="none"><button role="menuitem" tabindex="-1" data-cmd="expDocx"><span class="chk"></span>Exportar a Word, en tinta (.docx)…</button></li>
           <li role="none"><button role="menuitem" tabindex="-1" data-cmd="expBrf"><span class="chk"></span>Exportar a BRF (impresora braille)</button></li>
           <li role="none"><button role="menuitem" tabindex="-1" data-cmd="expUni"><span class="chk"></span>Exportar a braille Unicode</button></li>
           <li role="none"><button role="menuitem" tabindex="-1" data-cmd="expBra"><span class="chk"></span>Exportar a braille ASCII español (.bra)</button></li>
@@ -353,6 +354,7 @@ dialog input[type="text"]:focus-visible{outline:2px solid var(--accent);outline-
           <li><b>Archivo › Guardar</b> (Control + G) guarda el trabajo en un archivo de la Máquina Braille Virtual (.mbv) que puedes llevar a otra computadora o entregar a tu profesor. <b>Guardar como</b> (Control + Mayúsculas + G) lo guarda con otro nombre.</li>
           <li><b>Archivo › Abrir</b> (Control + O) abre un trabajo .mbv para continuarlo donde lo dejaste (también los trabajos .pks guardados con versiones anteriores). También abre archivos BRF, .bra y .ban, y textos en braille Unicode.</li>
           <li>En Chrome y Edge, Guardar actualiza el mismo archivo. En otros navegadores, cada vez se descarga una copia nueva.</li>
+          <li><b>Archivo › Exportar a Word, en tinta (.docx)</b> crea un documento de Word en escritura común para entregar al profesor. Los bloques de Matemáticas salen como <b>ecuaciones de Word</b>: fracciones apiladas, potencias, subíndices, raíces y periodos con su raya; los paréntesis auxiliares no aparecen, porque solo sirven en braille. Los bloques de braille integral y estenografía salen como texto, con la cursiva de los resaltes. Arriba puedes poner un título, el nombre del estudiante y la fecha. El botón <b>Escuchar el trabajo</b> lee todo antes de exportar, para comprobarlo. El profesor puede corregirlo en Word y guardarlo como PDF.</li>
           <li><b>Archivo › Exportar a BRF</b> crea un archivo para imprimir en una impresora braille. <b>Exportar a braille Unicode</b> crea un texto con los signos braille.</li>
           <li><b>Exportar a braille ASCII español (.bra)</b> crea un archivo en el formato habitual de la ONCE y <b>Exportar a braille ANSI español (.ban)</b> uno con la tabla ANSI española de la Comisión Braille Española (documento técnico V 1). Ambos se abren y se imprimen con el Visualizador Braille de la ONCE.</li>
           <li>BRF, .bra y .ban guardan los puntos de cada celda, no el texto: conservan tal cual lo escrito en braille integral, estenografía o matemáticas. Al volver a abrirlos se pierde qué signografía tenía cada bloque; para seguir un trabajo, usa Guardar (.pks).</li>
@@ -1668,6 +1670,17 @@ dialog input[type="text"]:focus-visible{outline:2px solid var(--accent);outline-
         <select id="pageLines"><option>15</option><option>16</option><option>17</option><option>18</option><option>19</option><option>20</option><option>21</option><option>22</option><option>23</option><option>24</option><option selected>25</option><option>26</option><option>27</option><option>28</option><option>29</option><option>30</option><option>31</option><option>32</option><option>33</option><option>34</option><option>35</option></select>
       </label>
       <div class="dlg-btns"><button class="btn" value="cancel">Cancelar</button><button class="btn primary" value="ok">Aceptar</button></div>
+    </form>
+  </dialog>
+  <dialog id="dlgWord" aria-labelledby="dlgWordT" aria-describedby="dlgWordD">
+    <form method="dialog">
+      <h2 id="dlgWordT">Exportar a Word</h2>
+      <p id="dlgWordD">Crea un documento de Word en escritura en tinta para entregar al profesor. Las matemáticas salen como ecuaciones de Word (fracciones, potencias, raíces), que el profesor puede corregir.</p>
+      <label class="field">Título <input id="wTitle" type="text" maxlength="120" autocomplete="off" spellcheck="false"></label>
+      <label class="field">Nombre del estudiante <input id="wName" type="text" maxlength="120" autocomplete="off" spellcheck="false"></label>
+      <label class="field" style="justify-content:flex-start">
+        <input id="wDate" type="checkbox" checked> Poner la fecha de hoy</label>
+      <div class="dlg-btns"><button class="btn" type="button" id="wListen">Escuchar el trabajo</button><button class="btn" value="cancel">Cancelar</button><button class="btn primary" value="ok">Exportar</button></div>
     </form>
   </dialog>
   <dialog id="dlgSave" aria-labelledby="dlgSaveT" aria-describedby="dlgSaveD">
@@ -2998,7 +3011,7 @@ function load(){
 const prefs = {};
 function save(){
   /* Las preferencias se guardan siempre, aunque la hoja tenga todavía el texto de ejemplo */
-  try{ localStorage.setItem(STORE+'-prefs', JSON.stringify({view,showTr,showEmpty,sound,voice,cellSize,volume,grade,contrast,zoom,warnErrors})); }catch(e){}
+  try{ localStorage.setItem(STORE+'-prefs', JSON.stringify({view,showTr,showEmpty,sound,voice,cellSize,volume,grade,contrast,zoom,warnErrors,student:prefs.student||''})); }catch(e){}
   if (isExample) return;
   try{ localStorage.setItem(STORE, JSON.stringify({lines:doc.lines,lg:doc.lines.map((l,i)=>effGrade(i)),width:doc.width,pageLines:LINES_PER_PAGE,orient:curOrient(),paper:curPaper(),fileName:doc.fileName||'',savedSig:doc.savedSig||'',prefs:{view,showTr,showEmpty,sound,voice,cellSize,volume,grade,contrast,zoom}})); }catch(e){}
 }
@@ -3639,6 +3652,251 @@ async function offer(filename, data){
     setTimeout(()=>{ URL.revokeObjectURL(a.href); a.remove(); }, 1000); say('Descarga iniciada'); return true; }
   catch(e){ flashMsg('No se pudo descargar'); say('No se pudo descargar'); return false; }
 }
+/* ---------- Exportar a Word (.docx): el texto como párrafos y las matemáticas como ecuaciones de Word (OMML) ----------
+   Las ecuaciones se arman a partir de la tinta lineal de Matemáticas (3⁄4, x², x^(a+b), ⁿ√(a+b), z_(n−1), (a+b)∕c):
+   los paréntesis auxiliares desaparecen y quedan fracciones apiladas, exponentes, subíndices y raíces de verdad. */
+const DOCX = (()=>{
+  const xe = s => String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  const SUPMAP = {'⁰':'0','¹':'1','²':'2','³':'3','⁴':'4','⁵':'5','⁶':'6','⁷':'7','⁸':'8','⁹':'9','⁻':'−','⁺':'+','⁼':'=','⁽':'(','⁾':')',
+    'ᵃ':'a','ᵇ':'b','ᶜ':'c','ᵈ':'d','ᵉ':'e','ᶠ':'f','ᵍ':'g','ʰ':'h','ⁱ':'i','ʲ':'j','ᵏ':'k','ˡ':'l','ᵐ':'m','ⁿ':'n','ᵒ':'o','ᵖ':'p','ʳ':'r','ˢ':'s','ᵗ':'t','ᵘ':'u','ᵛ':'v','ʷ':'w','ˣ':'x','ʸ':'y','ᶻ':'z'};
+  const SUBMAP = {'₀':'0','₁':'1','₂':'2','₃':'3','₄':'4','₅':'5','₆':'6','₇':'7','₈':'8','₉':'9','₋':'−','₊':'+','₌':'=','₍':'(','₎':')',
+    'ₐ':'a','ₑ':'e','ₕ':'h','ᵢ':'i','ⱼ':'j','ₖ':'k','ₗ':'l','ₘ':'m','ₙ':'n','ₒ':'o','ₚ':'p','ᵣ':'r','ₛ':'s','ₜ':'t','ᵤ':'u','ᵥ':'v','ₓ':'x'};
+  const AUX_O = '', AUX_C = '', ROOT = '';
+  const PAIR = {'(':')','[':']','{':'}','⟨':'⟩'};
+  const BAR = '̅';
+  /* elementos de OMML */
+  const r = (s, plain) => s==='' ? '' : '<m:r>'+(plain ? '<m:rPr><m:sty m:val="p"/></m:rPr>' : '')+'<m:t xml:space="preserve">'+xe(s)+'</m:t></m:r>';
+  const frac = (n, d) => '<m:f><m:num>'+n+'</m:num><m:den>'+d+'</m:den></m:f>';
+  const sup = (b, e) => '<m:sSup><m:e>'+b+'</m:e><m:sup>'+e+'</m:sup></m:sSup>';
+  const sub = (b, e) => '<m:sSub><m:e>'+b+'</m:e><m:sub>'+e+'</m:sub></m:sSub>';
+  const rad = (deg, e) => deg ? '<m:rad><m:deg>'+deg+'</m:deg><m:e>'+e+'</m:e></m:rad>'
+                              : '<m:rad><m:radPr><m:degHide m:val="1"/></m:radPr><m:deg/><m:e>'+e+'</m:e></m:rad>';
+  const delim = (o, c, e) => '<m:d><m:dPr><m:begChr m:val="'+xe(o)+'"/><m:endChr m:val="'+xe(c)+'"/></m:dPr><m:e>'+e+'</m:e></m:d>';
+  const bar = e => '<m:bar><m:barPr><m:pos m:val="top"/></m:barPr><m:e>'+e+'</m:e></m:bar>';
+  const OM = {r, frac, sup, sub, rad, delim, bar};
+
+  /* Tinta de una línea de Matemáticas con marcas: paréntesis auxiliares y comienzo de raíz */
+  function mathInk(items){
+    let s = ''; const st = [];
+    items.forEach(it=>{
+      const sig = it.sig||'';
+      if (sig==='(aux'){ s += AUX_O; st.push('aux'); return; }
+      if (sig==='aux)'){ s += AUX_C; st.pop(); return; }
+      if (sig==='√' && !it.t){ s += ROOT; return; }
+      let t = it.t||'';
+      /* «^(» y «_(» que pone la tinta para agrupar un exponente o un subíndice: sus paréntesis no son del texto */
+      if ((sig==='Pot' || sig==='Sub') && /^[\^_]\($/.test(t)){ s += t[0] + AUX_O; st.push('syn'); return; }
+      for (const ch of t){
+        if (ch==='(' || ch==='[' || ch==='{' || ch==='⟨'){ st.push('real'); s += ch; continue; }
+        if ((ch===')' || ch===']' || ch==='}' || ch==='⟩') && st.length){ const k = st.pop(); s += k==='syn' ? AUX_C : ch; continue; }
+        s += ch;
+      }
+    });
+    return s;
+  }
+  /* Analizador de la tinta lineal → OMML */
+  /* MathML con el mismo analizador (sirve para comprobar visualmente las ecuaciones) */
+  const ML = {
+    r:(s,plain)=> s==='' ? '' : (/^[\d.,\u202F]+$/.test(s) ? '<mn>'+xe(s)+'</mn>' : /^\p{L}+$/u.test(s) && !plain ? '<mi>'+xe(s)+'</mi>' : '<mo>'+xe(s)+'</mo>'),
+    frac:(n,d)=>'<mfrac><mrow>'+n+'</mrow><mrow>'+d+'</mrow></mfrac>', sup:(b,e)=>'<msup><mrow>'+b+'</mrow><mrow>'+e+'</mrow></msup>',
+    sub:(b,e)=>'<msub><mrow>'+b+'</mrow><mrow>'+e+'</mrow></msub>', rad:(d,e)=> d ? '<mroot><mrow>'+e+'</mrow><mrow>'+d+'</mrow></mroot>' : '<msqrt>'+e+'</msqrt>',
+    delim:(o,c,e)=>'<mrow><mo>'+xe(o)+'</mo>'+e+'<mo>'+xe(c)+'</mo></mrow>', bar:e=>'<mover><mrow>'+e+'</mrow><mo>¯</mo></mover>'
+  };
+  function toOMML(src, K){
+    let i = 0;
+    const r = K ? K.r : OM.r, frac = K ? K.frac : OM.frac, sup = K ? K.sup : OM.sup, sub = K ? K.sub : OM.sub, rad = K ? K.rad : OM.rad, delim = K ? K.delim : OM.delim, bar = K ? K.bar : OM.bar;
+    const isDigit = ch => /[0-9]/.test(ch||'');
+    function number(){
+      let x = '', plainRun = '', barRun = '';
+      const flush = ()=>{ if (barRun){ x += r(plainRun) + bar(r(barRun)); plainRun = ''; barRun = ''; } };
+      while (i < src.length){
+        const ch = src[i];
+        if (isDigit(ch) && src[i+1]===BAR){ barRun += ch; i += 2; continue; }
+        if (barRun) flush();
+        if (isDigit(ch) || ch==='□'){ plainRun += ch; i++; continue; }
+        if ((ch===',' || ch==='.') && isDigit(src[i+1])){ plainRun += ch; i++; continue; }
+        if (ch===' ' && isDigit(src[i+1]) && isDigit(src[i-1]) && /^\d{3}(?!\d)/.test(src.slice(i+1))){ plainRun += ' '; i++; continue; }   // 31 720
+        break;
+      }
+      flush();
+      return x + r(plainRun);
+    }
+    function supRun(map){ let t = ''; while (i < src.length && map[src[i]]!==undefined){ t += map[src[i]]; i++; } return t; }
+    /* un argumento: grupo, número, raíz o un signo */
+    function arg(){
+      while (src[i]===' ') i++;
+      const ch = src[i];
+      if (ch===undefined) return '';
+      if (ch===AUX_O){ i++; return seq(AUX_C); }
+      if (PAIR[ch]){ i++; return delim(ch, PAIR[ch], seq(PAIR[ch])); }
+      if (isDigit(ch)) return post(number());
+      if (ch===ROOT || ch==='√' || ch==='∛' || ch==='∜') return root();
+      i++;
+      if (ch==='−' || ch==='+'){ return r(ch) + arg(); }           // signo delante: x^−1 · c∕−2
+      return post(r(ch));
+    }
+    function root(){
+      let deg = '';
+      if (src[i]===ROOT){ i++; deg = supRun(SUPMAP); }
+      const ch = src[i];
+      if (ch==='√' || ch==='∛' || ch==='∜'){ i++; if (!deg && ch==='∛') deg = '3'; if (!deg && ch==='∜') deg = '4'; }
+      return rad(deg ? r(deg) : '', arg());
+    }
+    /* exponentes y subíndices pegados a un elemento */
+    function post(base){
+      for (;;){
+        const ch = src[i];
+        if (ch!==undefined && SUPMAP[ch]!==undefined && !(src[i+1]==='√' || src[i+1]==='∛' || src[i+1]==='∜')){ base = sup(base, r(supRun(SUPMAP))); continue; }
+        if (ch!==undefined && SUBMAP[ch]!==undefined){ base = sub(base, r(supRun(SUBMAP))); continue; }
+        if (ch==='^'){ i++; base = sup(base, arg()); continue; }
+        if (ch==='_'){ i++; base = sub(base, arg()); continue; }
+        if (ch==='′' || ch==='″' || ch==='‴'){ i++; base = sup(base, r(ch)); continue; }
+        return base;
+      }
+    }
+    function seq(end){
+      const out = [];
+      while (i < src.length){
+        const ch = src[i];
+        if (end && ch===end){ i++; break; }
+        if (ch===AUX_C || (')]}⟩'.includes(ch) && ch!==end)){ out.push(r(ch===AUX_C ? '' : ch)); i++; continue; }
+        if (ch===AUX_O){ i++; out.push(post(seq(AUX_C))); continue; }
+        if (PAIR[ch]){ i++; out.push(post(delim(ch, PAIR[ch], seq(PAIR[ch])))); continue; }
+        if (ch===ROOT || ch==='√' || ch==='∛' || ch==='∜'){ out.push(root()); continue; }
+        /* índice de una raíz escrito antes del signo (ⁿ√) */
+        if (SUPMAP[ch]!==undefined && (src[i+1]==='√' || (SUPMAP[src[i+1]]!==undefined && /[√∛∜]/.test(src.slice(i, i+4))))){ const deg = supRun(SUPMAP); if ('√∛∜'.includes(src[i])) i++; out.push(rad(r(deg), arg())); continue; }
+        if (ch==='⁄'){                                           // fracción numérica: 3⁄4
+          i++; let d = ''; while (isDigit(src[i])) d += src[i++];
+          const n = out.pop() || ''; out.push(post(frac(n, r(d)))); continue;
+        }
+        if (ch==='∕'){ i++; const n = out.pop() || ''; out.push(frac(n, arg())); continue; }   // fracción: (a+b)∕c
+        if (isDigit(ch)){ out.push(post(number())); continue; }
+        if (SUPMAP[ch]!==undefined || SUBMAP[ch]!==undefined || ch==='^' || ch==='_'){ out.push(post(out.pop() || r(''))); continue; }
+        /* palabras dentro de la ecuación («los números», «si x>2», «x=2 o x=3», «sen x»): texto normal, con sus espacios */
+        if (/\p{L}/u.test(ch)){
+          let j = i; while (j<src.length && /\p{L}/u.test(src[j]) && SUPMAP[src[j]]===undefined && SUBMAP[src[j]]===undefined) j++;
+          const word = src.slice(i, j), leftB = i===0 || src[i-1]===' ', rightB = j>=src.length || /[ ,.;:]/.test(src[j]);
+          if (((word.length>=2 || /^[oyeu]$/.test(word)) && leftB && rightB) || word.length>=4){
+            i = j; let w = word;
+            if (out.length && src[i-word.length-1]===' ') w = '\u00A0' + w;
+            if (src[i]===' '){ w += '\u00A0'; i++; }
+            out.push(K ? '<mtext>'+xe(w)+'</mtext>' : '<m:r><m:rPr><m:nor/></m:rPr><m:t xml:space="preserve">'+xe(w)+'</m:t></m:r>'); continue;
+          }
+        }
+        if (ch===' '){ i++; continue; }                          // Word espacia solo las ecuaciones
+        i++;
+        if (/\p{L}/u.test(ch)) out.push(post(r(ch)));
+        else out.push(post(r(ch, true)));
+      }
+      return out.join('');
+    }
+    return seq(null);
+  }
+
+  /* ---- Párrafos de texto (braille integral, estenografía): resalte en cursiva, tachado ---- */
+  function textRuns(items){
+    const runs = []; let cur = null;
+    items.forEach(it=>{
+      if (!it || !it.t) return;
+      const key = (it.emph?'i':'')+(it.strike?'s':'')+(it.link?'u':'');
+      if (!cur || cur.key!==key){ cur = {key, t:''}; runs.push(cur); }
+      cur.t += it.t;
+    });
+    return runs.map(rn=>'<w:r>'+(rn.key ? '<w:rPr>'+(rn.key.includes('i')?'<w:i/>':'')+(rn.key.includes('s')?'<w:strike/>':'')+(rn.key.includes('u')?'<w:u w:val="single"/>':'')+'</w:rPr>' : '')+
+      '<w:t xml:space="preserve">'+xe(rn.t)+'</w:t></w:r>').join('');
+  }
+  const para = (inner, ppr) => '<w:p>'+(ppr ? '<w:pPr>'+ppr+'</w:pPr>' : '')+inner+'</w:p>';
+  const textPara = (s, rpr, ppr) => para('<w:r>'+(rpr ? '<w:rPr>'+rpr+'</w:rPr>' : '')+'<w:t xml:space="preserve">'+xe(s)+'</w:t></w:r>', ppr);
+  const mathPara = omml => para('<m:oMathPara><m:oMathParaPr><m:jc m:val="left"/></m:oMathParaPr><m:oMath>'+omml+'</m:oMath></m:oMathPara>');
+
+  function documentXML(body){
+    return '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'+
+      '<w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main" xmlns:m="http://schemas.openxmlformats.org/officeDocument/2006/math" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">'+
+      '<w:body>'+body+'<w:sectPr><w:pgSz w:w="11906" w:h="16838"/><w:pgMar w:top="1417" w:right="1417" w:bottom="1417" w:left="1417" w:header="708" w:footer="708" w:gutter="0"/></w:sectPr></w:body></w:document>';
+  }
+  const STYLES = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'+
+    '<w:styles xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">'+
+    '<w:docDefaults><w:rPrDefault><w:rPr><w:rFonts w:ascii="Calibri" w:hAnsi="Calibri" w:cs="Calibri" w:eastAsia="Calibri"/><w:sz w:val="26"/><w:szCs w:val="26"/><w:lang w:val="es-PE"/></w:rPr></w:rPrDefault>'+
+    '<w:pPrDefault><w:pPr><w:spacing w:after="120" w:line="300" w:lineRule="auto"/></w:pPr></w:pPrDefault></w:docDefaults>'+
+    '<w:style w:type="paragraph" w:default="1" w:styleId="Normal"><w:name w:val="Normal"/><w:qFormat/></w:style>'+
+    '<w:style w:type="paragraph" w:styleId="Title"><w:name w:val="Title"/><w:basedOn w:val="Normal"/><w:next w:val="Normal"/><w:qFormat/><w:pPr><w:spacing w:after="200"/></w:pPr><w:rPr><w:b/><w:sz w:val="36"/><w:szCs w:val="36"/></w:rPr></w:style>'+
+    '</w:styles>';
+  const CT = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">'+
+    '<Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/>'+
+    '<Override PartName="/word/document.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml"/>'+
+    '<Override PartName="/word/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.styles+xml"/>'+
+    '<Override PartName="/docProps/core.xml" ContentType="application/vnd.openxmlformats-package.core-properties+xml"/></Types>';
+  const RELS = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">'+
+    '<Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="word/document.xml"/>'+
+    '<Relationship Id="rId2" Type="http://schemas.openxmlformats.org/package/2006/relationships/metadata/core-properties" Target="docProps/core.xml"/></Relationships>';
+  const DOCRELS = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">'+
+    '<Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles" Target="styles.xml"/></Relationships>';
+  const core = (title, author) => '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><cp:coreProperties xmlns:cp="http://schemas.openxmlformats.org/package/2006/metadata/core-properties" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:dcterms="http://purl.org/dc/terms/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">'+
+    '<dc:title>'+xe(title)+'</dc:title><dc:creator>'+xe(author||'Máquina Braille Virtual')+'</dc:creator>'+
+    '<dcterms:created xsi:type="dcterms:W3CDTF">'+new Date().toISOString().replace(/\.\d+Z$/,'Z')+'</dcterms:created></cp:coreProperties>';
+
+  /* Zip sin compresión con varios archivos */
+  function zip(files){
+    const enc = new TextEncoder(), parts = [], cen = []; let off = 0;
+    const d = new Date(), time = (d.getHours()<<11)|(d.getMinutes()<<5)|(d.getSeconds()>>1), date = ((d.getFullYear()-1980)<<9)|((d.getMonth()+1)<<5)|d.getDate();
+    files.forEach(([name, text])=>{
+      const nm = enc.encode(name), data = enc.encode(text), crc = crc32(data);
+      const loc = new DataView(new ArrayBuffer(30));
+      loc.setUint32(0,0x04034b50,true); loc.setUint16(4,20,true); loc.setUint16(6,0x0800,true); loc.setUint16(10,time,true); loc.setUint16(12,date,true);
+      loc.setUint32(14,crc,true); loc.setUint32(18,data.length,true); loc.setUint32(22,data.length,true); loc.setUint16(26,nm.length,true);
+      const c = new DataView(new ArrayBuffer(46));
+      c.setUint32(0,0x02014b50,true); c.setUint16(4,20,true); c.setUint16(6,20,true); c.setUint16(8,0x0800,true); c.setUint16(12,time,true); c.setUint16(14,date,true);
+      c.setUint32(16,crc,true); c.setUint32(20,data.length,true); c.setUint32(24,data.length,true); c.setUint16(28,nm.length,true); c.setUint32(42,off,true);
+      parts.push(loc, nm, data); cen.push(c, nm); off += 30 + nm.length + data.length;
+    });
+    const cenSize = cen.reduce((a,x)=>a+(x.byteLength||x.length),0);
+    const end = new DataView(new ArrayBuffer(22));
+    end.setUint32(0,0x06054b50,true); end.setUint16(8,files.length,true); end.setUint16(10,files.length,true); end.setUint32(12,cenSize,true); end.setUint32(16,off,true);
+    return new Blob([...parts, ...cen, end], {type:'application/vnd.openxmlformats-officedocument.wordprocessingml.document'});
+  }
+
+  /* Documento completo: encabezado y luego cada línea según la signografía de su bloque */
+  function build(opts){
+    const body = [];
+    if (opts.title) body.push(textPara(opts.title, '', '<w:pStyle w:val="Title"/>'));
+    if (opts.student) body.push(textPara(opts.student));
+    if (opts.date) body.push(textPara(opts.date));
+    if (opts.title || opts.student || opts.date) body.push(para(''));
+    let lines = doc.lines.slice(); while (lines.length && !lines[lines.length-1].length) lines.pop();
+    lines.forEach((line, li)=>{
+      if (!line.length){ body.push(para('')); return; }
+      const g = blockGrade(li), items = translate(line);
+      if (g==='math') body.push(mathPara(toOMML(mathInk(items))));
+      else body.push(para(textRuns(items)));
+    });
+    return zip([['[Content_Types].xml', CT], ['_rels/.rels', RELS], ['word/_rels/document.xml.rels', DOCRELS],
+      ['word/document.xml', documentXML(body.join(''))], ['word/styles.xml', STYLES], ['docProps/core.xml', core(opts.title||'Trabajo', opts.student)]]);
+  }
+  const toMathML = src => '<math display="block">'+toOMML(src, ML)+'</math>';
+  return { build, toOMML, toMathML, mathInk };
+})();
+window.__perkinsDocx = DOCX;
+
+function openWord(){
+  if (emptySheet()) return;
+  $('wTitle').value = doc.fileName || ''; $('wName').value = prefs.student || '';
+  openDialog($('dlgWord'));
+}
+$('wListen').addEventListener('click', ()=>readAll());
+['wTitle','wName'].forEach(id=>$(id).addEventListener('keydown', e=>{ if (e.key==='Enter'){ e.preventDefault(); $('dlgWord').close('ok'); } }));   // Enter exporta
+$('dlgWord').addEventListener('close', async ()=>{
+  const ok = $('dlgWord').returnValue==='ok'; $('dlgWord').returnValue='';
+  if (!ok){ say('Cancelado'); return backToSheet(); }
+  const title = $('wTitle').value.trim(), student = $('wName').value.trim();
+  prefs.student = student; save();
+  const MES = ['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'], d = new Date();
+  const date = $('wDate').checked ? d.getDate()+' de '+MES[d.getMonth()]+' de '+d.getFullYear() : '';
+  let blob; try{ blob = DOCX.build({title, student, date}); }catch(e){ flashMsg('No se pudo crear el documento'); say('No se pudo crear el documento de Word'); return backToSheet(); }
+  const name = cleanName(title || doc.fileName || 'trabajo');
+  backToSheet();
+  await offer(name+'.docx', blob);
+});
+
 function emptySheet(){ if (isExample || doc.lines.every(l=>!l.length)){ say('La hoja está vacía'); flashMsg('La hoja está vacía'); return true; } return false; }
 function exportBRF(){ if (emptySheet()) return; const n = 'maquina-braille_'+stamp();
   const bytes = new Uint8Array([...toBRF()].map(ch=>ch.charCodeAt(0)));
@@ -4227,7 +4485,7 @@ const COMMANDS = {
   new: ()=>openDialog($('dlgNew')),
   open: openWork, save: ()=>saveWork(false), saveAs: ()=>saveWork(true),
   chkNext: ()=>gotoProblem(1), chkPrev: ()=>gotoProblem(-1), warnErr: toggleWarn,
-  expBrf: exportBRF, expUni: exportUni, expBan: exportBAN, expBra: exportBRA,
+  expDocx: openWord, expBrf: exportBRF, expUni: exportUni, expBan: exportBAN, expBra: exportBRA,
   cut: ()=>menuCopy(true), copy: ()=>menuCopy(false), paste: menuPaste, selAll: selectAll, copyBr: copyBraille,
   viewInk: ()=>setView('ink'), viewBr: ()=>setView('braille'),
   size: openSize, orientV: ()=>setOrient('v'), orientH: ()=>setOrient('h'),
@@ -4352,7 +4610,7 @@ function openHelp(id){
 $('dlgHelp').addEventListener('close', ()=>backToSheet());
 function runCmd(cmd){
   closeMenus();
-  const opensDialog = cmd==='new' || cmd==='size' || cmd==='exit' || cmd==='open' || cmd==='save' || cmd==='saveAs' || cmd==='brRead' || cmd.startsWith('help');
+  const opensDialog = cmd==='expDocx' || cmd==='new' || cmd==='size' || cmd==='exit' || cmd==='open' || cmd==='save' || cmd==='saveAs' || cmd==='brRead' || cmd.startsWith('help');
   if (!opensDialog){ try{ $('sheet').focus({preventScroll:true}); }catch(e){} }
   COMMANDS[cmd]();
   if (!opensDialog) backToSheet();
