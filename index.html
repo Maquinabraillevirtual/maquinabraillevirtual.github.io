@@ -1705,7 +1705,7 @@ dialog input[type="text"]:focus-visible{outline:2px solid var(--accent);outline-
     <form method="dialog">
       <h2 id="dlgExitT">Salir de la Máquina Braille Virtual</h2>
       <p id="dlgExitD">¿Deseas guardar los cambios de la hoja antes de salir? Si no los guardas, se perderán: la próxima vez la aplicación empezará con una hoja en blanco.</p>
-      <div class="dlg-btns"><button class="btn" value="cancel">Cancelar</button><button class="btn danger-fill" value="no">No</button><button class="btn primary" value="yes" autofocus>Sí, guardar</button></div>
+      <div class="dlg-btns"><button class="btn primary" value="yes" autofocus>Sí, guardar</button><button class="btn danger-fill" value="no">No</button><button class="btn" value="cancel">Cancelar</button></div>
     </form>
   </dialog>
   <input type="file" id="fileIn" accept=".mbv,.pks,.json,.brf,.brl,.bra,.ban,.txt" hidden>
@@ -4276,6 +4276,26 @@ window.__perkinsCheck = ()=>checkDoc();
 
 /* ---------- Diálogos: Nueva hoja y Tamaño de hoja ---------- */
 function openDialog(d){ closeMenus(); try{ d.showModal(); }catch(e){ d.setAttribute('open',''); } }
+/* En los cuadros de diálogo, Tab y Mayúsculas + Tab recorren los controles en círculo sin salir del cuadro,
+   y las flechas izquierda y derecha pasan de un botón a otro, como en los cuadros de Windows */
+document.addEventListener('keydown', e=>{
+  const d = e.target && e.target.closest && e.target.closest('dialog[open]'); if (!d) return;
+  const items = [...d.querySelectorAll('a[href],summary,button,input,select,textarea,[tabindex]:not([tabindex="-1"])')]
+    .filter(el=>!el.disabled && !el.hidden && el.offsetParent!==null);
+  if (!items.length) return;
+  const i = items.indexOf(document.activeElement);
+  if (e.key==='Tab' && !e.ctrlKey && !e.altKey && !e.metaKey){
+    e.preventDefault();
+    const n = i<0 ? 0 : (i + (e.shiftKey ? -1 : 1) + items.length) % items.length;
+    items[n].focus();
+    return;
+  }
+  if ((e.key==='ArrowRight' || e.key==='ArrowLeft') && document.activeElement && document.activeElement.tagName==='BUTTON'){
+    const btns = [...document.activeElement.parentElement.querySelectorAll('button')].filter(b=>!b.disabled && b.offsetParent!==null);
+    const j = btns.indexOf(document.activeElement); if (j<0 || btns.length<2) return;
+    e.preventDefault(); btns[(j + (e.key==='ArrowRight' ? 1 : -1) + btns.length) % btns.length].focus();
+  }
+}, true);
 $('dlgNew').addEventListener('close', ()=>{
   if ($('dlgNew').returnValue==='ok'){
     isExample=false; doc.lines=[[]]; lgSet(doc.lines[0], grade); doc.fileName=''; doc.savedSig=''; fileHandle=null; setDocTitle(); clearSel(); $('sLast').textContent='—'; render(); save(); flashMsg('Hoja nueva'); say('Hoja nueva. Línea 1');
