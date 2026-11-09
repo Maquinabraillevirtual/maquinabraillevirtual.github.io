@@ -349,7 +349,7 @@ dialog input[type="text"]:focus-visible{outline:2px solid var(--accent);outline-
           <li>Un documento puede mezclar signografías por <b>bloques</b>: un bloque es un grupo de líneas seguidas, y entre bloques de distinta signografía hay siempre una línea en blanco, como en los textos escolares. Cada bloque se lee, se revisa y se guarda con su propia signografía.</li>
           <li>Si cambias de signografía en el punto de escritura, la aplicación deja la línea en blanco y empieza un bloque nuevo. Lo escrito antes conserva su signografía.</li>
           <li>Si pones el cursor dentro de un bloque ya escrito (con las flechas) y cambias de signografía, ese bloque pasa a la nueva. Sirve para corregir un bloque escrito con la signografía equivocada.</li>
-          <li>Están disponibles el <b>braille integral</b> y <b>Matemáticas</b> (Código Matemático Unificado para Iberoamérica, aritmética y álgebra). Y la <b>estenografía</b> española (documento técnico B 16-1 de la Comisión Braille Española).</li>
+          <li>Están disponibles el <b>braille integral</b> y <b>Matemáticas</b> (Código Matemático Unificado para Iberoamérica: aritmética, álgebra, conjuntos y lógica). Y la <b>estenografía</b> española (documento técnico B 16-1 de la Comisión Braille Española).</li>
         </ul>
         <h4>Guardar e imprimir</h4>
         <ul>
@@ -595,7 +595,7 @@ dialog input[type="text"]:focus-visible{outline:2px solid var(--accent);outline-
       </section>
       <section>
         <h3 id="hMath" tabindex="-1">Matemáticas: Código Matemático Unificado</h3>
-        <p>Con <b>Signografía › Matemáticas</b> (Control + Mayúsculas + 3) la hoja se lee según el <b>Código Matemático Unificado para Iberoamérica</b> (Consejo Iberoamericano del Braille, 2023). Esta primera etapa cubre aritmética y álgebra: números, fracciones, operaciones, potencias, raíces, índices, relaciones y delimitadores.</p>
+        <p>Con <b>Signografía › Matemáticas</b> (Control + Mayúsculas + 3) la hoja se lee según el <b>Código Matemático Unificado para Iberoamérica</b> (Consejo Iberoamericano del Braille, 2023). Cubre aritmética y álgebra (números, fracciones, operaciones, potencias, raíces, índices, relaciones y delimitadores), y teoría de conjuntos y lógica.</p>
         <h4>Cómo escribir</h4>
         <ul>
           <li>El signo de número vale para todo el número. Las cifras van en la parte de arriba de la celda; en una fracción, el denominador va abajo (5.ª serie) y <b>después se deja un espacio</b>: tres cuartos es 3456 – 14 – 256 y espacio.</li>
@@ -708,6 +708,67 @@ dialog input[type="text"]:focus-visible{outline:2px solid var(--accent);outline-
 <tr><th scope="row">⟩ cierra paréntesis angular</th><td>46 – 2</td><td class="bc" aria-hidden="true">⠨⠂</td></tr>
 </tbody></table>
 <p class="tnote">Los paréntesis auxiliares no tienen signo en tinta: en la pantalla se muestran como paréntesis comunes.</p>
+        <h4>Teoría de conjuntos</h4>
+<table class="signs" aria-labelledby="tmS">
+<caption id="tmS">Teoría de conjuntos</caption>
+<thead><tr><th scope="col">Signo</th><th scope="col">Puntos</th><th scope="col"><span aria-hidden="true">Celda</span></th></tr></thead>
+<tbody>
+<tr><th scope="row">{ } llaves de conjunto</th><td>5 – 123</td><td class="bc" aria-hidden="true">⠐⠇</td></tr>
+<tr><th scope="row">} cierra llave</th><td>456 – 2</td><td class="bc" aria-hidden="true">⠸⠂</td></tr>
+<tr><th scope="row">/ tal que (dentro de llaves)</th><td>6 – 2</td><td class="bc" aria-hidden="true">⠠⠂</td></tr>
+<tr><th scope="row">∈ pertenece a</th><td>126 – 2</td><td class="bc" aria-hidden="true">⠣⠂</td></tr>
+<tr><th scope="row">∉ no pertenece a</th><td>45 – 126 – 2</td><td class="bc" aria-hidden="true">⠘⠣⠂</td></tr>
+<tr><th scope="row">∋ contiene al elemento</th><td>5 – 345</td><td class="bc" aria-hidden="true">⠐⠜</td></tr>
+<tr><th scope="row">⊂ incluido en</th><td>126 – 3</td><td class="bc" aria-hidden="true">⠣⠄</td></tr>
+<tr><th scope="row">⊄ no incluido en</th><td>45 – 126 – 3</td><td class="bc" aria-hidden="true">⠘⠣⠄</td></tr>
+<tr><th scope="row">⊃ incluye a</th><td>6 – 345</td><td class="bc" aria-hidden="true">⠠⠜</td></tr>
+<tr><th scope="row">⊆ incluido o igual a</th><td>126 – 23</td><td class="bc" aria-hidden="true">⠣⠆</td></tr>
+<tr><th scope="row">⊇ incluye o es igual a</th><td>56 – 345</td><td class="bc" aria-hidden="true">⠰⠜</td></tr>
+<tr><th scope="row">⊉ no incluye ni es igual a</th><td>45 – 56 – 345</td><td class="bc" aria-hidden="true">⠘⠰⠜</td></tr>
+<tr><th scope="row">∪ unión</th><td>456 – 345</td><td class="bc" aria-hidden="true">⠸⠜</td></tr>
+<tr><th scope="row">∩ intersección</th><td>456 – 156</td><td class="bc" aria-hidden="true">⠸⠱</td></tr>
+<tr><th scope="row">⋃ gran unión</th><td>123456 – 345</td><td class="bc" aria-hidden="true">⠿⠜</td></tr>
+<tr><th scope="row">⋂ gran intersección</th><td>123456 – 156</td><td class="bc" aria-hidden="true">⠿⠱</td></tr>
+<tr><th scope="row">∖ diferencia de conjuntos</th><td>5 – 3</td><td class="bc" aria-hidden="true">⠐⠄</td></tr>
+<tr><th scope="row">∆ diferencia simétrica</th><td>56 – 256</td><td class="bc" aria-hidden="true">⠰⠲</td></tr>
+<tr><th scope="row">× producto cartesiano</th><td>46 – 236</td><td class="bc" aria-hidden="true">⠨⠦</td></tr>
+<tr><th scope="row">∅ conjunto vacío</th><td>456 – 245</td><td class="bc" aria-hidden="true">⠸⠚</td></tr>
+<tr><th scope="row">𝒰 conjunto universal</th><td>456 – 136</td><td class="bc" aria-hidden="true">⠸⠥</td></tr>
+<tr><th scope="row">∁ complementario de (∁A: 56 – 14 – 46 – 1)</th><td>56 – 14</td><td class="bc" aria-hidden="true">⠰⠉</td></tr>
+<tr><th scope="row">∁ complementario de (otra forma)</th><td>4 – 14</td><td class="bc" aria-hidden="true">⠈⠉</td></tr>
+<tr><th scope="row"># cardinal de</th><td>3456 – 13</td><td class="bc" aria-hidden="true">⠼⠅</td></tr>
+<tr><th scope="row">∞ infinito</th><td>3456 – 1256</td><td class="bc" aria-hidden="true">⠼⠳</td></tr>
+<tr><th scope="row">ℵ alef</th><td>6 – 1256</td><td class="bc" aria-hidden="true">⠠⠳</td></tr>
+<tr><th scope="row">≃ coordinable con</th><td>5 – 26 – 23</td><td class="bc" aria-hidden="true">⠐⠢⠆</td></tr>
+</tbody></table>
+<p class="tnote">Para negar una relación se antepone el punto 45 al signo: ∉ es 45 – 126 – 2. Ejemplo: A ∪ B es 46 – 1 – 456 – 345 – 46 – 2.</p>
+        <h4>Lógica</h4>
+<table class="signs" aria-labelledby="tmLg">
+<caption id="tmLg">Lógica</caption>
+<thead><tr><th scope="col">Signo</th><th scope="col">Puntos</th><th scope="col"><span aria-hidden="true">Celda</span></th></tr></thead>
+<tbody>
+<tr><th scope="row">∀ para todo</th><td>46 – 3</td><td class="bc" aria-hidden="true">⠨⠄</td></tr>
+<tr><th scope="row">∃ existe</th><td>46 – 26</td><td class="bc" aria-hidden="true">⠨⠢</td></tr>
+<tr><th scope="row">∃! existe un único</th><td>46 – 23</td><td class="bc" aria-hidden="true">⠨⠆</td></tr>
+<tr><th scope="row">∄ no existe</th><td>45 – 46 – 26</td><td class="bc" aria-hidden="true">⠘⠨⠢</td></tr>
+<tr><th scope="row">¬∀ no para todo</th><td>45 – 46 – 3</td><td class="bc" aria-hidden="true">⠘⠨⠄</td></tr>
+<tr><th scope="row">¬ no (negación)</th><td>6 – 3</td><td class="bc" aria-hidden="true">⠠⠄</td></tr>
+<tr><th scope="row">∧ y (conjunción)</th><td>56 – 2</td><td class="bc" aria-hidden="true">⠰⠂</td></tr>
+<tr><th scope="row">∨ o (disyunción)</th><td>56 – 3</td><td class="bc" aria-hidden="true">⠰⠄</td></tr>
+<tr><th scope="row">⊻ o excluyente (disyunción excluyente)</th><td>56 – 356</td><td class="bc" aria-hidden="true">⠰⠴</td></tr>
+<tr><th scope="row">⋀ conjunción (tamaño mayor)</th><td>456 – 26</td><td class="bc" aria-hidden="true">⠸⠢</td></tr>
+<tr><th scope="row">⋁ disyunción (tamaño mayor)</th><td>456 – 24</td><td class="bc" aria-hidden="true">⠸⠊</td></tr>
+<tr><th scope="row">⇒ implica</th><td>25 – 135</td><td class="bc" aria-hidden="true">⠒⠕</td></tr>
+<tr><th scope="row">⇐ es implicado por</th><td>246 – 25</td><td class="bc" aria-hidden="true">⠪⠒</td></tr>
+<tr><th scope="row">⇔ si y solo si (doble implicación)</th><td>246 – 25 – 135</td><td class="bc" aria-hidden="true">⠪⠒⠕</td></tr>
+<tr><th scope="row">⊤ proposición verdadera</th><td>456 – 234</td><td class="bc" aria-hidden="true">⠸⠎</td></tr>
+<tr><th scope="row">⊥ proposición falsa</th><td>456 – 126</td><td class="bc" aria-hidden="true">⠸⠣</td></tr>
+<tr><th scope="row">⊢ tautología</th><td>456 – 25</td><td class="bc" aria-hidden="true">⠸⠒</td></tr>
+<tr><th scope="row">∴ por lo tanto (con espacio antes y después)</th><td>6 – 16</td><td class="bc" aria-hidden="true">⠠⠡</td></tr>
+<tr><th scope="row">∵ puesto que (con espacio antes y después)</th><td>4 – 34</td><td class="bc" aria-hidden="true">⠈⠌</td></tr>
+</tbody></table>
+<p class="tnote">Los puntos 56 – 3 se leen como «o» (∨) cuando la línea tiene otros signos de lógica o letras de proposiciones (p, q, r, s, t); en otro caso, como «operado con» (⊙). Ejemplo: p ∧ q ⇒ p es p – 56 – 2 – q – 25 – 135 – p.</p>
+<p class="tnote">Fuente: Guías de la Comisión Braille Española, Signografía matemática, capítulo 6 (teoría de conjuntos y lógica).</p>
       </section>
       <section>
         <h3 id="hSteno" tabindex="-1">Estenografía española</h3>
@@ -2621,18 +2682,38 @@ const MX = (()=>{
   const SETS = {n:['ℕ','naturales'], z:['ℤ','enteros'], q:['ℚ','racionales'], r:['ℝ','reales'], c:['ℂ','complejos'], h:['ℍ','cuaterniones'], o:['𝕆','octoniones'], p:['ℙ','primos']};
   const SET_NAME = {}; for (const k in SETS) SET_NAME[SETS[k][0]] = 'conjunto de los números '+SETS[k][1];
   /* Signos de varias celdas primero (coincidencia más larga) */
+  /* Teoría de conjuntos y lógica (Guías de la Comisión Braille Española: Signografía matemática, 6.1 y 6.2).
+     Las negaciones anteponen 45 al signo afirmativo. */
+  const SETLOG = [
+    ['45-126-23','rel','⊈','no incluido ni igual a'], ['45-56-345','rel','⊉','no incluye ni es igual a'], ['45-126-2','rel','∉','no pertenece a'],
+    ['45-126-3','rel','⊄','no incluido en'], ['45-6-345','rel','⊅','no incluye a'], ['45-5-345','rel','∌','no contiene al elemento'],
+    ['45-46-26','una','∄','no existe'], ['45-46-3','una','¬∀','no para todo'],
+    ['246-25-135','rel','⇔','si y solo si'], ['5-26-23','rel','≃','coordinable con'], ['56-14','una','∁','complementario de'], ['4-14','una','∁','complementario de'],
+    ['126-2','rel','∈','pertenece a'], ['5-345','rel','∋','contiene al elemento'], ['126-3','rel','⊂','incluido en'], ['6-345','rel','⊃','incluye a'],
+    ['126-23','rel','⊆','incluido o igual a'], ['56-345','rel','⊇','incluye o es igual a'],
+    ['456-245','let','∅','conjunto vacío'], ['456-136','let','𝒰','conjunto universal'],
+    ['456-345','op','∪','unión'], ['456-156','op','∩','intersección'], ['123456-345','op','⋃','gran unión'], ['123456-156','op','⋂','gran intersección'],
+    ['56-256','op','∆','diferencia simétrica'], ['46-236','op','×','producto cartesiano'], ['6-1256','let','ℵ','alef'],
+    ['46-3','una','∀','para todo'], ['46-26','una','∃','existe'], ['46-23','una','∃!','existe un único'],
+    ['456-234','let','⊤','verdadero'], ['456-126','let','⊥','falso'], ['456-25','let','⊢','tautología'],
+    ['56-2','op','∧','y'], ['456-26','op','⋀','conjunción'], ['456-24','op','⋁','disyunción'], ['6-3','una','¬','no'],
+    ['25-135','rel','⇒','implica'], ['246-25','rel','⇐','es implicado por'], ['56-356','op','⊻','o excluyente'],
+    ['6-16','rel','∴','por lo tanto'], ['4-34','rel','∵','puesto que']
+  ];
   const SEQ = [
+    ...SETLOG,
     ['235-25-36','op','±','más menos'], ['36-25-235','op','∓','menos más'], ['456-356-356','op','‰','por mil'], ['456-356','op','%','por ciento'],
     ['45-246-2356','rel','≰','no menor ni igual que'], ['45-135-2356','rel','≱','no mayor ni igual que'],
     ['5-2356-3','rel','≈','casi igual a'], ['5-26-3','rel','∼','semejante a'], ['2356-2356','rel','≡','idéntico a'],
     ['246-2356','rel','≤','menor o igual que'], ['135-2356','rel','≥','mayor o igual que'], ['246-246','rel','≪','mucho menor que'], ['135-135','rel','≫','mucho mayor que'],
     ['4-2356','rel','≐','aproximadamente igual a'], ['56-2356','rel','≔','igual por definición a'], ['45-2356','rel','≠','distinto de'],
     ['45-246','rel','≮','no menor que'], ['45-135','rel','≯','no mayor que'], ['45-456','rel','∤','no divide a'], ['456-256','rel','∝','proporcional a'],
-    ['45-3','post','!','factorial'], ['56-3','op','⊙','operado con'], ['356-3','post','°','grados'], ['1256-1256-1256','post','‴','tercera'],
+    ['45-3','post','!','factorial'], ['56-3','op','⊙','operado con'],   // en lógica, ∨ (se decide por el contexto de la línea)
+    ['356-3','post','°','grados'], ['1256-1256-1256','post','‴','tercera'],
     ['1256-1256','post','″','segunda'], ['1256','post','′','prima'],
     ['56-36-23','let','＿＿','espacio para completar'], ['56','let','□','casilla para completar'],
     ['5-2','op',':','dividido entre'], ['5-123','open','{','abre llave'], ['456-2','close','}','cierra llave'], ['5-13','open','⟨','abre paréntesis angular'],
-    ['46-2','close','⟩','cierra paréntesis angular'], ['456-123','op','‖','doble barra'], ['6-2','op','/','barra'], ['5-3','op','\\','barra inversa'], ['3-3-3','op','…','puntos suspensivos'],
+    ['46-2','close','⟩','cierra paréntesis angular'], ['456-123','op','‖','doble barra'], ['6-2','op','/','barra'], ['5-3','op','∖','diferencia de conjuntos'], ['3-3-3','op','…','puntos suspensivos'],
     ['2356','rel','=','igual'], ['246','rel','<','menor que'], ['235','op','+','más'], ['36','op','−','menos'], ['236','op','×','por'], ['6','op','·','por'],
     ['256','op','/','partido por'], ['126','open','(','abre paréntesis'], ['345','close',')','cierra paréntesis'], ['12356','open','[','abre corchete'],
     ['23456','close',']','cierra corchete'], ['26','open','(','abre paréntesis auxiliar',true], ['35','close',')','cierra paréntesis auxiliar',true],
@@ -2692,8 +2773,14 @@ const MX = (()=>{
   }
 
   /* ---- Análisis de una línea ---- */
+  const LOGIC_PATS = ['56-2','6-3','25-135','246-25','46-3','46-26','46-23','456-234','456-126','456-25','56-356'].map(dk);
+  const PROPS = new Set(['p','q','r','s','t']);
+  function logicLine(cells){
+    for (let i=0;i<cells.length;i++) for (const pt of LOGIC_PATS) if (at(cells, i, pt)) return true;
+    return false;
+  }
   function tokenize(cells, out, nextFirst){
-    const T = []; let aux = 0;
+    const T = []; let aux = 0; const logic = logicLine(cells);
     for (let i=0; i<cells.length; ){
       const c = cells[i];
       if (c===0){ out[i] = {t:' '}; T.push({k:'sp', a:i, b:i+1}); i++; continue; }
@@ -2701,6 +2788,11 @@ const MX = (()=>{
         const n = ordinalAt(cells, i), it = Translators.integral(cells.slice(i, i+n), false);
         for (let k=0;k<n;k++) out[i+k] = it[k];
         T.push({k:'let', a:i, b:i+n, ch:it.map(x=>x.t).join('')}); i += n; continue;
+      }
+      if (c===NUM && (cells[i+1]===m('13') || cells[i+1]===m('1256'))){
+        const card = cells[i+1]===m('13');
+        out[i] = {t: card ? '#' : '∞', say: card ? 'cardinal de' : 'infinito'}; out[i+1] = {t:'', say: card ? 'cardinal de' : 'infinito'};
+        T.push(card ? {k:'una', a:i, b:i+2, t:'#'} : {k:'let', a:i, b:i+2, ch:'∞'}); i+=2; continue;
       }
       if (c===NUM){
         /* ¿Hay algo antes del número en la misma expresión? (operación, raíz, letra, paréntesis…) — salvo un menos inicial
@@ -2745,6 +2837,8 @@ const MX = (()=>{
         else { out[i] = {t:'>', say:'mayor que'}; T.push({k:'rel', a:i, b:i+1, t:'>'}); }
         i++; continue;
       }
+      if (seq && seq.t==='⊙' && (logic || PROPS.has(LAT[cells[i-1]]) || PROPS.has(LAT[cells[i+1]]) || PROPS.has(LAT[cells[i+2]])))
+        seq = {cells:seq.cells, k:'op', t:'∨', say:'o', aux:false};
       if (seq){
         const L = seq.cells.length;
         out[i] = {t:seq.t, say:seq.say}; for (let q=1;q<L;q++) out[i+q] = {t:'', say:seq.say};
@@ -2834,7 +2928,21 @@ const MX = (()=>{
     const T = tokenize(cells, out, nextFirstOf(cells));
     structure(T, out);
     bars(T, out);
+    suchThat(T, out);
     return out;
+  }
+  /* Dentro de llaves, la barra 6-2 (y la barra vertical 456) es «tal que»: {x / x > 2} */
+  function suchThat(T, out){
+    let depth = 0;
+    for (const tk of T){
+      if (tk.k==='open' && tk.t==='{') depth++;
+      else if (tk.k==='close' && tk.t==='}') depth = Math.max(0, depth-1);
+      else if (depth>0 && tk.k==='op' && (tk.t==='/' && tk.b-tk.a===2 || tk.t==='|')){
+        out[tk.a] = Object.assign({}, out[tk.a], {t:'|', say:'tal que'});
+        for (let i=tk.a+1;i<tk.b;i++) out[i] = Object.assign({}, out[i], {say:'tal que'});
+        tk.t = '∣';
+      }
+    }
   }
   /* Barra 256 fuera de un número: «entre» en una operación (10/2); «sobre» cuando separa términos entre paréntesis
      auxiliares, que es como el código transcribe la raya horizontal de una fracción: (5+8×7)/5. */
@@ -2865,8 +2973,17 @@ const MX = (()=>{
     '≱':'no mayor ni igual que','∝':'proporcional a','∤':'no divide a','<':'menor que','>':'mayor que','±':'más menos','∓':'menos más','‰':'por mil',
     '·':'por','⊙':'operado con','‖':'doble barra','|':'barra','…':'puntos suspensivos','⟨':'abre paréntesis angular','⟩':'cierra paréntesis angular',
     '[':'abre corchete',']':'cierra corchete','{':'abre llave','}':'cierra llave','′':'prima','″':'segunda','‴':'tercera','°':'grados'};
+  const SETLOG_NAME = {'∈':'pertenece a','∉':'no pertenece a','∋':'contiene al elemento','∌':'no contiene al elemento','⊂':'incluido en','⊃':'incluye a',
+    '⊆':'incluido o igual a','⊇':'incluye o es igual a','⊄':'no incluido en','⊅':'no incluye a','⊈':'no incluido ni igual a','⊉':'no incluye ni es igual a',
+    '∪':'unión','∩':'intersección','⋃':'gran unión','⋂':'gran intersección','∅':'conjunto vacío','𝒰':'conjunto universal','∖':'menos','∆':'diferencia simétrica',
+    '∁':'complementario de','≃':'coordinable con','ℵ':'alef','∞':'infinito','∀':'para todo','∃':'existe','∄':'no existe','⊤':'verdadero','⊥':'falso','⊢':'tautología',
+    '∧':'y','∨':'o','⊻':'o excluyente','⋀':'conjunción','⋁':'disyunción','¬':'no','⇒':'implica','⇐':'es implicado por','⇔':'si y solo si','∴':'por lo tanto','∵':'puesto que'};
+  const SETLOG_RE = new RegExp('['+Object.keys(SETLOG_NAME).join('').replace(/[\]\\^-]/g,'\\$&')+']','gu');
   function speak(text){
     let s = ' '+text+' ';
+    s = s.replace(/∃!/g,' existe un único ').replace(/#(?=\S)/g,' cardinal de ');
+    s = s.replace(/\{([^{}|]*)\|([^{}]*)\}/g,' abre llave $1 tal que $2 cierra llave ');
+    s = s.replace(SETLOG_RE, x=>' '+SETLOG_NAME[x]+' ');
     s = s.replace(/(\d) (?=\d)/g,'$1');
     s = s.replace(/(\d+) (\d+)⁄(\d+)/g, (a,e,n,d)=>' '+e+(e==='1'?' entero y ':' enteros y ')+fracWords(n,d)+' ');
     s = s.replace(/(\d+)⁄(\d+)/g, (a,n,d)=>' '+fracWords(n,d)+' ');
@@ -2885,6 +3002,7 @@ const MX = (()=>{
     s = s.replace(/(\S)\/(\S)/g,'$1 entre $2').replace(/\s\/\s/g,' entre ').replace(/(\S):(\S)/g,'$1 dividido entre $2').replace(/!/g,' factorial ');
     s = s.replace(/＿＿/g,' espacio para completar ').replace(/□/g,' casilla para completar ');
     s = s.replace(/[≤≥≠≈≐≡≪≫≔∼≮≯≰≱∝∤<>±∓‰·⊙‖|…⟨⟩\[\]{}′″‴°]/g, x=>' '+REL[x]+' ');
+    s = s.replace(/[×÷]/g, x=>' '+x+' ');                 // × y ÷ caen dentro del rango Á-ú: se separan para no tomarlos por letras
     s = s.replace(/(^|[^A-Za-zÁ-úñÑ])([A-Z])(?![A-Za-zÁ-úñÑ])/g,'$1$2 mayúscula');
     return s.replace(/ {2,}/g,' ').trim();
   }
@@ -2893,14 +3011,16 @@ const MX = (()=>{
     const out = cells.map(()=>({t:''}));
     const T = tokenize(cells, out, nextFirstOf(cells)); structure(T, out);
     const P = [], add = (a,b,msg,level)=>P.push({a, b, msg, level: level||'error'});
-    const BIN = new Set(['+','×','·','/',':','±','∓','⊙']);              // el menos puede indicar un número negativo
+    const BIN = new Set(['+','×','·','/',':','±','∓','⊙','∪','∩','⋃','⋂','∖','∆','∧','∨','⊻','⋀','⋁']);              // el menos puede indicar un número negativo
     const isBin = tk => tk && ((tk.k==='op' && BIN.has(tk.t)) || tk.k==='rel');
     const isOperand = tk => tk && (tk.k==='num' || tk.k==='let' || tk.k==='close' || tk.k==='post');
+    const UNA_NAME = {'∀':'para todo','∃':'existe','∃!':'existe un único','∄':'no existe','¬∀':'no para todo','¬':'negación','∁':'complementario','#':'cardinal'};
     const AUXMSG = ' Si en tinta no hay paréntesis, usa paréntesis auxiliares, puntos 26 y 35.';
     for (let k=0;k<T.length;k++){
       const tk = T[k], prev = T[k-1], next = T[k+1];
       if (tk.k==='unk') add(tk.a,tk.b,'Este signo no existe en el Código Matemático: puntos '+dotsOf(cells[tk.a]).join(' ')+'.');
       if (tk.k==='pre') add(tk.a,tk.b,'Prefijo sin letra detrás ('+out[tk.a].say+').');
+      if (tk.k==='una' && (!next || next.k==='sp' || isBin(next))) add(tk.a,tk.b,'Falta lo que sigue al signo «'+(UNA_NAME[tk.t]||tk.t)+'».');
       if (tk.k==='num' && !tk.digits) add(tk.a,tk.b,'Signo de número sin cifras detrás.');
       if (tk.k==='pow' || tk.k==='sub'){
         const pw = tk.k==='pow', what = pw ? 'el exponente' : 'el subíndice', sign = pw ? 'potencia, puntos 16,' : 'subíndice, puntos 34,';
