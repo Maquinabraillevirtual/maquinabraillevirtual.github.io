@@ -119,6 +119,9 @@ select{font:inherit;font-size:13px;padding:6px 8px;border-radius:8px;border:1px 
 @media (prefers-reduced-motion:reduce){.caret,.cell.cur .dots{animation:none}.cell.flash .dots{animation:none}}
 [hidden]{display:none!important}
 .sheet-wrap:focus-within{outline:2.5px solid var(--accent);outline-offset:2px}
+.sheet-wrap.jam{animation:jam .28s ease-out;outline:2.5px solid var(--bell)}
+@keyframes jam{0%,100%{transform:none}20%{transform:translateX(-5px)}45%{transform:translateX(4px)}70%{transform:translateX(-2px)}}
+@media (prefers-reduced-motion:reduce){.sheet-wrap.jam{animation:none}}
 .ink mark.rd{background:var(--accent-soft);color:inherit;border-radius:3px;box-shadow:0 0 0 2px var(--accent-soft)}
 .ink em.res{font-style:italic;font-weight:700;color:var(--accent)}
 .ink u.lnk{text-decoration:underline;color:var(--accent)}
@@ -305,7 +308,7 @@ dialog input[type="text"]:focus-visible{outline:2px solid var(--accent);outline-
           <li>Pulsa a la vez las teclas de los puntos de la celda y suéltalas: la celda se marca al soltar todas.</li>
           <li><b>Barra espaciadora:</b> deja una celda en blanco y lee la palabra que acabas de escribir.</li>
           <li><b>Enter:</b> pasa a la línea siguiente. <b>Retroceso:</b> borra la última celda.</li>
-          <li>Cuando quedan 6 celdas para terminar la línea suena la campanita, según las celdas por línea elegidas en Formato › Tamaño de hoja. Al llegar con Enter a la última línea de la hoja, después del cambio de línea se oye un doble golpe más agudo y se avisa «Última línea de la hoja» (las Perkins no tienen este aviso; es una ayuda de la aplicación). Con el siguiente Enter se avisa «Hoja nueva».</li>
+          <li>Cuando quedan 6 celdas para terminar la línea suena la campanita, según las celdas por línea elegidas en Formato › Tamaño de hoja. Si se sigue escribiendo al llegar al final de la línea, las teclas chocan contra el tope como en la Perkins: se oye un golpe seco y apagado, la hoja se sacude y no se marca nada hasta pulsar Enter. Al llegar con Enter a la última línea de la hoja, después del cambio de línea se oye un doble golpe más agudo y se avisa «Última línea de la hoja» (las Perkins no tienen este aviso; es una ayuda de la aplicación). Con el siguiente Enter se avisa «Hoja nueva».</li>
           <li><b>Mayúsculas:</b> el signo 46 pone en mayúscula la letra siguiente. Repetido (46 46) pone en mayúsculas toda la palabra, como en las siglas: ONU, ONCE, OEA.</li>
           <li><b>Cursiva, negrita y otros resaltes:</b> la palabra o las palabras resaltadas se encierran entre puntos 35, uno al comienzo y otro al final. En la vista en tinta se ven en cursiva y negrita; al escribir se anuncia «comienza resalte» y «termina resalte», y al releer con F4 o F8 se dice dónde empieza y termina. El resalte puede seguir en la línea siguiente. Un 35 suelto entre espacios es un asterisco.</li>
         </ul>
@@ -350,7 +353,7 @@ dialog input[type="text"]:focus-visible{outline:2px solid var(--accent);outline-
         </ul>
         <h4>Guardar e imprimir</h4>
         <ul>
-          <li>Mientras trabajas, la hoja actual se guarda sola en este navegador, en esta computadora.</li>
+          <li>La aplicación siempre empieza con una hoja en blanco. Al salir con <b>Archivo › Salir</b>, si hay cambios sin guardar, pregunta si quieres guardarlos: <b>Sí, guardar</b> abre la opción de guardar en el formato de la Máquina Braille Virtual (.mbv) y después sale; <b>No</b> sale sin guardar; <b>Cancelar</b> vuelve a la hoja. Se conservan el tamaño de hoja y las preferencias.</li>
           <li><b>Archivo › Guardar</b> (Control + G) guarda el trabajo en un archivo de la Máquina Braille Virtual (.mbv) que puedes llevar a otra computadora o entregar a tu profesor. <b>Guardar como</b> (Control + Mayúsculas + G) lo guarda con otro nombre.</li>
           <li><b>Archivo › Abrir</b> (Control + O) abre un trabajo .mbv para continuarlo donde lo dejaste (también los trabajos .pks guardados con versiones anteriores). También abre archivos BRF, .bra y .ban, y textos en braille Unicode.</li>
           <li>En Chrome y Edge, Guardar actualiza el mismo archivo. En otros navegadores, cada vez se descarga una copia nueva.</li>
@@ -1698,6 +1701,13 @@ dialog input[type="text"]:focus-visible{outline:2px solid var(--accent);outline-
       <div class="dlg-btns"><button class="btn" value="cancel" autofocus>Cancelar</button><button class="btn" value="save">Guardar primero</button><button class="btn danger-fill" value="ok">Abrir sin guardar</button></div>
     </form>
   </dialog>
+  <dialog id="dlgExit" aria-labelledby="dlgExitT" aria-describedby="dlgExitD">
+    <form method="dialog">
+      <h2 id="dlgExitT">Salir de la Máquina Braille Virtual</h2>
+      <p id="dlgExitD">¿Deseas guardar los cambios de la hoja antes de salir? Si no los guardas, se perderán: la próxima vez la aplicación empezará con una hoja en blanco.</p>
+      <div class="dlg-btns"><button class="btn" value="cancel">Cancelar</button><button class="btn danger-fill" value="no">No</button><button class="btn primary" value="yes" autofocus>Sí, guardar</button></div>
+    </form>
+  </dialog>
   <input type="file" id="fileIn" accept=".mbv,.pks,.json,.brf,.brl,.bra,.ban,.txt" hidden>
   <dialog id="dlgNew" aria-labelledby="dlgNewT" aria-describedby="dlgNewD">
     <form method="dialog">
@@ -1771,7 +1781,7 @@ dialog input[type="text"]:focus-visible{outline:2px solid var(--accent);outline-
 <main class="exit" id="exitScreen" hidden>
   <span class="brand-mark" aria-hidden="true">⠍⠃⠧</span>
   <h1 id="exitT" tabindex="-1">Has salido de la Máquina Braille Virtual</h1>
-  <p>Tu hoja quedó guardada en este navegador. La próxima vez que abras la aplicación seguirá ahí.</p>
+  <p>La próxima vez que abras la aplicación empezará con una hoja en blanco. Para continuar un trabajo guardado, ábrelo con Archivo › Abrir (Control + O).</p>
   <p>Para cerrar la pestaña, pulsa <kbd>Control</kbd> + <kbd>W</kbd>.</p>
   <button class="btn primary" id="exitBack">Volver a la Máquina Braille Virtual</button>
 </main>
@@ -3003,10 +3013,14 @@ function load(){
   try{ saved = JSON.parse(localStorage.getItem(STORE+'-prefs')||'null'); }catch(e){}
   try{
     const raw = localStorage.getItem(STORE);
-    if (raw){ const d = JSON.parse(raw); if (d && Array.isArray(d.lines)) { doc = d; Object.assign(prefs, d.prefs||{}, saved||{}); return; } }
+    if (raw){ const d = JSON.parse(raw); if (d && Array.isArray(d.lines)) {
+      /* La aplicación siempre empieza con una hoja en blanco: de la sesión anterior sólo se conservan
+         el tamaño, el papel y la orientación de la hoja. Para seguir un trabajo, se abre su archivo .mbv. */
+      doc = { lines:[[]], width: d.width>=20 && d.width<=48 ? d.width : 40, pageLines:d.pageLines, orient:d.orient, paper:d.paper };
+      Object.assign(prefs, d.prefs||{}, saved||{}); return; } }
   }catch(e){}
   Object.assign(prefs, saved||{});
-  doc = { lines: example(), width: 40 }; isExample = true;
+  doc = { lines:[[]], width: 40 };
 }
 const prefs = {};
 function save(){
@@ -3060,6 +3074,39 @@ function synthClack(strong){
   src.connect(f).connect(g).connect(master); src.start();
 }
 function bell(){ play('bell'); }
+/* Tope de fin de línea: como en la Perkins, con el carro al final las teclas chocan contra el tope y no marcan.
+   Se oye un golpe seco y apagado (el golpe del tope del carro, más grave y sin deslizamiento) en lugar del sonido de escribir. */
+function jam(){
+  if (!sound) return; const a = audio(); if (!a) return;
+  const t0 = a.currentTime;
+  const list = (BUF.carriage||[]).filter(Boolean);
+  if (list.length){
+    const buf = list[0], hit = thunkTime(buf), start = Math.max(0, hit - 0.006), dur = 0.16;
+    const src = a.createBufferSource(); src.buffer = buf; src.playbackRate.value = 0.78;
+    const f = a.createBiquadFilter(); f.type = 'lowpass'; f.frequency.value = 1800; f.Q.value = 0.7;
+    const g = a.createGain(); g.gain.setValueAtTime(0, t0); g.gain.linearRampToValueAtTime(1.15, t0 + 0.004);
+    g.gain.setValueAtTime(1.15, t0 + dur*0.45); g.gain.exponentialRampToValueAtTime(0.001, t0 + dur);
+    src.connect(f).connect(g).connect(master); src.start(t0, start, dur + 0.02);
+  }
+  /* Cuerpo grave del golpe (también sirve de respaldo mientras cargan las grabaciones) */
+  const o = a.createOscillator(), og = a.createGain();
+  o.type = 'sine'; o.frequency.setValueAtTime(150, t0); o.frequency.exponentialRampToValueAtTime(70, t0 + 0.09);
+  og.gain.setValueAtTime(0, t0); og.gain.linearRampToValueAtTime(list.length ? 0.35 : 0.7, t0 + 0.003);
+  og.gain.exponentialRampToValueAtTime(0.001, t0 + 0.12);
+  o.connect(og).connect(master); o.start(t0); o.stop(t0 + 0.14);
+}
+/* La línea donde se escribiría ya no admite más celdas */
+function lineFull(){
+  if (hasSel()) return false;
+  const l = readPos ? doc.lines[readPos.line] : cur();
+  return !!l && l.length >= doc.width;
+}
+/* Señal visible del tope: la hoja da un pequeño sacudón (o un borde de color, si se reduce el movimiento) */
+function jamFlash(){
+  const w = document.querySelector('.sheet-wrap'); if (!w) return;
+  w.classList.remove('jam'); void w.offsetWidth; w.classList.add('jam');
+  setTimeout(()=>w.classList.remove('jam'), 400);
+}
 /* Enter: regreso del carro y, al terminar, la tecla de avance de línea */
 /* Enter: regreso del carro y, al terminar, la tecla de avance de línea.
    Como en la Perkins, el regreso suena más corto cuanto menos recorrió el carro: la grabación se empieza
@@ -3177,7 +3224,7 @@ function putCell(c){
   if (hasSel()) deleteSelection(false);          // escribir sobre una selección la reemplaza
   if (readPos) return editInsert(c);
   const line = cur();
-  if (line.length >= doc.width){ flashMsg('Fin de línea: pulsa Enter'); say('Fin de línea, pulsa Enter'); return; }
+  if (line.length >= doc.width){ jamFlash(); flashMsg('Fin de línea: pulsa Enter'); say('Fin de línea, pulsa Enter'); return; }
   const word = c===0 ? lastWord(line) : '';
   line.push(c);
   const items = translate(line), it = items[items.length-1];
@@ -3232,7 +3279,7 @@ function liveUpdate(){
 }
 function maybeCommit(){
   liveUpdate();
-  if (physDown.size===0 && touchDown.size===0 && chord){ const c=chord; chord=0; play('release'); putCell(c); liveUpdate(); }
+  if (physDown.size===0 && touchDown.size===0 && chord){ const c=chord; chord=0; if (!lineFull()) play('release'); putCell(c); liveUpdate(); }
 }
 function pressAct(act){
   const el = document.querySelector('.key[data-act="'+act+'"]');
@@ -3252,6 +3299,7 @@ let lastBrailleKey = 0;
 function brailleCell(ch){ if (!ch || ch.length!==1) return null; const c = ch.charCodeAt(0); return (c>=0x2800 && c<=0x28FF) ? (c-0x2800) & 63 : null; }
 function typeBrailleCell(c){
   if (document.activeElement!==$('sheet')) $('sheet').focus({preventScroll:true});
+  if (lineFull()){ held.space=false; jam(); if (c===0) pressAct('space'); else putCell(c); return; }
   if (c===0){ held.space=false; play('spaceDown'); play('spaceUp', .08); pressAct('space'); return; }
   play('press'); play('release', .06); putCell(c);
 }
@@ -3308,8 +3356,8 @@ window.addEventListener('keydown', e=>{
   if (bcell!==null){ e.preventDefault(); lastBrailleKey = performance.now(); typeBrailleCell(bcell); return; }
   const dc = dotCode(e);
   if (dc){ e.preventDefault(); if (document.activeElement!==$('sheet')) $('sheet').focus({preventScroll:true});
-    if (e.repeat) return; if (!physDown.size && !touchDown.size) play('press'); physDown.add(dc); chord |= KEYBITS[dc]; liveUpdate(); return; }
-  if (e.code==='Space'){ e.preventDefault(); if (e.repeat || chord) return; held.space=true; play('spaceDown'); pressAct('space'); return; }
+    if (e.repeat) return; if (!physDown.size && !touchDown.size){ if (lineFull()) jam(); else play('press'); } physDown.add(dc); chord |= KEYBITS[dc]; liveUpdate(); return; }
+  if (e.code==='Space'){ e.preventDefault(); if (e.repeat || chord) return; if (lineFull()){ held.space=false; jam(); } else { held.space=true; play('spaceDown'); } pressAct('space'); return; }
   if (e.key==='Enter'){ e.preventDefault(); if (e.repeat) return; pressAct('enter'); return; }
   if (e.key==='Delete'){ e.preventDefault(); play('backDown'); play('backUp',.09); clearExample(); if (hasSel()) deleteSelection(true); else editDelete(); return; }
   if (e.key==='Backspace'){ e.preventDefault(); if (e.repeat){ play('backDown'); play('backUp',.09); } else { held.back=true; play('backDown'); } pressAct('back'); return; }
@@ -3336,7 +3384,7 @@ window.addEventListener('focus', ()=>{ $('focusHint').hidden=true; });
 /* Teclado en pantalla (táctil o ratón, admite acordes multitáctiles) */
 document.querySelectorAll('.key[data-bit]').forEach(k=>{
   const bit = +k.dataset.bit;
-  k.addEventListener('pointerdown', e=>{ e.preventDefault(); try{k.setPointerCapture(e.pointerId);}catch(_){} if (!physDown.size && !touchDown.size) play('press'); touchDown.set(e.pointerId, bit); chord|=bit; liveUpdate(); });
+  k.addEventListener('pointerdown', e=>{ e.preventDefault(); try{k.setPointerCapture(e.pointerId);}catch(_){} if (!physDown.size && !touchDown.size){ if (lineFull()) jam(); else play('press'); } touchDown.set(e.pointerId, bit); chord|=bit; liveUpdate(); });
   const up = e=>{ if (touchDown.has(e.pointerId)){ touchDown.delete(e.pointerId); maybeCommit(); } };
   k.addEventListener('pointerup', up); k.addEventListener('pointercancel', up);
   k.addEventListener('click', e=>e.preventDefault());
@@ -3345,7 +3393,7 @@ document.querySelectorAll('.key[data-act]').forEach(k=>{
   const act = k.dataset.act, upKind = act==='space' ? 'spaceUp' : act==='back' ? 'backUp' : null;
   let isDown = false;
   k.addEventListener('pointerdown', e=>{ e.preventDefault(); try{k.setPointerCapture(e.pointerId);}catch(_){}
-    if (upKind){ isDown = true; play(act==='space'?'spaceDown':'backDown'); } pressAct(act); });
+    if (act==='space' && lineFull()){ isDown = false; jam(); } else if (upKind){ isDown = true; play(act==='space'?'spaceDown':'backDown'); } pressAct(act); });
   const up = ()=>{ if (isDown){ isDown=false; play(upKind); } };
   k.addEventListener('pointerup', up); k.addEventListener('pointercancel', up);
   k.addEventListener('click', e=>e.preventDefault());
@@ -3467,7 +3515,7 @@ function afterEdit(){
 }
 function editInsert(c){
   const li = readPos.line, line = doc.lines[li], at = caretCell();
-  if (line.length >= doc.width){ say('Línea llena, no cabe otra celda'); return; }
+  if (line.length >= doc.width){ jamFlash(); flashMsg('Línea llena'); say('Línea llena, no cabe otra celda'); return; }
   line.splice(at, 0, c);
   const items = translate(line), it = items[at];
   readPos.cell = at+1;
@@ -3994,9 +4042,11 @@ async function saveWork(asNew){
       const nm = cleanName(fileHandle.name);
       const w = await fileHandle.createWritable(); await w.write(toPKS(nm)); await w.close();
       markSaved(nm); flashMsg('Guardado'); say('Guardado: '+doc.fileName);
+      afterExitSave(true);
     }catch(e){
       if (e && e.name==='AbortError') say('Cancelado');
       else { fileHandle = null; flashMsg('No se pudo guardar'); say('No se pudo guardar'); }
+      afterExitSave(false);
     }
     return backToSheet();
   }
@@ -4007,12 +4057,12 @@ async function saveWork(asNew){
 async function downloadWork(name){
   const ok = await offer(name + (dl ? '.mbv.json' : PKS_EXT), toPKS(name));
   if (ok){ markSaved(name); say('Guardado: '+name); }
-  backToSheet();
+  backToSheet(); afterExitSave(!!ok);
 }
 $('saveName').addEventListener('keydown', e=>{ if (e.key==='Enter'){ e.preventDefault(); $('dlgSave').close('ok'); } });
 $('dlgSave').addEventListener('close', ()=>{
   const ok = $('dlgSave').returnValue==='ok'; $('dlgSave').returnValue='';
-  if (ok) downloadWork(cleanName($('saveName').value)); else { say('Cancelado'); backToSheet(); }
+  if (ok) downloadWork(cleanName($('saveName').value)); else { say('Cancelado'); backToSheet(); afterExitSave(false); }
 });
 function openWork(){ if (isDirty()) return openDialog($('dlgOpenWarn')); pickFile(); }
 $('dlgOpenWarn').addEventListener('close', ()=>{
@@ -4593,7 +4643,25 @@ $('brModeText').addEventListener('click', ()=>{ setBrMode('text'); $('brField').
 $('brModeCells').addEventListener('click', ()=>{ setBrMode('cells'); $('brField').focus(); syncBrField(); });
 $('brBack').addEventListener('click', ()=>toggleBrailleMode(false));
 /* Salir: el navegador sólo deja cerrar pestañas abiertas por un script; si no se cierra, se muestra la pantalla de salida */
+let exitAfterSave = false, leaving = false;
+window.addEventListener('beforeunload', e=>{ if (!leaving && isDirty()){ e.preventDefault(); e.returnValue = ''; } });
 function exitApp(){
+  if (isDirty()){ openDialog($('dlgExit')); return; }
+  leaveApp();
+}
+$('dlgExit').addEventListener('close', ()=>{
+  const v = $('dlgExit').returnValue; $('dlgExit').returnValue='';
+  if (v==='no') leaveApp();
+  else if (v==='yes'){ exitAfterSave = true; saveWork(false); }
+  else { say('Cancelado'); backToSheet(); }
+});
+/* Después de «Sí, guardar»: si se guardó, sale; si se canceló o falló, vuelve a la hoja */
+function afterExitSave(ok){
+  if (!exitAfterSave) return; exitAfterSave = false;
+  if (ok) setTimeout(leaveApp, 600);
+}
+function leaveApp(){
+  leaving = true;
   save(); if (window.speechSynthesis) try{ speechSynthesis.cancel(); }catch(e){}
   try{ window.close(); }catch(e){}
   setTimeout(()=>{

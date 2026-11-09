@@ -6,7 +6,9 @@ Dirección de la aplicación:
 https://maquinabraillevirtual.github.io
 
 Funciona en Chrome, Edge, Firefox y Safari (también en iPad), con o sin
-lector de pantalla. Lo escrito se guarda en el navegador de cada equipo.
+lector de pantalla. La aplicación empieza siempre con una hoja en blanco;
+los trabajos se guardan en archivos .mbv (Archivo > Guardar) y al salir
+pregunta si se quieren guardar los cambios.
 
 
 CÓMO INSTALARLA COMO APLICACIÓN (opcional)
