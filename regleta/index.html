@@ -75,7 +75,7 @@ button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid 
 .cell.cur{outline:2px solid var(--accent);outline-offset:2px}
 .cell.changed{box-shadow:inset 0 0 0 2px var(--warn),inset 0 2px 3px rgba(0,0,0,.2);background:var(--warn-soft)}
 .slate.reading .cell.changed{background:var(--warn-soft);border-color:var(--warn)}
-.dot{appearance:none;border:0;padding:0;margin:auto;width:16px;height:16px;border-radius:50%;cursor:pointer;
+.dot{appearance:none;border:0;padding:0;margin:auto;width:var(--ds,16px);height:var(--ds,16px);border-radius:50%;cursor:pointer;
   background:transparent;box-shadow:inset 0 0 0 1.5px var(--hole-ring);position:relative;font:inherit;color:var(--muted)}
 .dot::after{content:attr(data-n);position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:var(--f-mono);font-size:9px;line-height:1;color:var(--muted);pointer-events:none}
 .dot.on::after,.slate.reading .dot::after{content:""}
@@ -111,7 +111,7 @@ details.help li{margin:4px 0}
 kbd{font-family:var(--f-mono);font-size:12px;border:1px solid var(--line);border-bottom-width:2px;border-radius:4px;padding:0 4px;background:var(--bg)}
 [hidden]{display:none!important}
 .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
-@media (max-width:640px){ :root{--cw:38px} h1{font-size:23px} .bar input[type=text]{width:150px} }
+@media (max-width:640px){ h1{font-size:23px} .bar input[type=text]{width:150px} }
 </style>
 
 <div class="app">
@@ -132,6 +132,7 @@ kbd{font-family:var(--f-mono);font-size:12px;border:1px solid var(--line);border
     </div>
     <button class="btn" id="flip" aria-pressed="false">Voltear la hoja</button>
     <span class="sep"></span>
+    <label class="f" for="paper">Hoja<select id="paper"><option value="a4">A4 (28 × 27)</option><option value="a4w">A4 (30 × 27)</option><option value="curso">Plantilla del curso (18 × 8)</option><option value="custom">Personalizada</option></select></label>
     <label class="f" for="cols">Celdas por renglón<select id="cols"></select></label>
     <label class="f" for="rows">Renglones<select id="rows"></select></label>
   </div>
@@ -186,7 +187,8 @@ kbd{font-family:var(--f-mono);font-size:12px;border:1px solid var(--line);border
 /* ---------- Datos: la hoja se guarda en orden de lectura (lado de lectura, de izquierda a derecha) ---------- */
 const $ = id => document.getElementById(id);
 const BIT = n => 1 << (n-1);
-let COLS = 18, ROWS = 8;
+let COLS = 28, ROWS = 27;
+const PAPERS = {a4:[28,27], a4w:[30,27], curso:[18,8]};
 let grid = [], original = null, mode = 'neg', flipped = false;
 let cur = {r:0, c:0};          // ventanilla actual, en orden de lectura
 const undoStack = [];
@@ -208,6 +210,7 @@ grid = blank();
   [4,6,8,10,12,16,20,25,27].forEach(n=>{ const o = document.createElement('option'); o.value = n; o.textContent = n; rs.appendChild(o); });
   cs.value = COLS; rs.value = ROWS;
 })();
+function syncPaper(){ const k = Object.keys(PAPERS).find(k=>PAPERS[k][0]===COLS && PAPERS[k][1]===ROWS); $('paper').value = k || 'custom'; }
 
 /* ---------- Traducción a tinta (braille integral, lo básico) ---------- */
 const L = {a:'1',b:'12',c:'14',d:'145',e:'15',f:'124',g:'1245',h:'125',i:'24',j:'245',k:'13',l:'123',m:'134',n:'1345','ñ':'12456',o:'135',p:'1234',q:'12345',r:'1235',s:'234',t:'2345',u:'136',v:'1236',w:'2456',x:'1346',y:'13456',z:'1356','á':'12356','é':'2346','í':'34','ó':'346','ú':'23456','ü':'1256'};
@@ -249,7 +252,15 @@ const slate = $('slate');
 /* En la regleta común, el lado de escritura muestra la hoja en espejo: la ventanilla de la izquierda en pantalla es
    la última celda del renglón, y en cada ventanilla la columna izquierda tiene los puntos 4, 5 y 6. */
 function writingMirrored(){ return mode==='neg' && !flipped; }
+/* Las ventanillas se achican para que el renglón entero quepa en la pantalla (entre 30 y 46 px de ancho) */
+function fitCells(){
+  const avail = (document.querySelector('.scroller').clientWidth || 1200) - 36 - 30 - 8;
+  const cw = Math.max(30, Math.min(46, Math.floor((avail - 6*(COLS-1)) / COLS)));
+  slate.style.setProperty('--cw', cw+'px'); slate.style.setProperty('--ds', Math.max(11, Math.round(cw*0.35))+'px');
+}
+window.addEventListener('resize', ()=>fitCells());
 function render(){
+  fitCells(); syncPaper();
   const mir = writingMirrored(), reading = mode==='pos' || flipped;
   slate.classList.toggle('reading', flipped && mode==='neg');
   slate.classList.toggle('nonum', !$('optNum').checked);
@@ -352,6 +363,7 @@ $('mNeg').onclick = ()=>{ mode = 'neg'; render(); };
 $('mPos').onclick = ()=>{ mode = 'pos'; flipped = false; render(); };
 $('flip').onclick = ()=>{ flipped = !flipped; render(); };
 $('cols').onchange = ()=>{ pushUndo(); resize(+$('cols').value, ROWS); render(); };
+$('paper').onchange = ()=>{ const k = $('paper').value; if (!PAPERS[k]) return; pushUndo(); resize(PAPERS[k][0], PAPERS[k][1]); $('cols').value = COLS; $('rows').value = ROWS; render(); flash('Hoja de '+COLS+' celdas por '+ROWS+' renglones'); };
 $('rows').onchange = ()=>{ pushUndo(); resize(COLS, +$('rows').value); render(); };
 $('optNum').onchange = render; $('optTr').onchange = render;
 $('clear').onclick = ()=>{ $('confirmClear').hidden = false; $('clearNo').focus(); };
@@ -482,6 +494,9 @@ function persist(){ try{ localStorage.setItem(STORE, JSON.stringify({grid, COLS,
 (function restore(){
   try{
     const d = JSON.parse(localStorage.getItem(STORE)||'null'); if (!d || !Array.isArray(d.grid)) return;
+    /* un borrador vacío o con solo el ejemplo «hola» toma la hoja nueva por defecto (A4) */
+    const marks = d.grid.flat().filter(Boolean), hola = ['125','135','123','1'].map(mk).join();
+    if (!marks.length || (marks.length===4 && d.grid[0].slice(0,4).join()===hola)){ mode = d.mode==='pos' ? 'pos' : 'neg'; $('student').value = d.student||''; $('exercise').value = d.exercise||''; $('optNum').checked = d.num!==false; return; }
     COLS = d.COLS||18; ROWS = d.ROWS||8; grid = blank(); d.grid.forEach((row,r)=>row.forEach((v,c)=>{ if (r<ROWS && c<COLS) grid[r][c] = v|0; }));
     mode = d.mode==='pos' ? 'pos' : 'neg'; $('student').value = d.student||''; $('exercise').value = d.exercise||''; $('optNum').checked = d.num!==false;
     ensureOption($('cols'), COLS); ensureOption($('rows'), ROWS); $('cols').value = COLS; $('rows').value = ROWS;
