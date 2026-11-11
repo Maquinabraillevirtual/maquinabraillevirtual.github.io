@@ -109,6 +109,41 @@ details.help summary{cursor:pointer;font-weight:700}
 details.help ul{margin:8px 0 0;padding-left:20px;max-width:75ch}
 details.help li{margin:4px 0}
 kbd{font-family:var(--f-mono);font-size:12px;border:1px solid var(--line);border-bottom-width:2px;border-radius:4px;padding:0 4px;background:var(--bg)}
+/* Barra de menús, como en la Máquina Braille Virtual */
+.menubar{list-style:none;margin:0;padding:3px;display:flex;flex-wrap:wrap;gap:2px;background:var(--paper);border:1px solid var(--line);border-radius:8px}
+.menubar>li{position:relative}
+.menubar button{font:inherit;color:var(--ink);background:transparent;border:0;cursor:pointer;text-align:left}
+.mb{font-size:15px;padding:6px 14px;border-radius:6px}
+.mb:hover,.mb[aria-expanded="true"]{background:var(--accent-soft)}
+.mb u{text-decoration-thickness:1.5px;text-underline-offset:2px}
+.menu{list-style:none;margin:0;padding:5px;position:absolute;top:calc(100% + 4px);left:0;z-index:30;min-width:360px;background:var(--paper);border:1px solid var(--metal-edge);border-radius:8px;box-shadow:0 10px 28px -10px rgba(0,0,0,.45)}
+.menu button{white-space:nowrap;display:flex;width:100%;align-items:center;gap:10px;font-size:15px;padding:8px 12px;border-radius:5px}
+.menu button:hover,.menu button:focus{background:var(--accent);color:var(--paper);outline:none}
+.menu button:hover .sc,.menu button:focus .sc{color:var(--paper)}
+.menu .ck{width:1em;text-align:center;flex:none}
+.menu .sc{margin-left:auto;padding-left:20px;font-family:var(--f-mono);font-size:12px;color:var(--muted)}
+.menu [role="separator"]{height:1px;background:var(--line);margin:5px 4px}
+.mb:focus-visible{outline:2px solid var(--accent);outline-offset:-2px}
+dialog{border:1px solid var(--metal-edge);border-radius:10px;background:var(--paper);color:var(--ink);padding:20px 22px;max-width:min(560px,calc(100vw - 32px));box-shadow:0 18px 40px -12px rgba(0,0,0,.5)}
+dialog::backdrop{background:rgba(10,14,18,.45)}
+dialog h2{font-size:19px;margin:0 0 12px}
+dialog .row2{display:flex;flex-wrap:wrap;gap:12px 18px;align-items:flex-end}
+dialog label.f{display:flex;flex-direction:column;gap:2px;font-size:14px;color:var(--muted)}
+dialog select{font:inherit;font-size:15px;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:7px;padding:7px 9px}
+.dlg-btns{display:flex;justify-content:flex-end;gap:8px;margin-top:18px}
+#dlgHelp{max-width:min(760px,calc(100vw - 32px))}
+#dlgHelp ul{padding-left:20px;margin:0}
+#dlgHelp li{margin:5px 0}
+.holder{display:none}
+/* Ver › Fondo oscuro y letras blancas: negro puro, letras blancas y realces en amarillo (baja visión) */
+:root[data-contrast="hc"]{
+  --bg:#000; --paper:#000; --ink:#FFF; --muted:#E6E6E6; --line:#9A9A9A;
+  --metal:#1A1A1A; --metal-2:#111; --metal-edge:#E0E0E0; --hole:#000; --hole-ring:#FFF;
+  --dot:#FFD60A; --dot-hi:#FFF3A0; --accent:#FFD60A; --accent-soft:#3D3300; --warn:#FF9F43; --warn-soft:#3A2410; --ok:#7CFC9A; color-scheme:dark}
+:root[data-contrast="hc"] .slate:not(.reading) .rn{color:#FFF}
+:root[data-contrast="hc"] .btn.primary{color:#000}
+:root[data-contrast="hc"] .dot::after{color:#FFF}
+.app{zoom:var(--z,1);max-width:min(1240px,calc((100vw - 32px) / var(--z,1)))}
 [hidden]{display:none!important}
 .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
 @media (max-width:640px){ h1{font-size:23px} .bar input[type=text]{width:150px} }
@@ -123,31 +158,90 @@ kbd{font-family:var(--f-mono);font-size:12px;border:1px solid var(--line);border
     </div>
   </header>
 
-  <div class="bar" role="group" aria-label="Datos y opciones">
+  <nav aria-label="Menú principal">
+    <ul class="menubar" id="menubar" role="menubar" aria-label="Menú principal">
+      <li role="none"><button class="mb" role="menuitem" id="mbFile" aria-haspopup="menu" aria-expanded="false" aria-controls="mFile" aria-keyshortcuts="Alt+A" tabindex="0"><span><u>A</u>rchivo</span></button>
+        <ul class="menu" role="menu" id="mFile" aria-label="Archivo" hidden>
+          <li role="none"><button role="menuitem" tabindex="-1" data-cmd="new"><span class="ck"></span>Hoja nueva (borrar todo)…</button></li>
+          <li role="none"><button role="menuitem" tabindex="-1" data-cmd="open" aria-keyshortcuts="Control+O"><span class="ck"></span>Abrir trabajo…<span class="sc">Ctrl+O</span></button></li>
+          <li role="none"><button role="menuitem" tabindex="-1" data-cmd="saveTxt" aria-keyshortcuts="Control+G"><span class="ck"></span>Guardar en braille Unicode (.txt)<span class="sc">Ctrl+G</span></button></li>
+          <li role="none"><button role="menuitem" tabindex="-1" data-cmd="saveBrf" aria-keyshortcuts="Control+Shift+G"><span class="ck"></span>Guardar en BRF<span class="sc">Ctrl+Mayús+G</span></button></li>
+          <li role="separator"></li>
+          <li role="none"><button role="menuitem" tabindex="-1" data-cmd="saveRev"><span class="ck"></span>Guardar el trabajo corregido</button></li>
+          <li role="none"><button role="menuitem" tabindex="-1" data-cmd="copyRev"><span class="ck"></span>Copiar las correcciones</button></li>
+          <li role="separator"></li>
+          <li role="none"><button role="menuitem" tabindex="-1" data-cmd="mbv"><span class="ck"></span>Ir a la Máquina Braille Virtual</button></li>
+        </ul>
+      </li>
+      <li role="none"><button class="mb" role="menuitem" id="mbEdit" aria-haspopup="menu" aria-expanded="false" aria-controls="mEdit" aria-keyshortcuts="Alt+E" tabindex="-1"><span><u>E</u>dición</span></button>
+        <ul class="menu" role="menu" id="mEdit" aria-label="Edición" hidden>
+          <li role="none"><button role="menuitem" tabindex="-1" data-cmd="undo" aria-keyshortcuts="Control+Z"><span class="ck"></span>Deshacer<span class="sc">Ctrl+Z</span></button></li>
+          <li role="none"><button role="menuitem" tabindex="-1" data-cmd="clearCell" aria-keyshortcuts="Delete"><span class="ck"></span>Borrar la ventanilla actual<span class="sc">Supr</span></button></li>
+          <li role="none"><button role="menuitem" tabindex="-1" data-cmd="new"><span class="ck"></span>Borrar toda la hoja…</button></li>
+        </ul>
+      </li>
+      <li role="none"><button class="mb" role="menuitem" id="mbView" aria-haspopup="menu" aria-expanded="false" aria-controls="mView" aria-keyshortcuts="Alt+V" tabindex="-1"><span><u>V</u>er</span></button>
+        <ul class="menu" role="menu" id="mView" aria-label="Ver" hidden>
+          <li role="none"><button role="menuitemcheckbox" tabindex="-1" data-cmd="flip" aria-checked="false" aria-keyshortcuts="F2"><span class="ck" aria-hidden="true"></span>Voltear la hoja (lado de lectura)<span class="sc">F2</span></button></li>
+          <li role="none"><button role="menuitemcheckbox" tabindex="-1" data-cmd="optTr" aria-checked="false" aria-keyshortcuts="F4"><span class="ck" aria-hidden="true"></span>Mostrar lo que dice<span class="sc">F4</span></button></li>
+          <li role="none"><button role="menuitemcheckbox" tabindex="-1" data-cmd="optNum" aria-checked="true"><span class="ck" aria-hidden="true"></span>Números de los puntos</button></li>
+          <li role="separator"></li>
+          <li role="none"><button role="menuitemcheckbox" tabindex="-1" data-cmd="contrast" aria-checked="false" aria-keyshortcuts="Control+Shift+C"><span class="ck" aria-hidden="true"></span>Fondo oscuro y letras blancas<span class="sc">Ctrl+Mayús+C</span></button></li>
+          <li role="none"><button role="menuitem" tabindex="-1" data-cmd="zoomIn" aria-keyshortcuts="Control+Plus"><span class="ck"></span>Aumentar zoom<span class="sc">Ctrl++</span></button></li>
+          <li role="none"><button role="menuitem" tabindex="-1" data-cmd="zoomOut" aria-keyshortcuts="Control+Minus"><span class="ck"></span>Reducir zoom<span class="sc">Ctrl+−</span></button></li>
+          <li role="none"><button role="menuitem" tabindex="-1" data-cmd="zoomReset" aria-keyshortcuts="Control+0"><span class="ck"></span><span id="zoomLbl">Zoom normal (100 %)</span><span class="sc">Ctrl+0</span></button></li>
+        </ul>
+      </li>
+      <li role="none"><button class="mb" role="menuitem" id="mbSheet" aria-haspopup="menu" aria-expanded="false" aria-controls="mSheet" aria-keyshortcuts="Alt+H" tabindex="-1"><span><u>H</u>oja</span></button>
+        <ul class="menu" role="menu" id="mSheet" aria-label="Hoja" hidden>
+          <li role="none"><button role="menuitemradio" tabindex="-1" data-cmd="modeNeg" aria-checked="true"><span class="ck" aria-hidden="true"></span>Regleta común (en espejo, de derecha a izquierda)</button></li>
+          <li role="none"><button role="menuitemradio" tabindex="-1" data-cmd="modePos" aria-checked="false"><span class="ck" aria-hidden="true"></span>Regleta de punto positivo</button></li>
+          <li role="separator"></li>
+          <li role="none"><button role="menuitemradio" tabindex="-1" data-cmd="paperA4" aria-checked="true"><span class="ck" aria-hidden="true"></span>A4: 28 celdas × 27 renglones</button></li>
+          <li role="none"><button role="menuitemradio" tabindex="-1" data-cmd="paperA4w" aria-checked="false"><span class="ck" aria-hidden="true"></span>A4: 30 celdas × 27 renglones</button></li>
+          <li role="none"><button role="menuitemradio" tabindex="-1" data-cmd="paperCurso" aria-checked="false"><span class="ck" aria-hidden="true"></span>Plantilla del curso: 18 × 8</button></li>
+          <li role="none"><button role="menuitemradio" tabindex="-1" data-cmd="paperCustom" aria-checked="false"><span class="ck" aria-hidden="true"></span>Tamaño personalizado…</button></li>
+        </ul>
+      </li>
+      <li role="none"><button class="mb" role="menuitem" id="mbHelp" aria-haspopup="menu" aria-expanded="false" aria-controls="mHelp" aria-keyshortcuts="Alt+Y" tabindex="-1"><span>A<u>y</u>uda</span></button>
+        <ul class="menu" role="menu" id="mHelp" aria-label="Ayuda" hidden>
+          <li role="none"><button role="menuitem" tabindex="-1" data-cmd="help" aria-keyshortcuts="F1"><span class="ck"></span>Cómo se usa<span class="sc">F1</span></button></li>
+          <li role="none"><button role="menuitem" tabindex="-1" data-cmd="keys"><span class="ck"></span>Atajos de teclado</button></li>
+          <li role="none"><button role="menuitem" tabindex="-1" data-cmd="about"><span class="ck"></span>Acerca de la Regleta Virtual</button></li>
+        </ul>
+      </li>
+    </ul>
+  </nav>
+
+  <div class="bar" role="group" aria-label="Datos del trabajo">
     <label class="f" for="student">Estudiante<input type="text" id="student" autocomplete="name" placeholder="Nombre y apellido"></label>
     <label class="f" for="exercise">Ejercicio<input type="text" id="exercise" placeholder="Ejercicio 1: abecedario"></label>
-    <div class="seg" role="group" aria-label="Tipo de regleta">
-      <button id="mNeg" aria-pressed="true" title="Se escribe de derecha a izquierda y en espejo">Regleta común</button>
-      <button id="mPos" aria-pressed="false" title="Se escribe de izquierda a derecha, como se lee">Punto positivo</button>
-    </div>
-    <button class="btn" id="flip" aria-pressed="false">Voltear la hoja</button>
     <span class="sep"></span>
-    <label class="f" for="paper">Hoja<select id="paper"><option value="a4">A4 (28 × 27)</option><option value="a4w">A4 (30 × 27)</option><option value="curso">Plantilla del curso (18 × 8)</option><option value="custom">Personalizada</option></select></label>
-    <label class="f" for="cols">Celdas por renglón<select id="cols"></select></label>
-    <label class="f" for="rows">Renglones<select id="rows"></select></label>
+    <button class="btn" id="flip" aria-pressed="false">Voltear la hoja</button>
+    <button class="btn primary" id="saveTxt">Guardar</button>
   </div>
 
-  <div class="bar" role="group" aria-label="Archivo y vista">
-    <button class="btn primary" id="saveTxt">Guardar (braille Unicode .txt)</button>
-    <button class="btn" id="saveBrf">Guardar BRF</button>
-    <button class="btn" id="openBtn">Abrir trabajo…</button>
-    <input type="file" id="fileIn" accept=".txt,.brf,.brl,.zip" hidden>
-    <button class="btn" id="undo" title="Control + Z">Deshacer</button>
-    <button class="btn" id="clear">Borrar todo</button>
-    <span class="sep"></span>
-    <label class="chk" for="optNum"><input type="checkbox" id="optNum" checked> Números de los puntos</label>
-    <label class="chk" for="optTr"><input type="checkbox" id="optTr"> Mostrar lo que dice</label>
+  <!-- controles que guardan el estado; se manejan desde los menús -->
+  <div class="holder" aria-hidden="true">
+    <button id="mNeg" tabindex="-1"></button><button id="mPos" tabindex="-1"></button>
+    <button id="saveBrf" tabindex="-1"></button><button id="openBtn" tabindex="-1"></button>
+    <button id="undo" tabindex="-1"></button><button id="clear" tabindex="-1"></button>
+    <input type="checkbox" id="optNum" checked tabindex="-1"><input type="checkbox" id="optTr" tabindex="-1">
+    <select id="paper" tabindex="-1"><option value="a4">A4</option><option value="a4w">A4 30</option><option value="curso">curso</option><option value="custom">custom</option></select>
   </div>
+  <input type="file" id="fileIn" accept=".txt,.brf,.brl,.zip" hidden>
+
+  <dialog id="dlgSize" aria-labelledby="dlgSizeT">
+    <form method="dialog">
+      <h2 id="dlgSizeT">Tamaño personalizado de la hoja</h2>
+      <div class="row2">
+        <label class="f" for="cols">Celdas por renglón<select id="cols"></select></label>
+        <label class="f" for="rows">Renglones<select id="rows"></select></label>
+      </div>
+      <div class="dlg-btns"><button class="btn" value="cancel">Cancelar</button><button class="btn primary" value="ok">Aceptar</button></div>
+    </form>
+  </dialog>
+
   <div class="confirm" id="confirmClear" hidden>¿Borrar todos los puntos de la hoja? <button class="btn" id="clearYes">Sí, borrar</button><button class="btn" id="clearNo">Cancelar</button></div>
 
   <div class="side">
@@ -170,17 +264,43 @@ kbd{font-family:var(--f-mono);font-size:12px;border:1px solid var(--line);border
   </section>
 
   <p class="next" style="margin:0;color:var(--muted)">Siguiente paso, cuando ya formes bien las letras: la <a href="https://maquinabraillevirtual.github.io/" style="color:var(--accent);font-weight:700">Máquina Braille Virtual</a>, que funciona como una máquina Perkins.</p>
-  <details class="help">
-    <summary>Cómo se usa</summary>
-    <ul>
+  <dialog id="dlgHelp" aria-labelledby="dlgHelpT">
+    <form method="dialog">
+      <h2 id="dlgHelpT">Cómo se usa la Regleta Virtual</h2>
+      <ul>
       <li><b>Regleta común:</b> como con punzón, se escribe en el reverso de la hoja, de derecha a izquierda, y cada letra en espejo: en la ventanilla, los puntos 1, 2 y 3 están a la derecha y los puntos 4, 5 y 6 a la izquierda. Empieza por la ventanilla de la derecha de cada renglón.</li>
       <li><b>Voltear la hoja</b> muestra el lado de lectura, con los puntos en relieve y de izquierda a derecha. Ahí se comprueba si las letras quedaron bien.</li>
       <li><b>Punto positivo:</b> para las regletas de punto positivo, que escriben de izquierda a derecha como se lee.</li>
+      <li><b>Menús:</b> <kbd>F10</kbd> o <kbd>Alt</kbd> con la letra subrayada (<kbd>Alt</kbd> + <kbd>A</kbd> Archivo, <kbd>E</kbd> Edición, <kbd>V</kbd> Ver, <kbd>H</kbd> Hoja, <kbd>Y</kbd> Ayuda) abren la barra de menús; se recorre con las flechas, <kbd>Enter</kbd> elige y <kbd>Escape</kbd> vuelve a la regleta.</li>
+      <li><b>Baja visión:</b> Ver › Fondo oscuro y letras blancas (<kbd>Control</kbd> + <kbd>Mayúsculas</kbd> + <kbd>C</kbd>) y el zoom (<kbd>Control</kbd> + <kbd>Más</kbd>, <kbd>Control</kbd> + <kbd>Menos</kbd>, <kbd>Control</kbd> + <kbd>0</kbd>). Con zoom, las ventanillas se agrandan y el renglón se recorre a los lados.</li>
       <li><b>Teclado:</b> con la regleta seleccionada, las teclas <kbd>1</kbd> a <kbd>6</kbd> marcan o quitan los puntos de la ventanilla actual; las flechas mueven la ventanilla; <kbd>Retroceso</kbd> borra la ventanilla; <kbd>Control</kbd> + <kbd>Z</kbd> deshace.</li>
       <li><b>Entregar el trabajo:</b> escribe tu nombre y el ejercicio, pulsa <b>Guardar</b> y sube el archivo a la carpeta o al aula virtual que indique el docente. Se guarda el lado de lectura, en braille Unicode (.txt) o en BRF.</li>
       <li><b>Para el docente:</b> <b>Abrir trabajo</b> carga el archivo del estudiante. Al corregir un punto, la ventanilla se marca en naranja y la corrección aparece en la lista de revisión, que se puede copiar para enviarla como devolución. El archivo también se abre en la Máquina Braille Virtual.</li>
     </ul>
-  </details>
+      <div class="dlg-btns"><button class="btn primary" value="close">Cerrar</button></div>
+    </form>
+  </dialog>
+  <dialog id="dlgKeys" aria-labelledby="dlgKeysT">
+    <form method="dialog">
+      <h2 id="dlgKeysT">Atajos de teclado</h2>
+      <ul style="padding-left:20px;margin:0">
+        <li><kbd>1</kbd> a <kbd>6</kbd>: marcar o quitar el punto en la ventanilla actual</li>
+        <li>Flechas: mover la ventanilla · <kbd>Enter</kbd>: renglón siguiente · <kbd>Supr</kbd> o <kbd>Retroceso</kbd>: borrar la ventanilla</li>
+        <li><kbd>F2</kbd>: voltear la hoja · <kbd>F4</kbd>: mostrar lo que dice · <kbd>F1</kbd>: ayuda · <kbd>F10</kbd>: barra de menús</li>
+        <li><kbd>Control</kbd> + <kbd>G</kbd>: guardar (.txt) · <kbd>Control</kbd> + <kbd>Mayús</kbd> + <kbd>G</kbd>: guardar BRF · <kbd>Control</kbd> + <kbd>O</kbd>: abrir · <kbd>Control</kbd> + <kbd>Z</kbd>: deshacer</li>
+        <li><kbd>Control</kbd> + <kbd>Mayús</kbd> + <kbd>C</kbd>: fondo oscuro · <kbd>Control</kbd> + <kbd>Más</kbd> / <kbd>Menos</kbd> / <kbd>0</kbd>: zoom</li>
+      </ul>
+      <div class="dlg-btns"><button class="btn primary" value="close">Cerrar</button></div>
+    </form>
+  </dialog>
+  <dialog id="dlgAbout" aria-labelledby="dlgAboutT">
+    <form method="dialog">
+      <h2 id="dlgAboutT">Acerca de la Regleta Virtual</h2>
+      <p style="margin:0 0 8px">Regleta y punzón en pantalla para aprender a formar las letras braille antes de pasar a la Máquina Braille Virtual.</p>
+      <p style="margin:0">Aplicación desarrollada por Denis Povis Medina, profesor de Comunicación del CERCIL (Lima, Perú).</p>
+      <div class="dlg-btns"><button class="btn primary" value="close">Cerrar</button></div>
+    </form>
+  </dialog>
 </div>
 
 <script>
@@ -190,6 +310,7 @@ const BIT = n => 1 << (n-1);
 let COLS = 28, ROWS = 27;
 const PAPERS = {a4:[28,27], a4w:[30,27], curso:[18,8]};
 let grid = [], original = null, mode = 'neg', flipped = false;
+let contrast = false, zoom = 1;   // Ver › Fondo oscuro y zoom
 let cur = {r:0, c:0};          // ventanilla actual, en orden de lectura
 const undoStack = [];
 const STORE = 'regleta-virtual-v1';
@@ -255,7 +376,7 @@ function writingMirrored(){ return mode==='neg' && !flipped; }
 /* Las ventanillas se achican para que el renglón entero quepa en la pantalla (entre 30 y 46 px de ancho) */
 function fitCells(){
   const avail = (document.querySelector('.scroller').clientWidth || 1200) - 36 - 30 - 8;
-  const cw = Math.max(30, Math.min(46, Math.floor((avail - 6*(COLS-1)) / COLS)));
+  const cw = zoom>1 ? 46 : Math.max(30, Math.min(46, Math.floor((avail - 6*(COLS-1)) / COLS)));
   slate.style.setProperty('--cw', cw+'px'); slate.style.setProperty('--ds', Math.max(11, Math.round(cw*0.35))+'px');
 }
 window.addEventListener('resize', ()=>fitCells());
@@ -299,6 +420,7 @@ function render(){
   $('flip').textContent = flipped ? 'Volver al lado de escritura' : 'Voltear la hoja';
   $('flip').setAttribute('aria-pressed', flipped); $('flip').hidden = mode==='pos';
   $('mNeg').setAttribute('aria-pressed', mode==='neg'); $('mPos').setAttribute('aria-pressed', mode==='pos');
+  syncMenus();
   $('sRow').textContent = cur.r+1; $('sCol').textContent = cur.c+1;
   const dots = [1,2,3,4,5,6].filter(n=>grid[cur.r][cur.c] & BIT(n)); $('sDots').textContent = dots.length ? dots.join(' ') : '—';
   renderSays(); renderReview(); persist();
@@ -349,9 +471,6 @@ slate.addEventListener('keydown', e=>{
   else if (k===' '){ e.preventDefault(); cur.c = Math.min(COLS-1, cur.c+1); render(); }
   else if (k==='Backspace' || k==='Delete'){ e.preventDefault(); if (grid[cur.r][cur.c]){ pushUndo(); grid[cur.r][cur.c] = 0; flash('Ventanilla borrada'); render(); } }
 });
-document.addEventListener('keydown', e=>{
-  if ((e.ctrlKey||e.metaKey) && (e.key==='z'||e.key==='Z') && !e.target.closest('input')){ e.preventDefault(); undo(); }
-});
 function undo(){ const s = undoStack.pop(); if (!s){ flash('No hay nada que deshacer', true); return; } grid = JSON.parse(s); flash('Deshecho'); render(); }
 $('undo').onclick = undo;
 
@@ -362,11 +481,11 @@ function flash(t, err){ const m = $('msg'); m.textContent = t; m.classList.toggl
 $('mNeg').onclick = ()=>{ mode = 'neg'; render(); };
 $('mPos').onclick = ()=>{ mode = 'pos'; flipped = false; render(); };
 $('flip').onclick = ()=>{ flipped = !flipped; render(); };
-$('cols').onchange = ()=>{ pushUndo(); resize(+$('cols').value, ROWS); render(); };
 $('paper').onchange = ()=>{ const k = $('paper').value; if (!PAPERS[k]) return; pushUndo(); resize(PAPERS[k][0], PAPERS[k][1]); $('cols').value = COLS; $('rows').value = ROWS; render(); flash('Hoja de '+COLS+' celdas por '+ROWS+' renglones'); };
-$('rows').onchange = ()=>{ pushUndo(); resize(COLS, +$('rows').value); render(); };
 $('optNum').onchange = render; $('optTr').onchange = render;
 $('clear').onclick = ()=>{ $('confirmClear').hidden = false; $('clearNo').focus(); };
+$('clearNo').addEventListener('click', ()=>slate.focus({preventScroll:true}));
+$('clearYes').addEventListener('click', ()=>slate.focus({preventScroll:true}));
 $('clearNo').onclick = ()=>{ $('confirmClear').hidden = true; };
 $('clearYes').onclick = ()=>{ pushUndo(); grid = blank(); cur = {r:0,c:0}; $('confirmClear').hidden = true; flash('Hoja borrada (Control + Z para recuperarla)'); render(); };
 
@@ -488,6 +607,139 @@ $('copyRev').onclick = async ()=>{
   catch(e){ const ta = document.createElement('textarea'); ta.value = t; ta.style.position='fixed'; ta.style.opacity='0'; document.body.appendChild(ta); ta.select(); try{ document.execCommand('copy'); flash('Correcciones copiadas'); }catch(_){ flash('No se pudo copiar', true); } ta.remove(); }
 };
 $('saveRev').onclick = ()=>{ if (!empty()) offer(baseName(' (corregido).txt'), toUnicode()); };
+
+
+/* ---------- Barra de menús (como en la Máquina Braille Virtual) ----------
+   F10 o Alt + A/E/V/H/Y la abren; flechas para recorrer, Intro para elegir, Escape vuelve a la regleta. */
+const TOPS = [...document.querySelectorAll('#menubar .mb')];
+const menuOf = top => $(top.getAttribute('aria-controls'));
+const itemsOf = menu => [...menu.querySelectorAll('[role^="menuitem"]')].filter(b=>!b.closest('li').hidden);
+const ACCEL = {KeyA:'mbFile', KeyE:'mbEdit', KeyV:'mbView', KeyH:'mbSheet', KeyY:'mbHelp'};
+function focusTop(top){ TOPS.forEach(t=>t.tabIndex = t===top ? 0 : -1); top.focus(); }
+function closeMenus(){ TOPS.forEach(t=>{ t.setAttribute('aria-expanded','false'); menuOf(t).hidden = true; }); }
+function openMenu(top, which){
+  closeMenus(); TOPS.forEach(t=>t.tabIndex = t===top ? 0 : -1);
+  top.setAttribute('aria-expanded','true'); const menu = menuOf(top); menu.hidden = false;
+  const items = itemsOf(menu); (which==='last' ? items[items.length-1] : items[0]).focus();
+}
+function backToSlate(){ try{ slate.focus({preventScroll:true}); }catch(e){} }
+function setCheck(cmd, on, radio){ const b = document.querySelector('[data-cmd="'+cmd+'"]'); if (!b) return; b.setAttribute('aria-checked', !!on); b.querySelector('.ck').textContent = on ? (radio ? '●' : '✓') : ''; }
+function syncMenus(){
+  setCheck('flip', flipped); setCheck('optTr', $('optTr').checked); setCheck('optNum', $('optNum').checked); setCheck('contrast', contrast);
+  setCheck('modeNeg', mode==='neg', 1); setCheck('modePos', mode==='pos', 1);
+  const k = Object.keys(PAPERS).find(k=>PAPERS[k][0]===COLS && PAPERS[k][1]===ROWS);
+  setCheck('paperA4', k==='a4', 1); setCheck('paperA4w', k==='a4w', 1); setCheck('paperCurso', k==='curso', 1); setCheck('paperCustom', !k, 1);
+  const cu = document.querySelector('[data-cmd="paperCustom"]'); cu.lastChild.textContent = k ? 'Tamaño personalizado…' : 'Tamaño personalizado: '+COLS+' × '+ROWS+'…';
+  document.querySelector('[data-cmd="flip"]').closest('li').hidden = mode==='pos';
+  document.querySelector('[data-cmd="saveRev"]').closest('li').hidden = !original;
+  document.querySelector('[data-cmd="copyRev"]').closest('li').hidden = !original;
+}
+function setPaper(k){
+  if (PAPERS[k][0]===COLS && PAPERS[k][1]===ROWS){ flash('La hoja ya es de '+COLS+' celdas por '+ROWS+' renglones'); return; }
+  pushUndo(); resize(PAPERS[k][0], PAPERS[k][1]); $('cols').value = COLS; $('rows').value = ROWS; render(); persist();
+  flash('Hoja de '+COLS+' celdas por '+ROWS+' renglones');
+}
+function openDialog(d){ closeMenus(); try{ d.showModal(); }catch(e){ d.setAttribute('open',''); } }
+$('dlgSize').addEventListener('close', ()=>{
+  const d = $('dlgSize');
+  if (d.returnValue==='ok'){ const c = +$('cols').value, r = +$('rows').value;
+    if (c!==COLS || r!==ROWS){ pushUndo(); resize(c, r); render(); persist(); flash('Hoja de '+COLS+' celdas por '+ROWS+' renglones'); } }
+  else { $('cols').value = COLS; $('rows').value = ROWS; }
+  setTimeout(backToSlate, 0);
+});
+['dlgHelp','dlgKeys','dlgAbout'].forEach(id=>$(id).addEventListener('close', ()=>setTimeout(backToSlate, 0)));
+function clickBtn(id){ $(id).click(); }
+const COMMANDS = {
+  new: ()=>clickBtn('clear'), open: ()=>clickBtn('openBtn'), saveTxt: ()=>clickBtn('saveTxt'), saveBrf: ()=>clickBtn('saveBrf'),
+  saveRev: ()=>clickBtn('saveRev'), copyRev: ()=>clickBtn('copyRev'),
+  mbv: ()=>{ location.href = 'https://maquinabraillevirtual.github.io/'; },
+  undo, clearCell: ()=>{ if (grid[cur.r][cur.c]){ pushUndo(); grid[cur.r][cur.c] = 0; flash('Ventanilla borrada'); render(); } else flash('La ventanilla ya está vacía'); },
+  flip: ()=>{ if (mode==='pos'){ flash('Con punto positivo no hace falta voltear la hoja'); return; } clickBtn('flip'); flash(flipped ? 'Lado de lectura' : 'Lado de escritura'); },
+  optTr: ()=>{ $('optTr').checked = !$('optTr').checked; render(); flash($('optTr').checked ? (flipped||mode==='pos' ? 'Se muestra lo que dice' : 'Lo que dice se muestra al voltear la hoja') : 'No se muestra lo que dice'); },
+  optNum: ()=>{ $('optNum').checked = !$('optNum').checked; render(); persist(); },
+  contrast: ()=>toggleContrast(), zoomIn: ()=>setZoom(+1), zoomOut: ()=>setZoom(-1), zoomReset: ()=>setZoom(0),
+  modeNeg: ()=>{ clickBtn('mNeg'); persist(); flash('Regleta común'); }, modePos: ()=>{ clickBtn('mPos'); persist(); flash('Regleta de punto positivo'); },
+  paperA4: ()=>setPaper('a4'), paperA4w: ()=>setPaper('a4w'), paperCurso: ()=>setPaper('curso'),
+  paperCustom: ()=>{ $('cols').value = COLS; $('rows').value = ROWS; openDialog($('dlgSize')); },
+  help: ()=>openDialog($('dlgHelp')), keys: ()=>openDialog($('dlgKeys')), about: ()=>openDialog($('dlgAbout'))
+};
+const OPENS = {new:1, open:1, paperCustom:1, help:1, keys:1, about:1, mbv:1};
+function runCmd(cmd){ closeMenus(); if (!OPENS[cmd]) backToSlate(); COMMANDS[cmd](); }
+TOPS.forEach((top, i)=>{
+  top.addEventListener('click', ()=>{ top.getAttribute('aria-expanded')==='true' ? (closeMenus(), focusTop(top)) : openMenu(top, 'first'); });
+  top.addEventListener('keydown', e=>{
+    const k = e.key;
+    if (k==='ArrowRight' || k==='ArrowLeft'){ e.preventDefault(); focusTop(TOPS[(i + (k==='ArrowRight'?1:-1) + TOPS.length) % TOPS.length]); }
+    else if (k==='ArrowDown' || k==='Enter' || k===' '){ e.preventDefault(); openMenu(top, 'first'); }
+    else if (k==='ArrowUp'){ e.preventDefault(); openMenu(top, 'last'); }
+    else if (k==='Home'){ e.preventDefault(); focusTop(TOPS[0]); }
+    else if (k==='End'){ e.preventDefault(); focusTop(TOPS[TOPS.length-1]); }
+    else if (k==='Escape'){ e.preventDefault(); closeMenus(); backToSlate(); }
+  });
+  const menu = menuOf(top);
+  menu.addEventListener('keydown', e=>{
+    const items = itemsOf(menu), at = items.indexOf(document.activeElement), k = e.key;
+    if (k==='ArrowDown'){ e.preventDefault(); items[(at+1) % items.length].focus(); }
+    else if (k==='ArrowUp'){ e.preventDefault(); items[(at-1+items.length) % items.length].focus(); }
+    else if (k==='Home'){ e.preventDefault(); items[0].focus(); }
+    else if (k==='End'){ e.preventDefault(); items[items.length-1].focus(); }
+    else if (k==='ArrowRight' || k==='ArrowLeft'){ e.preventDefault(); openMenu(TOPS[(i + (k==='ArrowRight'?1:-1) + TOPS.length) % TOPS.length], 'first'); }
+    else if (k==='Escape'){ e.preventDefault(); e.stopPropagation(); closeMenus(); focusTop(top); }
+    else if (k==='Tab'){ e.preventDefault(); closeMenus(); backToSlate(); }
+    else if (k==='Enter' || k===' '){ e.preventDefault(); const it = items[at]; if (it) runCmd(it.dataset.cmd); }
+    else if (k.length===1 && /\S/.test(k) && !e.ctrlKey && !e.altKey && !e.metaKey){      // la primera letra salta a la opción
+      e.preventDefault(); const L = k.toLowerCase();
+      const order = items.slice(at+1).concat(items.slice(0, at+1));
+      const hit = order.find(b=>b.textContent.trim().toLowerCase().startsWith(L)); if (hit) hit.focus(); }
+  });
+  menu.addEventListener('click', e=>{ const b = e.target.closest('[data-cmd]'); if (b) runCmd(b.dataset.cmd); });
+});
+document.addEventListener('pointerdown', e=>{ if (!e.target.closest('#menubar')) closeMenus(); }, true);
+$('menubar').addEventListener('focusout', e=>{ if (!$('menubar').contains(e.relatedTarget)) setTimeout(()=>{ if (!$('menubar').contains(document.activeElement)) closeMenus(); }, 0); });
+
+/* Ver › Fondo oscuro y letras blancas, y zoom de 100 % a 200 % (agranda toda la aplicación, como en la Máquina Braille Virtual) */
+const PREFS = 'regleta-virtual-prefs';
+function savePrefs(){ try{ localStorage.setItem(PREFS, JSON.stringify({contrast, zoom})); }catch(e){} }
+function applyContrast(){ if (contrast) document.documentElement.setAttribute('data-contrast','hc'); else document.documentElement.removeAttribute('data-contrast'); setCheck('contrast', contrast); }
+function toggleContrast(){ contrast = !contrast; applyContrast(); savePrefs(); flash(contrast ? 'Fondo oscuro y letras blancas' : 'Colores normales'); }
+function applyZoom(){
+  const app = document.querySelector('.app'), pct = Math.round(zoom*100)+' %';
+  app.style.setProperty('--z', zoom);
+  $('zoomLbl').textContent = zoom===1 ? 'Zoom normal (100 %)' : 'Zoom normal (ahora '+pct+')';
+  fitCells(); showCur();
+}
+function showCur(){ const c = slate.querySelector('.cell.cur'); if (c) try{ c.scrollIntoView({block:'nearest', inline:'nearest'}); }catch(e){} }
+function setZoom(dir){
+  const z = dir===0 ? 1 : Math.round((zoom + dir*0.1)*10)/10;
+  if (z>2){ flash('Zoom máximo: 200 %'); return; }
+  if (z<1){ flash('Zoom normal: 100 %'); return; }
+  zoom = z; applyZoom(); savePrefs(); flash('Zoom '+Math.round(zoom*100)+' %');
+}
+try{ const pr = JSON.parse(localStorage.getItem(PREFS)||'null'); if (pr){ contrast = !!pr.contrast; zoom = Math.min(2, Math.max(1, +pr.zoom||1)); } }catch(e){}
+applyContrast(); applyZoom();
+
+/* Teclado general */
+window.addEventListener('keydown', e=>{
+  if (e.target && e.target.closest && e.target.closest('dialog')) return;          // los diálogos usan su teclado normal
+  if (e.altKey && !e.ctrlKey && !e.metaKey && ACCEL[e.code]){ e.preventDefault(); openMenu($(ACCEL[e.code]), 'first'); return; }
+  if (e.key==='F10' && !e.shiftKey){ e.preventDefault();
+    if ($('menubar').contains(document.activeElement)){ closeMenus(); backToSlate(); } else { closeMenus(); focusTop($('mbFile')); } return; }
+  if (e.key==='F1'){ e.preventDefault(); runCmd('help'); return; }
+  if ((e.ctrlKey || e.metaKey) && !e.altKey){
+    if (e.key==='+' || e.key==='=' || e.code==='NumpadAdd'){ e.preventDefault(); setZoom(+1); return; }
+    if (e.key==='-' || e.code==='NumpadSubtract'){ e.preventDefault(); setZoom(-1); return; }
+    if ((e.key==='0' || e.code==='Numpad0') && !e.shiftKey){ e.preventDefault(); setZoom(0); return; }
+    if (e.shiftKey && e.code==='KeyC'){ e.preventDefault(); closeMenus(); toggleContrast(); return; }
+    if (e.code==='KeyG'){ e.preventDefault(); closeMenus(); if (!e.repeat) runCmd(e.shiftKey ? 'saveBrf' : 'saveTxt'); return; }
+    if (e.code==='KeyO' && !e.shiftKey){ e.preventDefault(); closeMenus(); if (!e.repeat) runCmd('open'); return; }
+    if (e.code==='KeyZ' && !e.shiftKey && !(e.target && /^(INPUT|SELECT)$/.test(e.target.tagName))){ e.preventDefault(); undo(); return; }
+  }
+  if (e.target && e.target.closest && e.target.closest('#menubar')) return;
+  if (e.target && /^(INPUT|SELECT)$/.test(e.target.tagName)) return;
+  if (e.key==='F2'){ e.preventDefault(); runCmd('flip'); return; }
+  if (e.key==='F4'){ e.preventDefault(); runCmd('optTr'); return; }
+}, true);
+slate.addEventListener('keydown', ()=>setTimeout(showCur, 0));
 
 /* ---------- Borrador en este navegador ---------- */
 function persist(){ try{ localStorage.setItem(STORE, JSON.stringify({grid, COLS, ROWS, mode, student:$('student').value, exercise:$('exercise').value, num:$('optNum').checked})); }catch(e){} }
