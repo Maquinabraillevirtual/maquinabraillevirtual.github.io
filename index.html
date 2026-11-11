@@ -358,6 +358,7 @@ dialog input[type="text"]:focus-visible{outline:2px solid var(--accent);outline-
           <li><b>Barra espaciadora:</b> deja una celda en blanco y lee la palabra que acabas de escribir.</li>
           <li><b>Enter:</b> pasa a la línea siguiente. <b>Retroceso:</b> borra la última celda.</li>
           <li>Cuando quedan 6 celdas para terminar la línea suena la campanita, según las celdas por línea elegidas en Formato › Tamaño de hoja. Si se sigue escribiendo al llegar al final de la línea, las teclas chocan contra el tope como en la Perkins: se oye un golpe seco y apagado, la hoja se sacude y no se marca nada hasta pulsar Enter. Al llegar con Enter a la última línea de la hoja, después del cambio de línea se oye un doble golpe más agudo y se avisa «Última línea de la hoja» (las Perkins no tienen este aviso; es una ayuda de la aplicación). Con el siguiente Enter se avisa «Hoja nueva».</li>
+          <li><b>Palabras partidas:</b> como en la Perkins, la hoja no salta sola de línea. Si al final de la línea partes una palabra con guion (36) y la sigues al comienzo de la línea siguiente, la aplicación la reconoce: al pulsar Enter avisa «palabra partida», al terminar la segunda parte dice la palabra completa, y al leer con las flechas, F4 o F8 se añade «palabra partida: casa». F7 sugiere corregir la división si no respeta las sílabas (cas-a) o deja una vocal sola. Si la palabra es compuesta con guion (teórico-práctico) y se parte por ese guion, el guion se repite al comienzo de la línea siguiente. Al exportar a Word la palabra sale entera.</li>
           <li><b>Mayúsculas:</b> el signo 46 pone en mayúscula la letra siguiente. Repetido (46 46) pone en mayúsculas toda la palabra, como en las siglas: ONU, ONCE, OEA.</li>
           <li><b>Cursiva, negrita y otros resaltes:</b> la palabra o las palabras resaltadas se encierran entre puntos 35, uno al comienzo y otro al final. En la vista en tinta se ven en cursiva y negrita; al escribir se anuncia «comienza resalte» y «termina resalte», y al releer con F4 o F8 se dice dónde empieza y termina. El resalte puede seguir en la línea siguiente. Un 35 suelto entre espacios es un asterisco.</li>
         </ul>
@@ -375,6 +376,7 @@ dialog input[type="text"]:focus-visible{outline:2px solid var(--accent);outline-
           <li>Los errores se subrayan en rojo y las sugerencias con puntos azules, en la vista en tinta y en la vista braille.</li>
           <li>Al pasar de línea con Enter, si la línea terminada tiene errores se avisa. Se desactiva en <b>Edición › Avisar errores al pasar de línea</b>.</li>
           <li>En Matemáticas se revisan los signos del Código Matemático Unificado: paréntesis auxiliares sin cerrar o sin abrir, raíces sin fin de índice (156), potencias o subíndices sin exponente, fracciones sin numerador o denominador, signos de operación seguidos y signos que no existen. Si se usan paréntesis comunes en un exponente, un radicando o una fracción, se sugiere cambiarlos por paréntesis auxiliares.</li>
+          <li>En Matemáticas, una expresión demasiado larga se parte por un signo de relación (=, <, >…) o de operación (+, −, ×…), que <b>se repite al comienzo de la línea siguiente</b> (Código Matemático Unificado, 14.2): 3+4= y en la línea de abajo =7. La aplicación lo reconoce, no lo marca como error, lee «continúa en la línea siguiente» y al exportar a Word junta las dos líneas en una sola ecuación. Si falta repetir el signo, F7 lo sugiere. Los conjuntos y las sucesiones se parten tras una coma o un punto y coma, que no se repite.</li>
           <li>En braille integral se revisan los signos no reconocidos, el signo de mayúscula o de número sin nada detrás y los signos que deben ir en pareja: ¿ ?, ¡ !, paréntesis y comillas.</li>
           <li>La revisión no puede saber qué se quiso escribir: x, potencia, a, más, b es correcto y se lee «x elevado a a, más b». Releer con las flechas o con F4 ayuda a comprobar que se lee lo que se quería.</li>
         </ul>
@@ -844,6 +846,7 @@ dialog input[type="text"]:focus-visible{outline:2px solid var(--accent);outline-
         <ul>
           <li><b>Acentuador:</b> qué, cómo, cuál, cuándo, cuánto, dónde, quién, porqué, sólo, éste y aquél llevan un punto 5 delante de su abreviatura.</li>
           <li><b>Signos de apertura</b> ¿ ¡ “ ( - y tipografía especial ante una palabra en minúscula: un punto 5 delante del signo (ante mayúscula o número no hace falta).</li>
+          <li><b>Palabras partidas al final de la línea</b> (B 16-1, 1.5): las abreviaciones no pueden romper la sílaba. La aplicación lee juntas las dos partes y dice la palabra completa (⠯e- y en la línea siguiente s*⠹⠪: «asesinados»), no sugiere abreviar los fragmentos y F7 avisa si la división no respeta las sílabas.</li>
           <li><b>Números romanos:</b> se marcan con un punto 5 delante, como las palabras en braille literal, seguido del signo de mayúscula y las letras: 5 46 1346 1346 24 = XXI, que se lee «21». Una sola letra o formas como «Mi» o «Vi» se toman como romanos sólo tras palabras como siglo, capítulo o tomo, o tras un nombre propio (Felipe V). Sin el punto 5 se leen como estenografía.</li>
           <li><b>Signos de cierre</b> de interrogación, comillas y tipografía especial: siempre con punto 5 delante. Con varios signos de cierre, un punto 5 antes del primero.</li>
           <li><b>Cursiva, negrita y otros resaltes</b> (tipografía especial, 35): se abre con 5-35 ante minúscula (35 solo ante mayúscula o número, o tras el punto 5 de una palabra en braille literal) y se cierra siempre con 5-35. Así no se confunde con la contracción <i>in</i> (35). Lo resaltado se ve en cursiva en la vista en tinta, y se anuncia «comienza resalte» y «termina resalte».</li>
@@ -3124,6 +3127,22 @@ const MX = (()=>{
   return {translate, speak, check, SEQ, GRK};
 })();
 Translators.math = MX.translate;
+/* Expresión partida (CMU 14.2): si la línea termina en un signo de operación que se repite al comienzo de la
+   línea siguiente del mismo bloque, ese signo es la operación (3+ / +4), no una cifra baja de fracción (3⁄6). */
+{ const mathCore = MX.translate;
+  const SPLIT_OPS = new Set(['235','36','2356','236','256','3','25','345','126','246','135'].map(d=>m(d)));
+  Translators.math = function(cells){
+    const n = cells.length;
+    if (n>1 && typeof doc!=='undefined' && doc.lines && SPLIT_OPS.has(cells[n-1])){
+      const li = doc.lines.indexOf(cells), nx = li>=0 ? doc.lines[li+1] : null;
+      if (nx && nx.length && nx[0]===cells[n-1] && blockStart(li+1)===blockStart(li)){
+        const head = mathCore(cells.slice(0, n-1)), op = mathCore([cells[n-1]]);
+        const res = head.concat(op); ['endAux','endEm'].forEach(k=>{ if (k in head) res[k] = head[k]; });
+        return res;
+      }
+    }
+    return mathCore(cells);
+  }; }
 window.__perkinsMath = MX;
 /* ---------- Estenografía (Documento técnico B 16-1 de la CBE) ---------- */
 STENO.setWords(STENO_DATA.lista); STENO.setOverrides(STENO_DATA.overrides); STENO.setBre(STENO_DATA.bre);
@@ -3394,11 +3413,11 @@ function lineText(line){
   return t || 'línea vacía';
 }
 /* F4: la línea donde está el cursor (de lectura o de escritura), sin moverlo */
-function readLine(){ const li = readPos ? readPos.line : doc.lines.length-1; sayRaw(speakFor('Línea '+(li+1)+': '+lineText(doc.lines[li]), blockGrade(li)), true); }
+function readLine(){ const li = readPos ? readPos.line : doc.lines.length-1; sayRaw(speakFor('Línea '+(li+1)+': '+lineText(doc.lines[li])+splitNote(li), blockGrade(li)).replace(/\s+,/g,','), true); }
 function readAll(){
   if (doc.lines.every(l=>!l.length)){ say('La hoja está vacía'); return; }
   if (stopReading()) return;                                            // F8 otra vez: detener
-  const parts = doc.lines.map((l,i)=>speakFor('Línea '+(i+1)+': '+lineText(l).replace(/[.…]$/,'')+'.', blockGrade(i)));
+  const parts = doc.lines.map((l,i)=>speakFor('Línea '+(i+1)+': '+lineText(l).replace(/[.…]$/,'')+splitNote(i)+'.', blockGrade(i)).replace(/\s+,/g,','));
   if (!voice){ announce(parts.join(' '), true); return; }
   try{
     const s = window.speechSynthesis; s.cancel(); readingAll = true;
@@ -3425,6 +3444,10 @@ function putCell(c){
   line.push(c);
   const items = translate(line), it = items[items.length-1];
   let text = c===0 ? (word || 'espacio') : describe(it, c);   // la barra espaciadora lee la palabra recién escrita
+  if (c===0 && word && doc.lines.length>1 && line.indexOf(0)===line.length-1){       // primera palabra de la línea
+    const sp = lineSplit(doc.lines.length-2);
+    if (sp && sp.kind==='word') text += '. Palabra completa: '+sp.word;
+  }
   if (line.length === doc.width - 6) { bell(); flashMsg('Quedan 6 celdas'); text += '. Quedan 6 celdas'; }
   say(text);
   $('sLast').textContent = c===0 ? 'espacio' : UNI(c) + ' ' + (it.sig || it.t) + ' · ' + dotsOf(c).join('-');
@@ -3449,7 +3472,8 @@ function newLine(){
   let pageMsg = '';
   if (inPage===LINES_PER_PAGE){ pageEndSound(crEnd + .1); flashMsg('Última línea de la hoja'); pageMsg = ' Última línea de la hoja '+page+'.'; }
   else if (inPage===1 && n>1){ flashMsg('Hoja '+page); pageMsg = ' Hoja nueva: hoja '+page+'.'; }
-  sayRaw(speakable((w ? w+'. ' : '')+'Línea '+n)+'.'+pageMsg+lineWarning(n-2));
+  const cutMsg = (n>=2 && cur().length===0 && doc.lines[n-2].length>1 && doc.lines[n-2][doc.lines[n-2].length-1]===C36 && doc.lines[n-2][doc.lines[n-2].length-2]!==0 && blockGrade(n-2)!=='math') ? ' Palabra partida, sigue en esta línea.' : '';
+  sayRaw(speakable((w ? w+'. ' : '')+'Línea '+n)+'.'+cutMsg+pageMsg+lineWarning(n-2));
 }
 function backspace(){
   clearExample();
@@ -3755,7 +3779,7 @@ function moveRead(kind, dir){
     const nl = p.line + dir;
     if (nl<0){ say('Primera línea'); return; }
     if (nl>=L.length){ readPos=null; say('Última línea. Línea '+L.length+': '+(spokenRange(L.length-1, 0, L[L.length-1].length)||'vacía')); return finishMove(); }
-    p = {line:nl, col:0}; out = (spokenRange(nl, 0, L[nl].length)||'vacía');
+    p = {line:nl, col:0}; out = (spokenRange(nl, 0, L[nl].length)||'vacía') + splitNote(nl);
   } else if (kind==='home'){ p.col = 0; out = charName(L[p.line][0]); }
   else if (kind==='end'){ p.col = L[p.line].length; out = 'final de línea'; }
   else if (kind==='top'){ p = {line:0,col:0}; out = 'Principio. ' + (spokenRange(0, 0, L[0].length)||'vacía'); }
@@ -4202,12 +4226,28 @@ const DOCX = (()=>{
     if (opts.date) body.push(textPara(opts.date));
     if (opts.title || opts.student || opts.date) body.push(para(''));
     let lines = doc.lines.slice(); while (lines.length && !lines[lines.length-1].length) lines.pop();
+    /* Palabras partidas con guion al final de la línea: en Word van enteras en la primera línea.
+       Expresiones partidas (CMU 14.2): una sola ecuación, sin repetir el signo. */
+    let mathCarry = '', skipB = 0;
     lines.forEach((line, li)=>{
       if (!line.length){ body.push(para('')); return; }
-      const g = blockGrade(li), items = translate(line);
-      if (g==='math') body.push(mathPara(toOMML(mathInk(items))));
-      else body.push(para(textRuns(items)));
+      const g = blockGrade(li), sp = typeof lineSplit==='function' ? lineSplit(li) : null;
+      let items = translate(line).map(it=>({...it}));
+      if (skipB){ for (let k=0;k<skipB && k<items.length;k++) items[k].t = ''; skipB = 0; }
+      if (g==='math'){
+        let ink = mathInk(items);
+        if (mathCarry){ const prev = mathCarry; mathCarry = ''; const op = prev.op; ink = prev.ink + (op && ink.startsWith(op) ? ink.slice(op.length) : ink); }
+        if (sp && (sp.kind==='math' || sp.kind==='list')){ mathCarry = {ink, op: sp.kind==='math' && sp.repeated ? sp.op : ''}; return; }
+        body.push(mathPara(toOMML(ink)));
+        return;
+      }
+      if (sp && sp.kind==='word'){
+        items[items.length-1].t = sp.part2;                     // el guion se cambia por el resto de la palabra
+        skipB = sp.cellsB[1] + (doc.lines[li+1][sp.cellsB[1]]===0 ? 1 : 0);
+      }
+      body.push(para(textRuns(items)));
     });
+    if (mathCarry) body.push(mathPara(toOMML(mathCarry.ink)));
     return zip([['[Content_Types].xml', CT], ['_rels/.rels', RELS], ['word/_rels/document.xml.rels', DOCRELS],
       ['word/document.xml', documentXML(body.join(''))], ['word/styles.xml', STYLES], ['docProps/core.xml', core(opts.title||'Trabajo', opts.student)]]);
   }
@@ -4509,6 +4549,99 @@ function checkSteno(cells, st){
   });
   return P;
 }
+/* ---------- Palabras partidas al final de la línea y expresiones que siguen en la línea de abajo ----------
+   La hoja no salta sola de línea, como la Perkins. Cuando una palabra se parte con guion (36) al final de la línea
+   y sigue al comienzo de la siguiente (en el mismo bloque), la aplicación la reconoce: la lee completa, revisa que
+   la división respete las sílabas (y en estenografía, la regla 1.5 del B 16-1) y la une al exportar a Word.
+   En Matemáticas (CMU 14.2) la expresión se parte por un signo de relación u operación, que se repite al comienzo
+   de la línea siguiente; en conjuntos y sucesiones, tras una coma o un punto y coma, que no se repite. */
+const C36 = m('36');
+/* Sílabas del castellano: posiciones donde se puede partir una palabra */
+function syllableBreaks(word){
+  const w = word.toLowerCase(), n = w.length, units = [];
+  for (let i=0;i<n;){
+    const two = w.slice(i,i+2);
+    if (two==='ch' || two==='ll' || two==='rr'){ units.push({s:two, t:'C', at:i}); i+=2; continue; }
+    if ((two==='qu' || two==='gu') && /[eéií]/.test(w[i+2]||'')){ units.push({s:two, t:'C', at:i}); i+=2; continue; }
+    const ch = w[i];
+    let t = /[aeoáéó]/.test(ch) ? 'S' : /[iuü]/.test(ch) ? 'W' : /[íú]/.test(ch) ? 'S' : 'C';
+    if (ch==='y' && (i===n-1 || !/[aeiouáéíóúü]/.test(w[i+1]||''))) t = i>0 && /[aeiouáéíóú]/.test(w[i-1]) ? 'W' : 'C';
+    units.push({s:ch, t, at:i}); i++;
+  }
+  const INSEP = /^(pr|br|tr|dr|cr|gr|fr|kr|pl|bl|cl|gl|fl|kl|tl)$/;
+  const isV = u => u && u.t!=='C';
+  const breaks = new Set();
+  /* entre vocales: hiato si son dos fuertes o si una débil lleva tilde */
+  for (let i=0;i+1<units.length;i++) if (isV(units[i]) && isV(units[i+1]) && units[i].t==='S' && units[i+1].t==='S') breaks.add(units[i+1].at);
+  /* grupos de consonantes entre vocales */
+  let i = 0;
+  while (i<units.length){
+    if (!isV(units[i])){ i++; continue; }
+    let j = i+1; while (j<units.length && !isV(units[j])) j++;
+    if (j>=units.length) break;                               // consonantes finales: no se separan
+    const cons = units.slice(i+1, j), k = cons.length;
+    if (k===1) breaks.add(cons[0].at);
+    else if (k===2){ breaks.add(INSEP.test(cons[0].s+cons[1].s) ? cons[0].at : cons[1].at); if (cons[0].s+cons[1].s==='tl') breaks.add(cons[1].at); }   // a-tlas o at-las
+    else if (k===3) breaks.add(INSEP.test(cons[1].s+cons[2].s) ? cons[1].at : cons[2].at);
+    else if (k>=4) breaks.add(cons[2].at);
+    i = j;
+  }
+  return breaks;
+}
+const PREFIX_OK = /^(des|sub|in|en|ex|inter|super|trans|nos|vos|bien|mal|con|post|pre|re|semi|sobre|tras|hiper|anti|auto)$/;
+function splitOk(word, k){
+  const a = word.slice(0,k), b = word.slice(k);
+  if (/^[aeiouáéíóú]$/i.test(a) || /^[aeiouáéíóú]$/i.test(b)) return 'no se deja una vocal sola al final ni al comienzo de la línea';
+  if (syllableBreaks(word).has(k) || PREFIX_OK.test(a.toLowerCase())) return '';
+  const parts = []; let last = 0; [...syllableBreaks(word)].sort((x,y)=>x-y).forEach(p=>{ parts.push(word.slice(last,p)); last = p; }); parts.push(word.slice(last));
+  return 'la división no respeta las sílabas ('+parts.join('-')+')';
+}
+const MATH_OPS = new Set(['=','≠','≈','≡','<','>','≤','≥','+','−','×','·','÷',':','±','∓','⇒','⇔','∈','∉','⊂','⊆','∪','∩']);
+/* Información sobre el paso de la línea li a la siguiente; null si no hay nada partido */
+function lineSplit(li){
+  const L = doc.lines, a = L[li], b = L[li+1];
+  if (!a || !b || !a.length || !b.length || a[a.length-1]===0) return null;
+  if (blockStart(li+1)!==blockStart(li)) return null;
+  const g = blockGrade(li);
+  if (g==='math'){
+    const ia = translate(a), ib = translate(b);
+    const endT = [...ia].reverse().find(it=>it && it.t)?.t || '', startT = ib.find(it=>it && it.t)?.t || '';
+    const op = [...MATH_OPS].find(o=>endT.endsWith(o));
+    if (op) return {kind:'math', op, repeated: startT.startsWith(op)};
+    if (/[,;]$/.test(endT)) return {kind:'list'};
+    return null;
+  }
+  if (a[a.length-1]!==C36 || a.length<2 || a[a.length-2]===0 || a[a.length-2]===C36) return null;
+  if (b[0]===0) return null;
+  /* fragmentos: última palabra de la línea (sin el guion) y primera de la siguiente */
+  let s = a.length-1; while (s>0 && a[s-1]!==0) s--;
+  let e = 0; while (e<b.length && b[e]!==0) e++;
+  const cellsA = a.slice(s, a.length-1), cellsB = b.slice(0, e);
+  const tx = items => items.map(it=>it && it.t || '').join('');
+  const ia = translate(a).slice(s, a.length-1), ib = translate(b).slice(0, e);
+  if (b[0]===C36) return {kind:'compound', part1: tx(ia), part2: tx(ib).replace(/^-/,'')};   // teórico- / -práctico
+  const tB = tx(ib), m2 = tB.match(/^[\p{L}]+/u); if (!m2) return null;
+  const part1 = tx(ia).replace(/^[^\p{L}]+/u,''), lead = tx(ia).slice(0, tx(ia).length-part1.length);
+  let part2 = m2[0], word = part1 + part2;
+  if (g==='steno'){                                          // la palabra entera, leída de una vez
+    const cellsB2 = cellsB.slice(0, cellsB.length);
+    const whole = tx(Translators.steno(cellsA.concat(cellsB2), false)).replace(/^[^\p{L}]+/u,'').match(/^[\p{L}]+/u);
+    if (whole) word = whole[0];
+  }
+  if (!/^\p{L}+$/u.test(part1) || !part1) return null;
+  const k = word.toLowerCase().startsWith(part1.toLowerCase()) ? part1.length : -1;
+  return {kind:'word', part1, part2: k>=0 ? word.slice(k) : part2, word, lead, k, cellsA:[s, a.length-1], cellsB:[0, e], tail: tB.slice(m2[0].length)};
+}
+/* Nota que se añade al leer la línea li (flechas, F4, F8) y al terminar la primera palabra de la siguiente */
+window.__perkinsSplit = {splitOk, syllableBreaks};
+function splitNote(li){
+  const s = lineSplit(li); if (!s) return '';
+  if (s.kind==='word') return ', palabra partida: '+s.word;
+  if (s.kind==='compound') return ', sigue en la línea siguiente: '+s.part1+'-'+s.part2;
+  if (s.kind==='math' || s.kind==='list') return ', continúa en la línea siguiente';
+  return '';
+}
+
 function checkDoc(){
   if (isExample) return [];
   const st = {aux:[], del:[], line:0}, all = [];
@@ -4516,7 +4649,20 @@ function checkDoc(){
     st.line = li;
     const g = blockGrade(li);
     const P = g==='math' ? MX.check(cells, st) : g==='steno' ? checkSteno(cells, st) : checkIntegral(cells, st);
-    P.forEach(p=>all.push({line:li, ...p}));
+    const sp = lineSplit(li), spPrev = li>0 ? lineSplit(li-1) : null;
+    P.forEach(p=>{
+      /* fragmentos de una palabra partida: no se sugiere abreviar (B 16-1, 1.5) */
+      if (/puede abreviarse más/.test(p.msg) && ((sp && sp.kind==='word' && p.b>sp.cellsA[0]) || (spPrev && spPrev.kind==='word' && p.a<spPrev.cellsB[1]))) return;
+      /* una expresión partida: el signo al final y al comienzo de la línea no son errores */
+      if (g==='math' && ((sp && sp.kind==='math') || (spPrev && spPrev.kind==='math')) && /sin nada (después|antes)|seguidos|al final|al comienzo/.test(p.msg)) return;
+      all.push({line:li, ...p});
+    });
+    if (sp && sp.kind==='word' && sp.k>=0){
+      const why = splitOk(sp.word, sp.k);
+      if (why) all.push({line:li, a:sp.cellsA[0], b:cells.length, level:'sug', msg:'Palabra partida «'+sp.part1+'-'+sp.part2+'»: '+why+'.'});
+    }
+    if (sp && sp.kind==='math' && !sp.repeated)
+      all.push({line:li+1, a:0, b:1, level:'sug', msg:'La expresión sigue de la línea anterior: al partirla se repite el signo '+sp.op+' al comienzo de esta línea (Código Matemático Unificado, 14.2).'});
   });
   const OPEN_NAME = {'(':'paréntesis','[':'corchete','{':'llave','⟨':'paréntesis angular','¿':'interrogación','¡':'exclamación','“':'comillas'};
   st.aux.forEach(o=>all.push({line:o.line, a:o.a, b:o.b, level:'error', msg:'Falta cerrar el paréntesis auxiliar, puntos 35.'}));
