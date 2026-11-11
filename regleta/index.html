@@ -166,11 +166,9 @@ dialog select{font:inherit;font-size:15px;color:var(--ink);background:var(--bg);
           <li role="none"><button role="menuitem" tabindex="-1" data-cmd="open" aria-keyshortcuts="Control+O"><span class="ck"></span>Abrir trabajo…<span class="sc">Ctrl+O</span></button></li>
           <li role="none"><button role="menuitem" tabindex="-1" data-cmd="saveTxt" aria-keyshortcuts="Control+G"><span class="ck"></span>Guardar en braille Unicode (.txt)<span class="sc">Ctrl+G</span></button></li>
           <li role="none"><button role="menuitem" tabindex="-1" data-cmd="saveBrf" aria-keyshortcuts="Control+Shift+G"><span class="ck"></span>Guardar en BRF<span class="sc">Ctrl+Mayús+G</span></button></li>
-          <li role="separator"></li>
+          <li role="separator" id="sepRev"></li>
           <li role="none"><button role="menuitem" tabindex="-1" data-cmd="saveRev"><span class="ck"></span>Guardar el trabajo corregido</button></li>
           <li role="none"><button role="menuitem" tabindex="-1" data-cmd="copyRev"><span class="ck"></span>Copiar las correcciones</button></li>
-          <li role="separator"></li>
-          <li role="none"><button role="menuitem" tabindex="-1" data-cmd="mbv"><span class="ck"></span>Ir a la Máquina Braille Virtual</button></li>
         </ul>
       </li>
       <li role="none"><button class="mb" role="menuitem" id="mbEdit" aria-haspopup="menu" aria-expanded="false" aria-controls="mEdit" aria-keyshortcuts="Alt+E" tabindex="-1"><span><u>E</u>dición</span></button>
@@ -263,7 +261,6 @@ dialog select{font:inherit;font-size:15px;color:var(--ink);background:var(--bg);
     <div style="display:flex;flex-wrap:wrap;gap:8px"><button class="btn" id="copyRev">Copiar las correcciones</button><button class="btn" id="saveRev">Guardar el trabajo corregido</button></div>
   </section>
 
-  <p class="next" style="margin:0;color:var(--muted)">Siguiente paso, cuando ya formes bien las letras: la <a href="https://maquinabraillevirtual.github.io/" style="color:var(--accent);font-weight:700">Máquina Braille Virtual</a>, que funciona como una máquina Perkins.</p>
   <dialog id="dlgHelp" aria-labelledby="dlgHelpT">
     <form method="dialog">
       <h2 id="dlgHelpT">Cómo se usa la Regleta Virtual</h2>
@@ -296,7 +293,7 @@ dialog select{font:inherit;font-size:15px;color:var(--ink);background:var(--bg);
   <dialog id="dlgAbout" aria-labelledby="dlgAboutT">
     <form method="dialog">
       <h2 id="dlgAboutT">Acerca de la Regleta Virtual</h2>
-      <p style="margin:0 0 8px">Regleta y punzón en pantalla para aprender a formar las letras braille antes de pasar a la Máquina Braille Virtual.</p>
+      <p style="margin:0 0 8px">Regleta y punzón en pantalla para aprender a formar las letras braille.</p>
       <p style="margin:0">Aplicación desarrollada por Denis Povis Medina, profesor de Comunicación del CERCIL (Lima, Perú).</p>
       <div class="dlg-btns"><button class="btn primary" value="close">Cerrar</button></div>
     </form>
@@ -633,6 +630,7 @@ function syncMenus(){
   document.querySelector('[data-cmd="flip"]').closest('li').hidden = mode==='pos';
   document.querySelector('[data-cmd="saveRev"]').closest('li').hidden = !original;
   document.querySelector('[data-cmd="copyRev"]').closest('li').hidden = !original;
+  $('sepRev').hidden = !original;
 }
 function setPaper(k){
   if (PAPERS[k][0]===COLS && PAPERS[k][1]===ROWS){ flash('La hoja ya es de '+COLS+' celdas por '+ROWS+' renglones'); return; }
