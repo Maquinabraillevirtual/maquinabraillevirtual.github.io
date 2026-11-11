@@ -405,6 +405,7 @@ dialog input[type="text"]:focus-visible{outline:2px solid var(--accent);outline-
         <h4>Guardar e imprimir</h4>
         <ul>
           <li>La aplicación siempre empieza con una hoja en blanco. Al salir con <b>Archivo › Salir</b>, si hay cambios sin guardar, pregunta si quieres guardarlos: <b>Sí, guardar</b> abre la opción de guardar en el formato de la Máquina Braille Virtual (.mbv) y después sale; <b>No</b> sale sin guardar; <b>Cancelar</b> vuelve a la hoja. Se conservan el tamaño de hoja y las preferencias.</li>
+          <li>Si cierras la ventana de la aplicación (con la X, Alt + F4 o Control + W) sin haber guardado los últimos cambios, el navegador solo muestra su aviso general de «¿Salir?»: no permite a las páginas preguntar si quieres guardar. Por eso, al volver a abrir la aplicación, se ofrece <b>Recuperar el trabajo sin guardar</b>: con <b>Sí, recuperar</b> vuelve la hoja tal como estaba, para seguir y guardarla con Control + G. Si al salir con Archivo › Salir respondes <b>No</b>, el trabajo se descarta y no se ofrece recuperarlo.</li>
           <li><b>Archivo › Guardar</b> (Control + G) guarda el trabajo en un archivo de la Máquina Braille Virtual (.mbv) que puedes llevar a otra computadora o entregar a tu profesor. <b>Guardar como</b> (Control + Mayúsculas + G) lo guarda con otro nombre.</li>
           <li><b>Archivo › Abrir</b> (Control + O) abre un trabajo .mbv para continuarlo donde lo dejaste (también los trabajos .pks guardados con versiones anteriores). También abre archivos BRF, .bra y .ban, y textos en braille Unicode.</li>
           <li>En Chrome y Edge, Guardar actualiza el mismo archivo. En otros navegadores, cada vez se descarga una copia nueva.</li>
@@ -1824,6 +1825,13 @@ dialog input[type="text"]:focus-visible{outline:2px solid var(--accent);outline-
       <div class="dlg-btns"><button class="btn" value="cancel" autofocus>Cancelar</button><button class="btn" value="save">Guardar primero</button><button class="btn danger-fill" value="ok">Abrir sin guardar</button></div>
     </form>
   </dialog>
+  <dialog id="dlgRecover" aria-labelledby="dlgRecoverT" aria-describedby="dlgRecoverD">
+    <form method="dialog">
+      <h2 id="dlgRecoverT">Recuperar el trabajo sin guardar</h2>
+      <p id="dlgRecoverD"></p>
+      <div class="dlg-btns"><button class="btn primary" value="yes" autofocus>Sí, recuperar</button><button class="btn" value="no">No, empezar en blanco</button></div>
+    </form>
+  </dialog>
   <dialog id="dlgExit" aria-labelledby="dlgExitT" aria-describedby="dlgExitD">
     <form method="dialog">
       <h2 id="dlgExitT">Salir de la Máquina Braille Virtual</h2>
@@ -3234,6 +3242,10 @@ function load(){
     if (raw){ const d = JSON.parse(raw); if (d && Array.isArray(d.lines)) {
       /* La aplicación siempre empieza con una hoja en blanco: de la sesión anterior sólo se conservan
          el tamaño, el papel y la orientación de la hoja. Para seguir un trabajo, se abre su archivo .mbv. */
+      /* …salvo que la aplicación se haya cerrado con cambios sin guardar: entonces se ofrece recuperarlos */
+      if (!d.discarded && d.lines.some(l=>l && l.length) && JSON.stringify(d.lines)!==(d.savedSig||'')){
+        recoverable = d; try{ localStorage.setItem(STORE+'-recover', raw); }catch(e){}
+      } else { try{ const r = localStorage.getItem(STORE+'-recover'); if (r) recoverable = JSON.parse(r); }catch(e){} }
       doc = { lines:[[]], width: d.width>=20 && d.width<=48 ? d.width : 40, pageLines:d.pageLines, orient:d.orient, paper:d.paper };
       Object.assign(prefs, d.prefs||{}, saved||{}); return; } }
   }catch(e){}
@@ -3241,11 +3253,12 @@ function load(){
   doc = { lines:[[]], width: 40 };
 }
 const prefs = {};
+let recoverable = null;
 function save(){
   /* Las preferencias se guardan siempre, aunque la hoja tenga todavía el texto de ejemplo */
   try{ localStorage.setItem(STORE+'-prefs', JSON.stringify({view,showTr,showEmpty,sound,voice,cellSize,volume,grade,contrast,zoom,warnErrors,seqKeys,vibe,student:prefs.student||''})); }catch(e){}
   if (isExample) return;
-  try{ localStorage.setItem(STORE, JSON.stringify({lines:doc.lines,lg:doc.lines.map((l,i)=>effGrade(i)),width:doc.width,pageLines:LINES_PER_PAGE,orient:curOrient(),paper:curPaper(),fileName:doc.fileName||'',savedSig:doc.savedSig||'',prefs:{view,showTr,showEmpty,sound,voice,cellSize,volume,grade,contrast,zoom}})); }catch(e){}
+  try{ localStorage.setItem(STORE, JSON.stringify({lines:doc.lines,lg:doc.lines.map((l,i)=>effGrade(i)),width:doc.width,pageLines:LINES_PER_PAGE,orient:curOrient(),paper:curPaper(),fileName:doc.fileName||'',savedSig:doc.savedSig||'',discarded:!!doc.discarded,prefs:{view,showTr,showEmpty,sound,voice,cellSize,volume,grade,contrast,zoom}})); }catch(e){}
 }
 
 /* ---------- Audio: sonidos reales grabados de una Perkins ---------- */
@@ -5145,7 +5158,7 @@ function exitApp(){
 }
 $('dlgExit').addEventListener('close', ()=>{
   const v = $('dlgExit').returnValue; $('dlgExit').returnValue='';
-  if (v==='no') leaveApp();
+  if (v==='no'){ doc.discarded = true; try{ localStorage.removeItem(STORE+'-recover'); }catch(e){} leaveApp(); }
   else if (v==='yes'){ exitAfterSave = true; saveWork(false); }
   else { say('Cancelado'); backToSheet(); }
 });
@@ -5163,7 +5176,7 @@ function leaveApp(){
     $('exitT').focus();
   }, 150);
 }
-$('exitBack').addEventListener('click', ()=>{ $('exitScreen').hidden = true; document.querySelector('.app').hidden = false; render(); $('sheet').focus({preventScroll:true}); say('Máquina Braille Virtual'); });
+$('exitBack').addEventListener('click', ()=>{ doc.discarded = false; save(); $('exitScreen').hidden = true; document.querySelector('.app').hidden = false; render(); $('sheet').focus({preventScroll:true}); say('Máquina Braille Virtual'); });
 /* Ayuda: un diálogo con secciones; cada opción del menú abre en su sección y el foco va a su título */
 function openHelp(id){
   const d = $('dlgHelp'); if (!d.open) openDialog(d); else closeMenus();
@@ -5247,6 +5260,35 @@ function grabFocus(){
 }
 grabFocus();
 requestAnimationFrame(grabFocus);
+/* Recuperación: la aplicación se cerró (con la X de la ventana, Alt + F4…) sin guardar los últimos cambios.
+   El navegador no deja preguntar «¿Guardar los cambios?» al cerrar la ventana; por eso se ofrece al volver a abrir. */
+function offerRecovery(){
+  const d = recoverable; if (!d) return;
+  const n = d.lines.filter(l=>l && l.length).length, name = d.fileName ? '«'+d.fileName+'»' : 'una hoja sin nombre';
+  $('dlgRecoverD').textContent = 'La última vez la aplicación se cerró sin guardar los cambios de '+name+' ('+n+(n===1?' línea escrita':' líneas escritas')+'). ¿Quieres recuperarlos para seguir trabajando y guardarlos?';
+  openDialog($('dlgRecover'));
+}
+$('dlgRecover').addEventListener('close', ()=>{
+  const v = $('dlgRecover').returnValue; $('dlgRecover').returnValue = '';
+  const d = recoverable; recoverable = null;
+  try{ localStorage.removeItem(STORE+'-recover'); }catch(e){}
+  if (v==='yes' && d){
+    isExample = false; clearSel();
+    doc.lines = d.lines.map(l=>Array.isArray(l) ? l.slice() : []);
+    if (!doc.lines.length) doc.lines = [[]];
+    doc.lines.forEach((l,i)=>lgSet(l, Array.isArray(d.lg) && Translators[d.lg[i]] ? d.lg[i] : grade));
+    doc.fileName = d.fileName || ''; doc.savedSig = d.savedSig || ''; doc.discarded = false; fileHandle = null;
+    render(); save(); setDocTitle();
+    const n = doc.lines.length;
+    say('Trabajo recuperado: '+(d.fileName ? d.fileName+', ' : '')+n+(n===1?' línea':' líneas')+'. Todavía no está guardado: guárdalo con Control + G. Estás al final de la línea '+n+'.');
+  } else { say('Hoja en blanco'); save(); }
+  backToSheet();
+});
+setTimeout(offerRecovery, 1300);
+/* Control + W y Control + F4 cierran la ventana: si hay cambios sin guardar, primero se pregunta (cuando el navegador lo permite) */
+document.addEventListener('keydown', e=>{
+  if (e.ctrlKey && !e.altKey && (e.key==='w' || e.key==='W' || e.key==='F4') && isDirty()){ e.preventDefault(); exitApp(); }
+}, true);
 window.addEventListener('load', grabFocus);
 [150, 500, 1200].forEach(t=>setTimeout(()=>{ if (!document.hasFocus() || document.activeElement===document.body) grabFocus(); }, t));
 document.addEventListener('visibilitychange', ()=>{ if (!document.hidden) grabFocus(); });
