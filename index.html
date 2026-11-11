@@ -108,6 +108,11 @@ select{font:inherit;font-size:13px;padding:6px 8px;border-radius:8px;border:1px 
 .key.down{background:var(--key-press);transform:translateY(2px);border-bottom-width:2px}
 .key.wide .n{font-size:14px;font-weight:700}
 .k-enter{grid-area:enter}.k-space{grid-area:space}.k-back{grid-area:back}
+.k-mark{grid-area:mark}
+.keys.seq{grid-template-areas:"enter k3 k2 k1 space k4 k5 k6 back" "mark mark mark mark mark mark mark mark mark"}
+.key.latched{background:var(--accent);color:var(--paper);border-color:var(--accent)}
+.key.latched .l{color:var(--paper)}
+@media (max-width:640px){ .keys.seq{grid-template-areas:"k3 k2 k1 k4 k5 k6" "enter enter space space back back" "mark mark mark mark mark mark"} }
 .k3{grid-area:k3}.k2{grid-area:k2}.k1{grid-area:k1}.k4{grid-area:k4}.k5{grid-area:k5}.k6{grid-area:k6}
 .legend{text-align:center;color:var(--muted);font-size:12px;margin-top:8px}
 @media (max-width:640px){
@@ -260,6 +265,7 @@ dialog input[type="text"]:focus-visible{outline:2px solid var(--accent);outline-
           <li role="none"><button role="menuitemcheckbox" tabindex="-1" data-cmd="contrast" aria-checked="false" aria-keyshortcuts="Control+Shift+C"><span class="chk" aria-hidden="true"></span>Fondo oscuro y letras blancas<span class="sc">Ctrl+Mayús+C</span></button></li>
           <li role="none"><button role="menuitemcheckbox" tabindex="-1" data-cmd="voice" aria-checked="false" aria-keyshortcuts="Control+Shift+V"><span class="chk" aria-hidden="true"></span>Voz de la aplicación<span class="sc">Ctrl+Mayús+V</span></button></li>
           <li role="none"><button role="menuitemcheckbox" tabindex="-1" data-cmd="brRead" aria-checked="false" aria-keyshortcuts="Alt+L"><span class="chk" aria-hidden="true"></span>Modo línea braille<span class="sc">Alt+L</span></button></li>
+          <li role="none"><button role="menuitemcheckbox" tabindex="-1" data-cmd="seqKeys" aria-checked="false"><span class="chk" aria-hidden="true"></span>Teclas en pantalla punto por punto</button></li>
           <li role="separator"></li>
           <li role="none"><button role="menuitem" tabindex="-1" data-cmd="zoomIn" aria-keyshortcuts="Control+Plus"><span class="chk"></span>Aumentar zoom<span class="sc">Ctrl++</span></button></li>
           <li role="none"><button role="menuitem" tabindex="-1" data-cmd="zoomOut" aria-keyshortcuts="Control+Minus"><span class="chk"></span>Reducir zoom<span class="sc">Ctrl+−</span></button></li>
@@ -394,6 +400,14 @@ dialog input[type="text"]:focus-visible{outline:2px solid var(--accent);outline-
           <li>En este modo los anuncios de la aplicación (cada letra, la palabra, la lectura con las flechas) no se envían al lector de pantalla, para que no tapen la línea del texto en la línea braille. Si quieres oírlos, activa la voz de la aplicación con <b>Control + Mayúsculas + V</b>. F4 y F8 sí se envían.</li>
           <li>En este modo NVDA puede repetir las teclas F, D, S, J, K, L si escribes con el teclado de la computadora, porque la hoja se comporta como un campo de texto; escribiendo desde la línea braille no ocurre.</li>
           <li>Lo que anuncia la aplicación (cada letra, la palabra al pulsar la barra espaciadora, la lectura con las flechas, F4 y F8) aparece en la línea como mensaje. Para que no desaparezca enseguida, en NVDA: Opciones › Braille › Mostrar mensajes: «Indefinidamente», o aumenta la duración de los mensajes.</li>
+        </ul>
+        <h4>En el celular o la tableta (VoiceOver, TalkBack)</h4>
+        <ul>
+          <li>Los lectores de pantalla de los celulares reciben un toque cada vez, y muchos teléfonos no reconocen más de dos dedos a la vez. Por eso hay un modo <b>punto por punto</b>: Ver › Teclas en pantalla punto por punto.</li>
+          <li>En ese modo, cada tecla de punto se activa una vez para marcar el punto y otra vez para quitarlo; el lector dice los puntos marcados («puntos 1 2 3 4»). Para escribir la celda, activa la tecla <b>Marcar celda</b>, debajo del teclado. Por ejemplo, la p: puntos 1, 2, 3 y 4, y Marcar celda.</li>
+          <li>Sin lector de pantalla, también se escribe la celda <b>deslizando dos dedos</b> sobre el teclado. Con VoiceOver o TalkBack ese gesto lo usa el lector, así que se usa la tecla Marcar celda.</li>
+          <li><b>Espacio</b> y <b>Enter</b> escriben antes la celda pendiente: p y espacio escribe la p y deja el espacio. <b>Retroceso</b> con puntos marcados los borra sin tocar la hoja.</li>
+          <li>La opción queda guardada en el equipo. Para volver a pulsar los puntos a la vez, como en la Perkins, desactívala en el mismo menú.</li>
         </ul>
         <h4>En los menús y en esta ayuda</h4>
         <ul>
@@ -1835,8 +1849,9 @@ dialog input[type="text"]:focus-visible{outline:2px solid var(--accent);outline-
       <button class="key k5" data-bit="16"><span class="n">5</span><span class="l">K</span></button>
       <button class="key k6" data-bit="32"><span class="n">6</span><span class="l">L</span></button>
       <button class="key wide k-back" data-act="back"><span class="n">⌫ Retroceso</span><span class="l">Retroceso</span></button>
+      <button class="key wide k-mark" data-act="mark" hidden><span class="n">✓ Marcar celda</span><span class="l">o desliza dos dedos sobre el teclado</span></button>
     </div>
-    <p class="legend">Pulsa las teclas de los puntos a la vez y suéltalas: la celda se marca al soltar todas, como en la Perkins.</p>
+    <p class="legend" id="keysLegend">Pulsa las teclas de los puntos a la vez y suéltalas: la celda se marca al soltar todas, como en la Perkins.</p>
   </div>
 </div>
 <main class="exit" id="exitScreen" hidden>
@@ -3145,7 +3160,7 @@ function load(){
 const prefs = {};
 function save(){
   /* Las preferencias se guardan siempre, aunque la hoja tenga todavía el texto de ejemplo */
-  try{ localStorage.setItem(STORE+'-prefs', JSON.stringify({view,showTr,showEmpty,sound,voice,cellSize,volume,grade,contrast,zoom,warnErrors,student:prefs.student||''})); }catch(e){}
+  try{ localStorage.setItem(STORE+'-prefs', JSON.stringify({view,showTr,showEmpty,sound,voice,cellSize,volume,grade,contrast,zoom,warnErrors,seqKeys,student:prefs.student||''})); }catch(e){}
   if (isExample) return;
   try{ localStorage.setItem(STORE, JSON.stringify({lines:doc.lines,lg:doc.lines.map((l,i)=>effGrade(i)),width:doc.width,pageLines:LINES_PER_PAGE,orient:curOrient(),paper:curPaper(),fileName:doc.fileName||'',savedSig:doc.savedSig||'',prefs:{view,showTr,showEmpty,sound,voice,cellSize,volume,grade,contrast,zoom}})); }catch(e){}
 }
@@ -3522,6 +3537,82 @@ document.querySelectorAll('.key[data-act]').forEach(k=>{
 /* ---------- Render ---------- */
 const $ = id => document.getElementById(id);
 const esc = s => s.replace(/[&<>]/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
+/* ---------- Teclas en pantalla punto por punto ----------
+   Para pantallas táctiles que no reconocen varios dedos a la vez (o con VoiceOver o TalkBack, que reciben un toque cada vez):
+   cada toque marca o quita un punto, y la celda se escribe con «Marcar celda» o deslizando dos dedos sobre el teclado.
+   Espacio y Enter escriben antes la celda pendiente; Retroceso borra los puntos pendientes. */
+let seqKeys = false, latch = 0;
+const LEG_CHORD = 'Pulsa las teclas de los puntos a la vez y suéltalas: la celda se marca al soltar todas, como en la Perkins.';
+const LEG_SEQ = 'Punto por punto: toca cada punto para marcarlo o quitarlo. Para escribir la celda, toca «Marcar celda» o desliza dos dedos sobre el teclado. Espacio y Enter también escriben la celda pendiente; Retroceso borra los puntos pendientes.';
+function latchShow(){
+  document.querySelectorAll('.key[data-bit]').forEach(k=>{
+    const on = !!(latch & +k.dataset.bit); k.classList.toggle('latched', seqKeys && on);
+    if (seqKeys) k.setAttribute('aria-pressed', on); else k.removeAttribute('aria-pressed');
+  });
+  $('live').querySelectorAll('i').forEach((el,i)=>el.classList.toggle('on', !!(latch&(1<<i))));
+}
+function setSeqKeys(on, silent){
+  seqKeys = !!on; latch = 0;
+  $('keys').classList.toggle('seq', seqKeys);
+  document.querySelector('.key[data-act="mark"]').hidden = !seqKeys;
+  $('keysLegend').textContent = seqKeys ? LEG_SEQ : LEG_CHORD;
+  const mi = document.querySelector('[data-cmd="seqKeys"]');
+  if (mi){ mi.setAttribute('aria-checked', seqKeys); mi.querySelector('.chk').textContent = seqKeys ? '✓' : ''; }
+  latchShow();
+  if (!silent){ save(); say(seqKeys ? 'Teclas en pantalla punto por punto activadas' : 'Teclas en pantalla a la vez, como en la Perkins'); }
+}
+function toggleDot(bit){
+  latch ^= bit; play('press'); latchShow();
+  const n = Math.log2(bit)+1, d = dotsOf(latch);
+  say((latch & bit ? '' : 'quitado '+n+'. ') + (d.length ? 'puntos '+d.join(' ') : 'sin puntos'));
+}
+function commitLatch(){
+  if (!latch) return false;
+  const c = latch; latch = 0; latchShow();
+  if (lineFull()) jam(); else play('release');
+  putCell(c); return true;
+}
+function seqTap(k){
+  if (document.activeElement!==$('sheet') && !document.activeElement.closest('#keys')) $('sheet').focus({preventScroll:true});
+  if (k.dataset.bit){ toggleDot(+k.dataset.bit); return; }
+  const act = k.dataset.act;
+  if (act==='mark'){ if (!commitLatch()) say('No hay puntos marcados'); return; }
+  if (act==='back' && latch){ latch = 0; latchShow(); play('backDown'); play('backUp',.09); say('Puntos borrados'); return; }
+  if (act==='space' || act==='enter') commitLatch();
+  if (act==='space'){ if (lineFull()) jam(); else { play('spaceDown'); play('spaceUp',.08); } }
+  if (act==='back'){ play('backDown'); play('backUp',.09); }
+  pressAct(act);
+}
+(()=>{
+  const box = $('keys'), P = new Map(); let multi = false, multiMoved = false, lastTap = {k:null, t:0};
+  box.addEventListener('pointerdown', e=>{
+    if (!seqKeys) return;
+    const k = e.target.closest && e.target.closest('.key'); e.preventDefault(); e.stopPropagation();
+    try{ box.setPointerCapture(e.pointerId); }catch(_){}
+    P.set(e.pointerId, {x:e.clientX, y:e.clientY, k, moved:false});
+    if (P.size>=2) multi = true;
+    if (k) k.classList.add('down');
+  }, true);
+  box.addEventListener('pointermove', e=>{
+    if (!seqKeys) return; const p = P.get(e.pointerId); if (!p) return;
+    if (Math.hypot(e.clientX-p.x, e.clientY-p.y) > 24){ p.moved = true; if (multi) multiMoved = true; if (p.k) p.k.classList.remove('down'); }
+  }, true);
+  const end = e=>{
+    if (!seqKeys) return; const p = P.get(e.pointerId); if (!p) return;
+    e.stopPropagation(); P.delete(e.pointerId); if (p.k) p.k.classList.remove('down');
+    if (multi){ if (!P.size){ if (multiMoved && !commitLatch()) say('No hay puntos marcados'); multi = multiMoved = false; } return; }
+    if (e.type==='pointerup' && !p.moved && p.k){ lastTap = {k:p.k, t:performance.now()}; seqTap(p.k); }
+  };
+  box.addEventListener('pointerup', end, true); box.addEventListener('pointercancel', end, true);
+  /* VoiceOver y TalkBack activan los botones con un clic (doble toque), a veces sin eventos de puntero */
+  box.addEventListener('click', e=>{
+    if (!seqKeys) return; const k = e.target.closest && e.target.closest('.key'); if (!k) return;
+    e.preventDefault(); e.stopPropagation();
+    if (lastTap.k===k && performance.now()-lastTap.t < 700) return;
+    seqTap(k);
+  }, true);
+})();
+
 let lastFlash = false;
 
 function cellHTML(c, item, cls){
@@ -4674,7 +4765,7 @@ function syncViewMenu(){
 const COMMANDS = {
   new: ()=>openDialog($('dlgNew')),
   open: openWork, save: ()=>saveWork(false), saveAs: ()=>saveWork(true),
-  chkNext: ()=>gotoProblem(1), chkPrev: ()=>gotoProblem(-1), warnErr: toggleWarn,
+  chkNext: ()=>gotoProblem(1), chkPrev: ()=>gotoProblem(-1), warnErr: toggleWarn, seqKeys: ()=>setSeqKeys(!seqKeys),
   expDocx: openWord, expBrf: exportBRF, expUni: exportUni, expBan: exportBAN, expBra: exportBRA,
   cut: ()=>menuCopy(true), copy: ()=>menuCopy(false), paste: menuPaste, selAll: selectAll, copyBr: copyBraille,
   viewInk: ()=>setView('ink'), viewBr: ()=>setView('braille'),
@@ -4881,7 +4972,7 @@ else if (Array.isArray(doc.lg) && doc.lg.length===doc.lines.length) doc.lines.fo
 else doc.lines.forEach(l=>lgSet(l, grade));
 delete doc.lg;
 syncGradeUI();
-contrast = !!prefs.contrast; if ('warnErrors' in prefs) warnErrors = !!prefs.warnErrors; syncWarnMenu(); if (prefs.zoom>=1 && prefs.zoom<=2) zoom = prefs.zoom;
+contrast = !!prefs.contrast; if ('warnErrors' in prefs) warnErrors = !!prefs.warnErrors; syncWarnMenu(); if (prefs.seqKeys) setSeqKeys(true, true); if (prefs.zoom>=1 && prefs.zoom<=2) zoom = prefs.zoom;
 applyContrast(); applyZoom();
 render();
 setDocTitle();
