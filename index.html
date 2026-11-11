@@ -121,6 +121,27 @@ select{font:inherit;font-size:13px;padding:6px 8px;border-radius:8px;border:1px 
   .sheet{max-height:calc(46vh / var(--z,1))}
   .ink{font-size:19px}
 }
+/* Celular: la aplicación ocupa justo la pantalla; el teclado queda fijo abajo y la hoja usa el espacio que sobra.
+   Las opciones se pliegan detrás del botón «Opciones». */
+.opts-toggle{display:none}
+@media (max-width:640px){
+  body{padding-block:6px}
+  .app{height:calc((100dvh - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px)) / var(--z,1) - 12px);min-height:0;gap:8px}
+  .sheet-wrap{flex:1 1 auto;min-height:110px}
+  .sheet{max-height:none;min-height:0;padding:10px 10px 16px}
+  .machine{flex:none;position:sticky;bottom:0;z-index:15;padding-top:8px;padding-bottom:max(4px,env(safe-area-inset-bottom,0px))}
+  .machine .legend{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+  .keys{gap:6px}
+  .key{min-height:52px}
+  .key .n{font-size:20px}
+  .k-mark{min-height:44px}
+  .status{font-size:12px;gap:2px 14px}
+  .status span:has(#sZoom),.status span:has(#sLast),.status span:has(#sPage){display:none}
+  .opts-toggle{display:inline-flex}
+  .opts.collapsed>label{display:none}
+  .opts kbd{display:none}
+  .opts>span{margin-left:0!important;flex-wrap:wrap}
+}
 @media (prefers-reduced-motion:reduce){.caret,.cell.cur .dots{animation:none}.cell.flash .dots{animation:none}}
 [hidden]{display:none!important}
 .sheet-wrap:focus-within{outline:2.5px solid var(--accent);outline-offset:2px}
@@ -1792,13 +1813,14 @@ dialog input[type="text"]:focus-visible{outline:2px solid var(--accent);outline-
     </form>
   </dialog>
 
-  <div class="opts">
+  <div class="opts collapsed" id="opts">
     <label><input type="checkbox" id="optTr" checked> Transcripción bajo las celdas</label>
     <label><input type="checkbox" id="optEmpty" checked> Mostrar posiciones vacías</label>
     <label><input type="checkbox" id="optSound" checked> Sonido de máquina</label>
     <label>Volumen <input type="range" id="vol" min="0" max="100" step="5" value="80" aria-label="Volumen del sonido de máquina" style="width:90px"></label>
     <label><input type="checkbox" id="optVoice" aria-keyshortcuts="Control+Shift+V"> Voz <kbd>Ctrl+Mayús+V</kbd></label>
     <span style="display:flex;gap:6px;margin-left:auto">
+      <button class="btn opts-toggle" id="optsToggle" aria-expanded="false" aria-controls="opts">Opciones</button>
       <button class="btn" id="zOut" aria-label="Reducir celdas">A−</button>
       <button class="btn" id="zIn" aria-label="Ampliar celdas">A+</button>
       <button class="btn" id="readLine">Leer línea <kbd>F4</kbd></button>
@@ -3537,6 +3559,11 @@ document.querySelectorAll('.key[data-act]').forEach(k=>{
 /* ---------- Render ---------- */
 const $ = id => document.getElementById(id);
 const esc = s => s.replace(/[&<>]/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
+/* Celular: botón que muestra u oculta las opciones (transcripción, sonido, volumen, voz) */
+$('optsToggle').addEventListener('click', ()=>{
+  const open = $('opts').classList.toggle('collapsed') === false;
+  $('optsToggle').setAttribute('aria-expanded', open);
+});
 /* ---------- Teclas en pantalla punto por punto ----------
    Para pantallas táctiles que no reconocen varios dedos a la vez (o con VoiceOver o TalkBack, que reciben un toque cada vez):
    cada toque marca o quita un punto, y la celda se escribe con «Marcar celda» o deslizando dos dedos sobre el teclado.
