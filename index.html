@@ -124,6 +124,7 @@ select{font:inherit;font-size:13px;padding:6px 8px;border-radius:8px;border:1px 
 /* Celulares y tabletas (pantalla angosta o táctil): la aplicación ocupa justo la pantalla; el teclado queda fijo abajo
    y la hoja usa el espacio que sobra. Las opciones se pliegan detrás del botón «Opciones». */
 .opts-toggle{display:none}
+.kb-hidden .keys{display:none}
 @media (max-width:640px), (pointer:coarse){
   body{padding-block:6px}
   .app{height:calc((100dvh - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px)) / var(--z,1) - 12px);min-height:0;gap:8px}
@@ -449,6 +450,7 @@ dialog input[type="text"]:focus-visible{outline:2px solid var(--accent);outline-
           <li>En ese modo, cada tecla de punto se activa una vez para marcar el punto y otra vez para quitarlo; el lector dice los puntos marcados («puntos 1 2 3 4»). Para escribir la celda, activa la tecla <b>Marcar celda</b>, debajo del teclado. Por ejemplo, la p: puntos 1, 2, 3 y 4, y Marcar celda.</li>
           <li>Sin lector de pantalla, también se escribe la celda <b>deslizando dos dedos</b> sobre el teclado. Con VoiceOver o TalkBack ese gesto lo usa el lector, así que se usa la tecla Marcar celda.</li>
           <li><b>Espacio</b> y <b>Enter</b> escriben antes la celda pendiente: p y espacio escribe la p y deja el espacio. <b>Retroceso</b> con puntos marcados los borra sin tocar la hoja.</li>
+          <li>Si conectas un <b>teclado físico</b> (o una línea braille) al celular o la tableta, al empezar a escribir con F, D, S, J, K, L el teclado en pantalla se oculta y la hoja ocupa ese espacio. Al tocar la pantalla vuelve a aparecer. En la computadora el teclado en pantalla siempre se ve.</li>
           <li>En Android el teléfono <b>vibra</b> al tocar cada punto, al escribir la celda, al cambiar de línea, con la campanita (tres vibraciones) y al llegar al tope del final de la línea. Se desactiva en Ver › Vibración al escribir. El iPhone no permite la vibración en páginas web.</li>
           <li>La opción queda guardada en el equipo. Para volver a pulsar los puntos a la vez, como en la Perkins, desactívala en el mismo menú.</li>
         </ul>
@@ -3543,9 +3545,9 @@ window.addEventListener('keydown', e=>{
   if ((e.ctrlKey || e.metaKey) && !e.altKey && e.code==='KeyA'){ e.preventDefault(); selectAll(); return; }
   if (e.ctrlKey || e.metaKey || e.altKey) return;    // Ctrl+C, Ctrl+X, Ctrl+V llegan como eventos copy/cut/paste
   const bcell = brailleCell(e.key);
-  if (bcell!==null){ e.preventDefault(); lastBrailleKey = performance.now(); typeBrailleCell(bcell); return; }
+  if (bcell!==null){ e.preventDefault(); physKeyboard(); lastBrailleKey = performance.now(); typeBrailleCell(bcell); return; }
   const dc = dotCode(e);
-  if (dc){ e.preventDefault(); if (document.activeElement!==$('sheet')) $('sheet').focus({preventScroll:true});
+  if (dc){ e.preventDefault(); physKeyboard(); if (document.activeElement!==$('sheet')) $('sheet').focus({preventScroll:true});
     if (e.repeat) return; if (!physDown.size && !touchDown.size){ if (lineFull()) jam(); else play('press'); } physDown.add(dc); chord |= KEYBITS[dc]; liveUpdate(); return; }
   if (e.code==='Space'){ e.preventDefault(); if (e.repeat || chord) return; if (lineFull()){ held.space=false; jam(); } else { held.space=true; play('spaceDown'); } pressAct('space'); return; }
   if (e.key==='Enter'){ e.preventDefault(); if (e.repeat) return; pressAct('enter'); return; }
@@ -3596,6 +3598,16 @@ function syncVibe(){
   const li = $('vibeItem'); if (!li) return; li.hidden = !CAN_VIBRATE;
   const b = li.querySelector('button'); b.setAttribute('aria-checked', vibe); b.querySelector('.chk').textContent = vibe ? '✓' : '';
 }
+/* Teclado físico en celulares y tabletas: al escribir con F, D, S, J, K, L (o con una línea braille) el teclado en pantalla
+   se oculta y la hoja ocupa ese espacio; al volver a tocar la pantalla, reaparece. En la computadora siempre se ve. */
+const TOUCH_SCREEN = matchMedia('(pointer:coarse)').matches;
+function physKeyboard(){
+  if (!TOUCH_SCREEN || document.body.classList.contains('kb-hidden')) return;
+  document.body.classList.add('kb-hidden'); flashMsg('Teclado en pantalla oculto: toca la pantalla para verlo');
+}
+document.addEventListener('pointerdown', e=>{
+  if (e.pointerType!=='mouse' && document.body.classList.contains('kb-hidden')) document.body.classList.remove('kb-hidden');
+}, true);
 /* Celular: botón que muestra u oculta las opciones (transcripción, sonido, volumen, voz) */
 $('optsToggle').addEventListener('click', ()=>{
   const open = $('opts').classList.toggle('collapsed') === false;
