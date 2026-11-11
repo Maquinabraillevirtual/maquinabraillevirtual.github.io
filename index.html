@@ -307,6 +307,7 @@ dialog input[type="text"]:focus-visible{outline:2px solid var(--accent);outline-
           <li role="none"><button role="menuitemcheckbox" tabindex="-1" data-cmd="voice" aria-checked="false" aria-keyshortcuts="Control+Shift+V"><span class="chk" aria-hidden="true"></span>Voz de la aplicación<span class="sc">Ctrl+Mayús+V</span></button></li>
           <li role="none"><button role="menuitemcheckbox" tabindex="-1" data-cmd="brRead" aria-checked="false" aria-keyshortcuts="Alt+L"><span class="chk" aria-hidden="true"></span>Modo línea braille<span class="sc">Alt+L</span></button></li>
           <li role="none"><button role="menuitemcheckbox" tabindex="-1" data-cmd="seqKeys" aria-checked="false"><span class="chk" aria-hidden="true"></span>Teclas en pantalla punto por punto</button></li>
+          <li role="none" id="vibeItem" hidden><button role="menuitemcheckbox" tabindex="-1" data-cmd="vibe" aria-checked="true"><span class="chk" aria-hidden="true">✓</span>Vibración al escribir</button></li>
           <li role="separator"></li>
           <li role="none"><button role="menuitem" tabindex="-1" data-cmd="zoomIn" aria-keyshortcuts="Control+Plus"><span class="chk"></span>Aumentar zoom<span class="sc">Ctrl++</span></button></li>
           <li role="none"><button role="menuitem" tabindex="-1" data-cmd="zoomOut" aria-keyshortcuts="Control+Minus"><span class="chk"></span>Reducir zoom<span class="sc">Ctrl+−</span></button></li>
@@ -448,6 +449,7 @@ dialog input[type="text"]:focus-visible{outline:2px solid var(--accent);outline-
           <li>En ese modo, cada tecla de punto se activa una vez para marcar el punto y otra vez para quitarlo; el lector dice los puntos marcados («puntos 1 2 3 4»). Para escribir la celda, activa la tecla <b>Marcar celda</b>, debajo del teclado. Por ejemplo, la p: puntos 1, 2, 3 y 4, y Marcar celda.</li>
           <li>Sin lector de pantalla, también se escribe la celda <b>deslizando dos dedos</b> sobre el teclado. Con VoiceOver o TalkBack ese gesto lo usa el lector, así que se usa la tecla Marcar celda.</li>
           <li><b>Espacio</b> y <b>Enter</b> escriben antes la celda pendiente: p y espacio escribe la p y deja el espacio. <b>Retroceso</b> con puntos marcados los borra sin tocar la hoja.</li>
+          <li>En Android el teléfono <b>vibra</b> al tocar cada punto, al escribir la celda, al cambiar de línea, con la campanita (tres vibraciones) y al llegar al tope del final de la línea. Se desactiva en Ver › Vibración al escribir. El iPhone no permite la vibración en páginas web.</li>
           <li>La opción queda guardada en el equipo. Para volver a pulsar los puntos a la vez, como en la Perkins, desactívala en el mismo menú.</li>
         </ul>
         <h4>En los menús y en esta ayuda</h4>
@@ -3202,7 +3204,7 @@ function load(){
 const prefs = {};
 function save(){
   /* Las preferencias se guardan siempre, aunque la hoja tenga todavía el texto de ejemplo */
-  try{ localStorage.setItem(STORE+'-prefs', JSON.stringify({view,showTr,showEmpty,sound,voice,cellSize,volume,grade,contrast,zoom,warnErrors,seqKeys,student:prefs.student||''})); }catch(e){}
+  try{ localStorage.setItem(STORE+'-prefs', JSON.stringify({view,showTr,showEmpty,sound,voice,cellSize,volume,grade,contrast,zoom,warnErrors,seqKeys,vibe,student:prefs.student||''})); }catch(e){}
   if (isExample) return;
   try{ localStorage.setItem(STORE, JSON.stringify({lines:doc.lines,lg:doc.lines.map((l,i)=>effGrade(i)),width:doc.width,pageLines:LINES_PER_PAGE,orient:curOrient(),paper:curPaper(),fileName:doc.fileName||'',savedSig:doc.savedSig||'',prefs:{view,showTr,showEmpty,sound,voice,cellSize,volume,grade,contrast,zoom}})); }catch(e){}
 }
@@ -3228,7 +3230,17 @@ function decodeAll(){
 }
 /* Ganancia relativa de cada sonido (las tomas se normalizaron por categoría) */
 const GAIN = {press:1, release:.6, spaceDown:.85, spaceUp:.6, backDown:.85, backUp:.6, carriage:.8, lfDown:.75, lfUp:.6, bell:.75};
+/* Vibración (Android): confirmación táctil de cada tecla, la campanita y el tope. El iPhone no la permite en páginas web. */
+const CAN_VIBRATE = typeof navigator!=='undefined' && 'vibrate' in navigator && matchMedia('(pointer:coarse)').matches;
+let vibe = true;
+const VIB = {press:14, release:22, spaceDown:20, backDown:20, lfDown:35, bell:[70,60,70], jam:[45,35,45]};
+function buzz(kind, delay){
+  if (!CAN_VIBRATE || !vibe || !VIB[kind]) return;
+  const go = ()=>{ try{ navigator.vibrate(VIB[kind]); }catch(e){} };
+  if (delay) setTimeout(go, delay*1000); else go();
+}
 function play(kind, delay){
+  buzz(kind, delay);
   if (!sound) return; const a = audio(); if(!a) return;
   const list = (BUF[kind]||[]).filter(Boolean);
   if (!list.length){ synthClack(kind==='press'||kind==='carriage'); return; }
@@ -3254,6 +3266,7 @@ function bell(){ play('bell'); }
 /* Tope de fin de línea: como en la Perkins, con el carro al final las teclas chocan contra el tope y no marcan.
    Se oye un golpe seco y apagado (el golpe del tope del carro, más grave y sin deslizamiento) en lugar del sonido de escribir. */
 function jam(){
+  buzz('jam');
   if (!sound) return; const a = audio(); if (!a) return;
   const t0 = a.currentTime;
   const list = (BUF.carriage||[]).filter(Boolean);
@@ -3579,6 +3592,10 @@ document.querySelectorAll('.key[data-act]').forEach(k=>{
 /* ---------- Render ---------- */
 const $ = id => document.getElementById(id);
 const esc = s => s.replace(/[&<>]/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
+function syncVibe(){
+  const li = $('vibeItem'); if (!li) return; li.hidden = !CAN_VIBRATE;
+  const b = li.querySelector('button'); b.setAttribute('aria-checked', vibe); b.querySelector('.chk').textContent = vibe ? '✓' : '';
+}
 /* Celular: botón que muestra u oculta las opciones (transcripción, sonido, volumen, voz) */
 $('optsToggle').addEventListener('click', ()=>{
   const open = $('opts').classList.toggle('collapsed') === false;
@@ -4812,7 +4829,7 @@ function syncViewMenu(){
 const COMMANDS = {
   new: ()=>openDialog($('dlgNew')),
   open: openWork, save: ()=>saveWork(false), saveAs: ()=>saveWork(true),
-  chkNext: ()=>gotoProblem(1), chkPrev: ()=>gotoProblem(-1), warnErr: toggleWarn, seqKeys: ()=>setSeqKeys(!seqKeys),
+  chkNext: ()=>gotoProblem(1), chkPrev: ()=>gotoProblem(-1), warnErr: toggleWarn, seqKeys: ()=>setSeqKeys(!seqKeys), vibe: ()=>{ vibe = !vibe; syncVibe(); save(); say(vibe ? 'Vibración activada' : 'Vibración desactivada'); if (vibe) buzz('release'); },
   expDocx: openWord, expBrf: exportBRF, expUni: exportUni, expBan: exportBAN, expBra: exportBRA,
   cut: ()=>menuCopy(true), copy: ()=>menuCopy(false), paste: menuPaste, selAll: selectAll, copyBr: copyBraille,
   viewInk: ()=>setView('ink'), viewBr: ()=>setView('braille'),
@@ -5019,7 +5036,7 @@ else if (Array.isArray(doc.lg) && doc.lg.length===doc.lines.length) doc.lines.fo
 else doc.lines.forEach(l=>lgSet(l, grade));
 delete doc.lg;
 syncGradeUI();
-contrast = !!prefs.contrast; if ('warnErrors' in prefs) warnErrors = !!prefs.warnErrors; syncWarnMenu(); if (prefs.seqKeys) setSeqKeys(true, true); if (prefs.zoom>=1 && prefs.zoom<=2) zoom = prefs.zoom;
+contrast = !!prefs.contrast; if ('warnErrors' in prefs) warnErrors = !!prefs.warnErrors; syncWarnMenu(); if (prefs.seqKeys) setSeqKeys(true, true); if ('vibe' in prefs) vibe = !!prefs.vibe; syncVibe(); if (prefs.zoom>=1 && prefs.zoom<=2) zoom = prefs.zoom;
 applyContrast(); applyZoom();
 render();
 setDocTitle();
