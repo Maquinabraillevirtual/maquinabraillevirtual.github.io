@@ -408,7 +408,7 @@ dialog input[type="text"]:focus-visible{outline:2px solid var(--accent);outline-
           <li><b>Archivo › Guardar</b> (Control + G) guarda el trabajo en un archivo de la Máquina Braille Virtual (.mbv) que puedes llevar a otra computadora o entregar a tu profesor. <b>Guardar como</b> (Control + Mayúsculas + G) lo guarda con otro nombre.</li>
           <li><b>Archivo › Abrir</b> (Control + O) abre un trabajo .mbv para continuarlo donde lo dejaste (también los trabajos .pks guardados con versiones anteriores). También abre archivos BRF, .bra y .ban, y textos en braille Unicode.</li>
           <li>En Chrome y Edge, Guardar actualiza el mismo archivo. En otros navegadores, cada vez se descarga una copia nueva.</li>
-          <li><b>Archivo › Exportar a Word, en tinta (.docx)</b> crea un documento de Word en escritura común para entregar al profesor. Los bloques de Matemáticas salen como <b>ecuaciones de Word</b>: fracciones apiladas, potencias, subíndices, raíces y periodos con su raya; los paréntesis auxiliares no aparecen, porque solo sirven en braille. Los bloques de braille integral y estenografía salen como texto, con la cursiva de los resaltes. Arriba puedes poner un título, el nombre del estudiante y la fecha. El botón <b>Escuchar el trabajo</b> lee todo antes de exportar, para comprobarlo. El profesor puede corregirlo en Word y guardarlo como PDF.</li>
+          <li><b>Archivo › Exportar a Word, en tinta (.docx)</b> crea un documento de Word en escritura común para entregar al profesor. Los bloques de Matemáticas salen como <b>ecuaciones de Word</b>: fracciones apiladas, potencias, subíndices, raíces y periodos con su raya; los paréntesis auxiliares no aparecen, porque solo sirven en braille. Los bloques de braille integral y estenografía salen como texto, con la cursiva de los resaltes. Los <b>párrafos</b> se reconocen como en braille: un párrafo empieza con <b>dos celdas en blanco</b> al comienzo de la línea; las líneas que siguen sin sangría se juntan en Word en un texto corrido, y las palabras partidas con guion salen enteras. Una línea con cuatro o más celdas en blanco delante (un título centrado) sale sola y centrada. Arriba puedes poner un título, el nombre del estudiante y la fecha. El botón <b>Escuchar el trabajo</b> lee todo antes de exportar, para comprobarlo. El profesor puede corregirlo en Word y guardarlo como PDF.</li>
           <li><b>Archivo › Exportar a BRF</b> crea un archivo para imprimir en una impresora braille. <b>Exportar a braille Unicode</b> crea un texto con los signos braille.</li>
           <li><b>Exportar a braille ASCII español (.bra)</b> crea un archivo en el formato habitual de la ONCE y <b>Exportar a braille ANSI español (.ban)</b> uno con la tabla ANSI española de la Comisión Braille Española (documento técnico V 1). Ambos se abren y se imprimen con el Visualizador Braille de la ONCE.</li>
           <li>BRF, .bra y .ban guardan los puntos de cada celda, no el texto: conservan tal cual lo escrito en braille integral, estenografía o matemáticas. Al volver a abrirlos se pierde qué signografía tenía cada bloque; para seguir un trabajo, usa Guardar (.pks).</li>
@@ -4243,14 +4243,21 @@ const DOCX = (()=>{
     /* Palabras partidas con guion al final de la línea: en Word van enteras en la primera línea.
        Expresiones partidas (CMU 14.2): una sola ecuación, sin repetir el signo. */
     let mathCarry = '', skipB = 0;
+    /* Párrafos: en braille un párrafo nuevo empieza con dos celdas en blanco al comienzo de la línea. Las líneas
+       que siguen sin sangría son del mismo párrafo y en Word se juntan en un texto corrido. Una línea con cuatro
+       o más celdas en blanco delante (un título centrado) va sola y centrada. */
+    let cur = null, prevG = null, prevBlank = true, forceNew = false;
+    const flush = ()=>{ if (cur){ body.push(para(textRuns(cur.items), cur.center ? '<w:jc w:val="center"/>' : cur.indent ? '<w:ind w:firstLine="425"/>' : '')); cur = null; } };
     lines.forEach((line, li)=>{
-      if (!line.length){ body.push(para('')); return; }
+      if (!line.length){ flush(); body.push(para('')); prevBlank = true; prevG = null; return; }
       const g = blockGrade(li), sp = typeof lineSplit==='function' ? lineSplit(li) : null;
       let items = translate(line).map(it=>({...it}));
       if (skipB){ for (let k=0;k<skipB && k<items.length;k++) items[k].t = ''; skipB = 0; }
       if (g==='math'){
+        flush();
         let ink = mathInk(items);
         if (mathCarry){ const prev = mathCarry; mathCarry = ''; const op = prev.op; ink = prev.ink + (op && ink.startsWith(op) ? ink.slice(op.length) : ink); }
+        prevG = g; prevBlank = false;
         if (sp && (sp.kind==='math' || sp.kind==='list')){ mathCarry = {ink, op: sp.kind==='math' && sp.repeated ? sp.op : ''}; return; }
         body.push(mathPara(toOMML(ink)));
         return;
@@ -4259,8 +4266,24 @@ const DOCX = (()=>{
         items[items.length-1].t = sp.part2;                     // el guion se cambia por el resto de la palabra
         skipB = sp.cellsB[1] + (doc.lines[li+1][sp.cellsB[1]]===0 ? 1 : 0);
       }
-      body.push(para(textRuns(items)));
+      let lead = 0; while (lead<line.length && line[lead]===0) lead++;
+      const prevSp = li>0 ? lineSplit(li-1) : null;
+      const continuesWord = prevSp && prevSp.kind==='compound';          // la palabra partida ya se movió entera a la línea anterior
+      const afterSplit = prevSp && prevSp.kind==='word';
+      /* quitar los espacios del comienzo y del final de la línea */
+      let a = 0; while (a<items.length && (items[a].t===' ' || items[a].t==='')) a++;
+      let z = items.length; while (z>a && (items[z-1].t===' ' || items[z-1].t==='')) z--;
+      items = items.slice(a, z);
+      if (prevSp && prevSp.kind==='compound' && items.length && items[0].t==='-') items = items.slice(1);   // teórico- / -práctico
+      const center = lead>=4, indent = lead>=2 && lead<4;
+      const newPara = !cur || prevBlank || prevG!==g || forceNew || (!continuesWord && !afterSplit && (indent || center));
+      if (newPara){ flush(); cur = {items: [], indent, center}; }
+      else if (!continuesWord && cur.items.length && items.length) cur.items.push({t:' '});
+      cur.items.push(...items);
+      forceNew = center;                                         // tras un título centrado empieza otro párrafo
+      prevG = g; prevBlank = false;
     });
+    flush();
     if (mathCarry) body.push(mathPara(toOMML(mathCarry.ink)));
     return zip([['[Content_Types].xml', CT], ['_rels/.rels', RELS], ['word/_rels/document.xml.rels', DOCRELS],
       ['word/document.xml', documentXML(body.join(''))], ['word/styles.xml', STYLES], ['docProps/core.xml', core(opts.title||'Trabajo', opts.student)]]);
