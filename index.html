@@ -121,10 +121,10 @@ select{font:inherit;font-size:13px;padding:6px 8px;border-radius:8px;border:1px 
   .sheet{max-height:calc(46vh / var(--z,1))}
   .ink{font-size:19px}
 }
-/* Celular: la aplicación ocupa justo la pantalla; el teclado queda fijo abajo y la hoja usa el espacio que sobra.
-   Las opciones se pliegan detrás del botón «Opciones». */
+/* Celular (vertical, o en horizontal con pantalla baja y táctil): la aplicación ocupa justo la pantalla; el teclado queda
+   fijo abajo y la hoja usa el espacio que sobra. Las opciones se pliegan detrás del botón «Opciones». */
 .opts-toggle{display:none}
-@media (max-width:640px){
+@media (max-width:640px), (max-height:500px) and (pointer:coarse){
   body{padding-block:6px}
   .app{height:calc((100dvh - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px)) / var(--z,1) - 12px);min-height:0;gap:8px}
   .sheet-wrap{flex:1 1 auto;min-height:110px}
@@ -141,6 +141,26 @@ select{font:inherit;font-size:13px;padding:6px 8px;border-radius:8px;border:1px 
   .opts.collapsed>label{display:none}
   .opts kbd{display:none}
   .opts>span{margin-left:0!important;flex-wrap:wrap}
+}
+/* Celular en horizontal: sin encabezado visible (sigue para el lector de pantalla), menús y opciones en poco alto,
+   y las teclas en una sola fila, en el orden de la Perkins */
+@media (max-height:500px) and (pointer:coarse) and (min-width:641px){
+  header{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+  .app{gap:5px}
+  .menubar{padding:1px}
+  .mb{padding:4px 12px}
+  .opts .btn{padding:4px 10px}
+  .sheet-wrap{min-height:70px}
+  .ink{font-size:18px;line-height:1.45}
+  .machine{padding-top:5px}
+  .keys{gap:5px}
+  .key{min-height:42px;border-bottom-width:3px}
+  .key .n{font-size:18px}
+  .key .l{display:none}
+  .key.wide .n{font-size:13px}
+  .k-mark{min-height:32px}
+  .k-mark .l{display:inline;margin-left:8px}
+  .k-mark{flex-direction:row}
 }
 @media (prefers-reduced-motion:reduce){.caret,.cell.cur .dots{animation:none}.cell.flash .dots{animation:none}}
 [hidden]{display:none!important}
