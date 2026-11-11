@@ -2781,6 +2781,7 @@ const MX = (()=>{
     ['16','pow','','potencia'], ['34','sub','','subíndice'], ['1246','rootA','','raíz'], ['156','rootB','','fin de índice'],
     ['456','op','|','barra vertical'], ['2','punct',',','coma'], ['3','punct','.','punto'], ['23','punct',';','punto y coma'], ['25','punct',':','dos puntos']
   ].map(([p,k,t,say,aux])=>({cells:dk(p), k, t, say, aux:!!aux})).sort((a,b)=>b.cells.length-a.cells.length);
+  const BOX_SEQ = SEQ.find(x=>x.t==='□');
   const EOL_OPS = new Set([m('2356'), m('235'), m('236'), m('256')]);
   const OP_NAME_LOW = {[m('235')]:'más',[m('2356')]:'igual',[m('236')]:'por',[m('256')]:'entre',[m('26')]:'abre paréntesis auxiliar',[m('35')]:'cierra paréntesis auxiliar',[m('2')]:'coma',[m('23')]:'punto y coma',[m('25')]:'dos puntos',[m('356')]:'cero abajo'};
   const SUPC = {'0':'⁰','1':'¹','2':'²','3':'³','4':'⁴','5':'⁵','6':'⁶','7':'⁷','8':'⁸','9':'⁹','−':'⁻',a:'ᵃ',b:'ᵇ',c:'ᶜ',d:'ᵈ',e:'ᵉ',f:'ᶠ',g:'ᵍ',h:'ʰ',i:'ⁱ',j:'ʲ',k:'ᵏ',l:'ˡ',m:'ᵐ',n:'ⁿ',o:'ᵒ',p:'ᵖ',r:'ʳ',s:'ˢ',t:'ᵗ',u:'ᵘ',v:'ᵛ',w:'ʷ',x:'ˣ',y:'ʸ',z:'ᶻ'};
@@ -2809,6 +2810,7 @@ const MX = (()=>{
         else { period = true; out[j] = {t:'', sig:'Per', say:'periodo'}; }
         j++; continue;
       }
+      if (c===m('2') && (j+1===cells.length || cells[j+1]===0)) break;   // «4, x»: coma de puntuación, no el denominador 1
       if (c in LOW){
         /* Dentro de paréntesis auxiliares, 35 los cierra (no es la cifra 9 abajo): z sub (n−1), (x+1⁄2)/c */
         let k = j; while (k < cells.length && cells[k] in LOW && !(auxDepth>0 && cells[k]===m('35'))) k++;
@@ -2898,6 +2900,7 @@ const MX = (()=>{
         else { out[i] = {t:'>', say:'mayor que'}; T.push({k:'rel', a:i, b:i+1, t:'>'}); }
         i++; continue;
       }
+      if (seq && seq.t==='≔'){ const pv = T[T.length-1]; if (!pv || /^(op|rel|open|sp|una|punct)$/.test(pv.k)) seq = BOX_SEQ; }
       if (seq && seq.t==='⊙' && (logic || PROPS.has(LAT[cells[i-1]]) || PROPS.has(LAT[cells[i+1]]) || PROPS.has(LAT[cells[i+2]])))
         seq = {cells:seq.cells, k:'op', t:'∨', say:'o', aux:false};
       if (seq){
@@ -3042,6 +3045,7 @@ const MX = (()=>{
   const SETLOG_RE = new RegExp('['+Object.keys(SETLOG_NAME).join('').replace(/[\]\\^-]/g,'\\$&')+']','gu');
   function speak(text){
     let s = ' '+text+' ';
+    s = s.replace(/(∀[^:]*):/g,'$1, se cumple que ').replace(/([∃∄][^:]*):/g,'$1 tal que ');
     s = s.replace(/∃!/g,' existe un único ').replace(/#(?=\S)/g,' cardinal de ');
     s = s.replace(/\{([^{}|]*)\|([^{}]*)\}/g,' abre llave $1 tal que $2 cierra llave ');
     s = s.replace(SETLOG_RE, x=>' '+SETLOG_NAME[x]+' ');
