@@ -121,10 +121,10 @@ select{font:inherit;font-size:13px;padding:6px 8px;border-radius:8px;border:1px 
   .sheet{max-height:calc(46vh / var(--z,1))}
   .ink{font-size:19px}
 }
-/* Celular (vertical, o en horizontal con pantalla baja y táctil): la aplicación ocupa justo la pantalla; el teclado queda
-   fijo abajo y la hoja usa el espacio que sobra. Las opciones se pliegan detrás del botón «Opciones». */
+/* Celulares y tabletas (pantalla angosta o táctil): la aplicación ocupa justo la pantalla; el teclado queda fijo abajo
+   y la hoja usa el espacio que sobra. Las opciones se pliegan detrás del botón «Opciones». */
 .opts-toggle{display:none}
-@media (max-width:640px), (max-height:500px) and (pointer:coarse){
+@media (max-width:640px), (pointer:coarse){
   body{padding-block:6px}
   .app{height:calc((100dvh - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px)) / var(--z,1) - 12px);min-height:0;gap:8px}
   .sheet-wrap{flex:1 1 auto;min-height:110px}
