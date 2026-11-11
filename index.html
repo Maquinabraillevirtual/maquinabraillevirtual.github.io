@@ -2076,6 +2076,9 @@ function candidates(cells, limit){
   for (let i=0; i<n-1 && i<4; i++){
     const P = PRINC.filter(P=>P.c===cells[i]);
     if (!P.length) break;
+    /* B 16-1: los principios no se usan ante vocal; ante vocal ese signo es la contracción (pr + o = pro…) */
+    const nx = cells[i+1], nxIsPrinc = PRINC.some(Q=>Q.c===nx);
+    if (!nxIsPrinc && (/^[aeiouáéíóúü]/.test(LETTER[nx]||'') || /^[aeiouáéíóúü]/.test(CONTR_BY_CELL[nx]||''))) break;
     const prevs = preOpts.filter(x=>x.i===i && x.np===i);
     for (const x of prevs) for (const p of P) preOpts.push({i:i+1, t:x.t+p.p, np:i+1});
   }
