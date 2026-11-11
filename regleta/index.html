@@ -1,0 +1,499 @@
+<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="description" content="Regleta y punzón en pantalla para aprender a escribir braille en espejo."><link rel="icon" href="../iconos/icono-192.png"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style></head><body>
+<title>Regleta Virtual</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=Atkinson+Hyperlegible+Mono:wght@400;600&display=swap">
+<style>
+/* Layout: la regleta es la protagonista — un marco de aluminio con ventanillas de seis agujeros sobre la hoja;
+   arriba la barra de trabajo (estudiante, modo, voltear), abajo lo que dice y la revisión del docente. */
+:root{
+  --bg:#ECEEF0; --paper:#FBFAF6; --ink:#1A2129; --muted:#5B6672; --line:#CDD3D9;
+  --metal:#C9CFD6; --metal-2:#AEB6BF; --metal-edge:#8E98A3; --hole:#F3F1EA; --hole-ring:#7D8793;
+  --dot:#1E3A5C; --dot-hi:#4D74A0; --accent:#2D5B88; --accent-soft:#DCE6F0; --warn:#B4561A; --warn-soft:#F6E4D6; --ok:#2F6B45;
+  --f-body:"Atkinson Hyperlegible",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --f-mono:"Atkinson Hyperlegible Mono",ui-monospace,Menlo,monospace;
+  --cw:46px;   /* ancho de una ventanilla */
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#151A1F; --paper:#20262C; --ink:#E7EBEE; --muted:#9BA6B1; --line:#36404A;
+  --metal:#4A535D; --metal-2:#3B434C; --metal-edge:#5E6873; --hole:#2A3138; --hole-ring:#8D99A6;
+  --dot:#E6EDF4; --dot-hi:#FFFFFF; --accent:#8DB6E0; --accent-soft:#24364A; --warn:#E59A62; --warn-soft:#3E2A1C; --ok:#7CC496; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#151A1F; --paper:#20262C; --ink:#E7EBEE; --muted:#9BA6B1; --line:#36404A;
+  --metal:#4A535D; --metal-2:#3B434C; --metal-edge:#5E6873; --hole:#2A3138; --hole-ring:#8D99A6;
+  --dot:#E6EDF4; --dot-hi:#FFFFFF; --accent:#8DB6E0; --accent-soft:#24364A; --warn:#E59A62; --warn-soft:#3E2A1C; --ok:#7CC496; color-scheme:dark}
+
+html,body{min-height:100%}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:16px;line-height:1.45;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:20px;box-sizing:border-box}
+*{box-sizing:border-box}
+.app{max-width:1240px;margin:0 auto;display:flex;flex-direction:column;gap:16px}
+h1{font-size:28px;margin:0;letter-spacing:.01em;text-wrap:balance}
+.lead{margin:2px 0 0;color:var(--muted);max-width:68ch}
+header{display:flex;flex-wrap:wrap;gap:12px 24px;align-items:flex-end;justify-content:space-between}
+.brand{display:flex;gap:14px;align-items:center}
+.brand .mark{font-size:34px;color:var(--accent);letter-spacing:3px;line-height:1}
+
+.bar{display:flex;flex-wrap:wrap;gap:10px 14px;align-items:center;background:var(--paper);border:1px solid var(--line);border-radius:10px;padding:12px 14px}
+.bar label.f{display:flex;flex-direction:column;gap:2px;font-size:13px;color:var(--muted);min-width:0}
+.bar input[type=text],.bar select{font:inherit;font-size:15px;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:7px;padding:7px 9px;min-width:0}
+.bar input[type=text]{width:190px;max-width:100%}
+.sep{flex:1}
+.seg{display:inline-flex;border:1px solid var(--metal-edge);border-radius:8px;overflow:hidden}
+.seg button{font:inherit;font-size:14px;border:0;background:var(--paper);color:var(--ink);padding:8px 12px;cursor:pointer}
+.seg button+button{border-left:1px solid var(--metal-edge)}
+.seg button[aria-pressed="true"]{background:var(--accent);color:var(--paper);font-weight:700}
+.btn{font:inherit;font-size:14px;border:1px solid var(--metal-edge);background:var(--paper);color:var(--ink);border-radius:8px;padding:8px 12px;cursor:pointer}
+.btn:hover,.seg button:not([aria-pressed="true"]):hover{background:var(--accent-soft)}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:var(--paper);font-weight:700}
+.btn.primary:hover{filter:brightness(1.08);background:var(--accent)}
+.chk{display:flex;gap:6px;align-items:center;font-size:14px;cursor:pointer}
+.chk input{accent-color:var(--accent);width:16px;height:16px}
+button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+/* La regleta */
+.side{display:flex;flex-wrap:wrap;gap:8px 16px;align-items:baseline;justify-content:space-between}
+.side b{font-size:18px}
+.side .hint{color:var(--muted);font-size:14px}
+.dir{font-family:var(--f-mono);font-size:13px;color:var(--accent)}
+.scroller{overflow-x:auto;border-radius:12px}
+.slate{display:inline-flex;flex-direction:column;gap:10px;padding:18px;border-radius:12px;
+  background:linear-gradient(180deg,var(--metal),var(--metal-2));border:1px solid var(--metal-edge);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.35),0 10px 24px -16px rgba(0,0,0,.45)}
+.slate.reading{background:var(--paper);border-color:var(--line);box-shadow:0 10px 24px -16px rgba(0,0,0,.35)}
+.slate:focus{outline:none}
+.slate:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
+.row{display:flex;gap:6px;align-items:center}
+.rn{font-family:var(--f-mono);font-size:12px;color:var(--muted);width:22px;text-align:center;flex:none;font-variant-numeric:tabular-nums}
+.slate:not(.reading) .rn{color:#3D4752}
+:root[data-theme="dark"] .slate:not(.reading) .rn{color:var(--ink)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .slate:not(.reading) .rn{color:var(--ink)}}
+.cell{width:var(--cw);height:calc(var(--cw)*1.45);flex:none;display:grid;grid-template-columns:1fr 1fr;grid-template-rows:repeat(3,1fr);
+  gap:3px 4px;padding:6px 6px;border-radius:6px;background:var(--hole);border:1px solid var(--metal-edge);
+  box-shadow:inset 0 2px 3px rgba(0,0,0,.25);position:relative}
+.slate.reading .cell{background:transparent;border-color:transparent;box-shadow:none}
+.cell.cur{outline:2px solid var(--accent);outline-offset:2px}
+.cell.changed{box-shadow:inset 0 0 0 2px var(--warn),inset 0 2px 3px rgba(0,0,0,.2);background:var(--warn-soft)}
+.slate.reading .cell.changed{background:var(--warn-soft);border-color:var(--warn)}
+.dot{appearance:none;border:0;padding:0;margin:auto;width:16px;height:16px;border-radius:50%;cursor:pointer;
+  background:transparent;box-shadow:inset 0 0 0 1.5px var(--hole-ring);position:relative;font:inherit;color:var(--muted)}
+.dot::after{content:attr(data-n);position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:var(--f-mono);font-size:9px;line-height:1;color:var(--muted);pointer-events:none}
+.dot.on::after,.slate.reading .dot::after{content:""}
+.nonum .dot::after{content:""}
+.dot.on{background:radial-gradient(circle at 35% 30%,var(--dot-hi),var(--dot) 65%);box-shadow:0 1px 1.5px rgba(0,0,0,.35)}
+.slate.reading .dot{cursor:default;box-shadow:none}
+.slate.reading .dot:not(.on){background:transparent}
+.slate.reading .dot:not(.on)::before{content:"";position:absolute;inset:5px;border-radius:50%;background:var(--line)}
+.slate.reading .dot.on{box-shadow:0 2px 3px rgba(0,0,0,.35)}
+.dot:hover:not(.on){box-shadow:inset 0 0 0 2px var(--accent)}
+.slate.reading .dot:hover:not(.on){box-shadow:none}
+.cell .tr{position:absolute;left:0;right:0;bottom:-19px;text-align:center;font-size:12px;color:var(--accent);font-weight:700;line-height:1}
+.row.show-tr{margin-bottom:14px}
+@media (prefers-reduced-motion:no-preference){.dot{transition:background .08s, box-shadow .08s}.slate{transition:background .2s}}
+
+.panel{background:var(--paper);border:1px solid var(--line);border-radius:10px;padding:14px 16px;display:flex;flex-direction:column;gap:8px}
+.panel h2{font-size:17px;margin:0}
+.says{font-size:20px;line-height:1.6;white-space:pre-wrap;min-height:1.6em;overflow-wrap:anywhere}
+.says .unk{color:var(--warn)}
+.status{display:flex;flex-wrap:wrap;gap:6px 18px;font-size:14px;color:var(--muted)}
+.status b{color:var(--ink);font-family:var(--f-mono);font-weight:600;font-variant-numeric:tabular-nums}
+.msg{color:var(--ok);font-weight:700}
+.msg.err{color:var(--warn)}
+.review{border-left:4px solid var(--warn)}
+.review ol{margin:0;padding-left:22px;font-variant-numeric:tabular-nums}
+.review li{margin:2px 0}
+.cells-inline{font-family:var(--f-mono);font-size:20px}
+.confirm{display:flex;flex-wrap:wrap;gap:8px;align-items:center;background:var(--warn-soft);border:1px solid var(--warn);border-radius:8px;padding:8px 12px;font-size:14px}
+details.help{background:var(--paper);border:1px solid var(--line);border-radius:10px;padding:12px 16px}
+details.help summary{cursor:pointer;font-weight:700}
+details.help ul{margin:8px 0 0;padding-left:20px;max-width:75ch}
+details.help li{margin:4px 0}
+kbd{font-family:var(--f-mono);font-size:12px;border:1px solid var(--line);border-bottom-width:2px;border-radius:4px;padding:0 4px;background:var(--bg)}
+[hidden]{display:none!important}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+@media (max-width:640px){ :root{--cw:38px} h1{font-size:23px} .bar input[type=text]{width:150px} }
+</style>
+
+<div class="app">
+  <header>
+    <div class="brand">
+      <span class="mark" aria-hidden="true">⠗⠧</span>
+      <div><h1>Regleta Virtual</h1>
+        <p class="lead">Escribe braille punto a punto, como con regleta y punzón: de derecha a izquierda y en espejo. Luego voltea la hoja para leer lo que escribiste.</p></div>
+    </div>
+  </header>
+
+  <div class="bar" role="group" aria-label="Datos y opciones">
+    <label class="f" for="student">Estudiante<input type="text" id="student" autocomplete="name" placeholder="Nombre y apellido"></label>
+    <label class="f" for="exercise">Ejercicio<input type="text" id="exercise" placeholder="Ejercicio 1: abecedario"></label>
+    <div class="seg" role="group" aria-label="Tipo de regleta">
+      <button id="mNeg" aria-pressed="true" title="Se escribe de derecha a izquierda y en espejo">Regleta común</button>
+      <button id="mPos" aria-pressed="false" title="Se escribe de izquierda a derecha, como se lee">Punto positivo</button>
+    </div>
+    <button class="btn" id="flip" aria-pressed="false">Voltear la hoja</button>
+    <span class="sep"></span>
+    <label class="f" for="cols">Celdas por renglón<select id="cols"></select></label>
+    <label class="f" for="rows">Renglones<select id="rows"></select></label>
+  </div>
+
+  <div class="bar" role="group" aria-label="Archivo y vista">
+    <button class="btn primary" id="saveTxt">Guardar (braille Unicode .txt)</button>
+    <button class="btn" id="saveBrf">Guardar BRF</button>
+    <button class="btn" id="openBtn">Abrir trabajo…</button>
+    <input type="file" id="fileIn" accept=".txt,.brf,.brl,.zip" hidden>
+    <button class="btn" id="undo" title="Control + Z">Deshacer</button>
+    <button class="btn" id="clear">Borrar todo</button>
+    <span class="sep"></span>
+    <label class="chk" for="optNum"><input type="checkbox" id="optNum" checked> Números de los puntos</label>
+    <label class="chk" for="optTr"><input type="checkbox" id="optTr"> Mostrar lo que dice</label>
+  </div>
+  <div class="confirm" id="confirmClear" hidden>¿Borrar todos los puntos de la hoja? <button class="btn" id="clearYes">Sí, borrar</button><button class="btn" id="clearNo">Cancelar</button></div>
+
+  <div class="side">
+    <div><b id="sideName">Lado de escritura</b> · <span class="dir" id="dirLbl">se escribe ← de derecha a izquierda</span></div>
+    <span class="hint" id="sideHint">En cada ventanilla, el punto 1 está arriba a la derecha. Haz clic en los agujeros para marcar los puntos.</span>
+  </div>
+  <div class="scroller"><div class="slate" id="slate" tabindex="0" role="application" aria-roledescription="regleta braille" aria-label="Regleta"></div></div>
+  <div class="status" aria-live="polite"><span>Renglón <b id="sRow">1</b></span><span>Celda <b id="sCol">1</b></span><span>Puntos <b id="sDots">—</b></span><span class="msg" id="msg"></span></div>
+
+  <section class="panel" id="saysPanel" hidden aria-labelledby="saysT">
+    <h2 id="saysT">Lo que dice la hoja (lado de lectura, braille integral)</h2>
+    <div class="says" id="says"></div>
+  </section>
+
+  <section class="panel review" id="reviewPanel" hidden aria-labelledby="revT">
+    <h2 id="revT">Revisión del docente</h2>
+    <p style="margin:0;color:var(--muted)" id="revInfo"></p>
+    <ol id="revList"></ol>
+    <div style="display:flex;flex-wrap:wrap;gap:8px"><button class="btn" id="copyRev">Copiar las correcciones</button><button class="btn" id="saveRev">Guardar el trabajo corregido</button></div>
+  </section>
+
+  <p class="next" style="margin:0;color:var(--muted)">Siguiente paso, cuando ya formes bien las letras: la <a href="https://maquinabraillevirtual.github.io/" style="color:var(--accent);font-weight:700">Máquina Braille Virtual</a>, que funciona como una máquina Perkins.</p>
+  <details class="help">
+    <summary>Cómo se usa</summary>
+    <ul>
+      <li><b>Regleta común:</b> como con punzón, se escribe en el reverso de la hoja, de derecha a izquierda, y cada letra en espejo: en la ventanilla, los puntos 1, 2 y 3 están a la derecha y los puntos 4, 5 y 6 a la izquierda. Empieza por la ventanilla de la derecha de cada renglón.</li>
+      <li><b>Voltear la hoja</b> muestra el lado de lectura, con los puntos en relieve y de izquierda a derecha. Ahí se comprueba si las letras quedaron bien.</li>
+      <li><b>Punto positivo:</b> para las regletas de punto positivo, que escriben de izquierda a derecha como se lee.</li>
+      <li><b>Teclado:</b> con la regleta seleccionada, las teclas <kbd>1</kbd> a <kbd>6</kbd> marcan o quitan los puntos de la ventanilla actual; las flechas mueven la ventanilla; <kbd>Retroceso</kbd> borra la ventanilla; <kbd>Control</kbd> + <kbd>Z</kbd> deshace.</li>
+      <li><b>Entregar el trabajo:</b> escribe tu nombre y el ejercicio, pulsa <b>Guardar</b> y sube el archivo a la carpeta o al aula virtual que indique el docente. Se guarda el lado de lectura, en braille Unicode (.txt) o en BRF.</li>
+      <li><b>Para el docente:</b> <b>Abrir trabajo</b> carga el archivo del estudiante. Al corregir un punto, la ventanilla se marca en naranja y la corrección aparece en la lista de revisión, que se puede copiar para enviarla como devolución. El archivo también se abre en la Máquina Braille Virtual.</li>
+    </ul>
+  </details>
+</div>
+
+<script>
+/* ---------- Datos: la hoja se guarda en orden de lectura (lado de lectura, de izquierda a derecha) ---------- */
+const $ = id => document.getElementById(id);
+const BIT = n => 1 << (n-1);
+let COLS = 18, ROWS = 8;
+let grid = [], original = null, mode = 'neg', flipped = false;
+let cur = {r:0, c:0};          // ventanilla actual, en orden de lectura
+const undoStack = [];
+const STORE = 'regleta-virtual-v1';
+
+function blank(){ return Array.from({length:ROWS}, ()=>Array(COLS).fill(0)); }
+function resize(cols, rows){
+  const g = Array.from({length:rows}, (_,r)=>Array.from({length:cols}, (_,c)=> (grid[r] && grid[r][c]) || 0));
+  COLS = cols; ROWS = rows; grid = g;
+  if (original) original = Array.from({length:rows}, (_,r)=>Array.from({length:cols}, (_,c)=> (original[r] && original[r][c]) || 0));
+  cur.r = Math.min(cur.r, ROWS-1); cur.c = Math.min(cur.c, COLS-1);
+}
+grid = blank();
+
+/* Tamaños */
+(function(){
+  const cs = $('cols'), rs = $('rows');
+  [12,14,16,18,20,24,27,28,30,32,36,40].forEach(n=>{ const o = document.createElement('option'); o.value = n; o.textContent = n; cs.appendChild(o); });
+  [4,6,8,10,12,16,20,25,27].forEach(n=>{ const o = document.createElement('option'); o.value = n; o.textContent = n; rs.appendChild(o); });
+  cs.value = COLS; rs.value = ROWS;
+})();
+
+/* ---------- Traducción a tinta (braille integral, lo básico) ---------- */
+const L = {a:'1',b:'12',c:'14',d:'145',e:'15',f:'124',g:'1245',h:'125',i:'24',j:'245',k:'13',l:'123',m:'134',n:'1345','ñ':'12456',o:'135',p:'1234',q:'12345',r:'1235',s:'234',t:'2345',u:'136',v:'1236',w:'2456',x:'1346',y:'13456',z:'1356','á':'12356','é':'2346','í':'34','ó':'346','ú':'23456','ü':'1256'};
+const mk = d => [...d].reduce((a,x)=>a|BIT(+x),0);
+const LET = {}; for (const k in L) LET[mk(L[k])] = k;
+const DIG = {}; 'abcdefghij'.split('').forEach((ch,i)=>{ DIG[mk(L[ch])] = String((i+1)%10); });
+const PUN = {[mk('2')]:',',[mk('3')]:'.',[mk('23')]:';',[mk('25')]:':',[mk('26')]:'?',[mk('235')]:'!',[mk('236')]:'"',[mk('126')]:'(',[mk('345')]:')',[mk('36')]:'-',[mk('35')]:'*',[mk('5')]:'@'};
+const CAP = mk('46'), NUM = mk('3456');
+function translateLine(cells){
+  /* devuelve [{t, unk}] por celda; 0 = espacio */
+  const out = []; let num = false, cap = 0, open = {'?':false,'!':false,'"':false};
+  for (let i=0;i<cells.length;i++){
+    const c = cells[i];
+    if (c===0){ out.push({t:' '}); num = false; cap = 0; continue; }
+    if (c===NUM){ num = true; out.push({t:''}); continue; }
+    if (c===CAP){ cap = cells[i+1]===CAP ? 2 : (cap===2 ? 2 : 1); if (cells[i+1]===CAP){ out.push({t:''}); i++; } out.push({t:''}); continue; }
+    if (num && DIG[c]!==undefined){ out.push({t:DIG[c]}); continue; }
+    if (num && (c===mk('2') || c===mk('3')) && DIG[cells[i+1]]!==undefined){ out.push({t:c===mk('2')?',':'.'}); continue; }
+    num = false;
+    if (LET[c]!==undefined){ let t = LET[c]; if (cap){ t = t.toUpperCase(); if (cap===1) cap = 0; } out.push({t}); continue; }
+    if (PUN[c]!==undefined){
+      let t = PUN[c];
+      if (t==='?'||t==='!'||t==='"'){ const prevBlank = i===0 || cells[i-1]===0; if (prevBlank && cells[i+1] && cells[i+1]!==0){ t = t==='?'?'¿':t==='!'?'¡':'“'; } else if (t==='"') t = '”'; }
+      out.push({t}); continue;
+    }
+    out.push({t:'¿?', unk:true});
+  }
+  return out;
+}
+function lineText(r){
+  const cells = grid[r].slice(); let e = cells.length; while (e>0 && cells[e-1]===0) e--;
+  return translateLine(cells.slice(0,e));
+}
+
+/* ---------- Dibujo ---------- */
+const slate = $('slate');
+/* En la regleta común, el lado de escritura muestra la hoja en espejo: la ventanilla de la izquierda en pantalla es
+   la última celda del renglón, y en cada ventanilla la columna izquierda tiene los puntos 4, 5 y 6. */
+function writingMirrored(){ return mode==='neg' && !flipped; }
+function render(){
+  const mir = writingMirrored(), reading = mode==='pos' || flipped;
+  slate.classList.toggle('reading', flipped && mode==='neg');
+  slate.classList.toggle('nonum', !$('optNum').checked);
+  const showTr = $('optTr').checked && reading;
+  slate.innerHTML = '';
+  for (let r=0;r<ROWS;r++){
+    const row = document.createElement('div'); row.className = 'row'+(showTr?' show-tr':'');
+    const tr = showTr ? lineText(r) : null;
+    const rn = document.createElement('span'); rn.className = 'rn'; rn.textContent = r+1; rn.setAttribute('aria-hidden','true');
+    if (!mir) row.appendChild(rn);
+    for (let v=0; v<COLS; v++){
+      const c = mir ? COLS-1-v : v;
+      const cell = document.createElement('div'); cell.className = 'cell';
+      cell.dataset.r = r; cell.dataset.c = c;
+      if (r===cur.r && c===cur.c && !(flipped && mode==='neg')) cell.classList.add('cur');
+      if (original && original[r][c]!==grid[r][c]) cell.classList.add('changed');
+      /* orden de la rejilla: fila a fila, columna izquierda y derecha */
+      const order = mir ? [4,1,5,2,6,3] : [1,4,2,5,3,6];
+      for (const n of order){
+        const d = document.createElement('button'); d.type = 'button'; d.className = 'dot'+((grid[r][c] & BIT(n))?' on':'');
+        d.dataset.n = n; d.tabIndex = -1;
+        d.setAttribute('aria-label', 'Renglón '+(r+1)+', celda '+(c+1)+', punto '+n+((grid[r][c]&BIT(n))?', marcado':''));
+        cell.appendChild(d);
+      }
+      if (tr && tr[c] && tr[c].t && tr[c].t!==' '){ const s = document.createElement('span'); s.className = 'tr'; s.textContent = tr[c].t; s.setAttribute('aria-hidden','true'); cell.appendChild(s); }
+      row.appendChild(cell);
+    }
+    if (mir) row.appendChild(rn);
+    slate.appendChild(row);
+  }
+  $('sideName').textContent = mode==='pos' ? 'Regleta de punto positivo' : flipped ? 'Lado de lectura (hoja volteada)' : 'Lado de escritura';
+  $('dirLbl').textContent = mode==='pos' || flipped ? 'se lee → de izquierda a derecha' : 'se escribe ← de derecha a izquierda';
+  $('sideHint').textContent = mode==='pos' ? 'Los puntos 1, 2 y 3 están a la izquierda. Haz clic en los agujeros para marcar los puntos.'
+    : flipped ? 'Así queda la hoja para leerla con los dedos. Vuelve a voltearla para seguir escribiendo.'
+    : 'En cada ventanilla, el punto 1 está arriba a la derecha. Haz clic en los agujeros para marcar los puntos.';
+  $('flip').textContent = flipped ? 'Volver al lado de escritura' : 'Voltear la hoja';
+  $('flip').setAttribute('aria-pressed', flipped); $('flip').hidden = mode==='pos';
+  $('mNeg').setAttribute('aria-pressed', mode==='neg'); $('mPos').setAttribute('aria-pressed', mode==='pos');
+  $('sRow').textContent = cur.r+1; $('sCol').textContent = cur.c+1;
+  const dots = [1,2,3,4,5,6].filter(n=>grid[cur.r][cur.c] & BIT(n)); $('sDots').textContent = dots.length ? dots.join(' ') : '—';
+  renderSays(); renderReview(); persist();
+}
+function renderSays(){
+  const on = $('optTr').checked; $('saysPanel').hidden = !on; if (!on) return;
+  const box = $('says'); box.innerHTML = '';
+  let last = ROWS-1; while (last>0 && grid[last].every(x=>x===0)) last--;
+  for (let r=0;r<=last;r++){
+    lineText(r).forEach(it=>{ if (it.unk){ const s = document.createElement('span'); s.className = 'unk'; s.textContent = it.t; box.appendChild(s); } else box.appendChild(document.createTextNode(it.t)); });
+    if (r<last) box.appendChild(document.createTextNode('\n'));
+  }
+  if (grid.every(row=>row.every(x=>x===0))) box.textContent = 'La hoja está en blanco.';
+}
+
+/* ---------- Marcar puntos ---------- */
+function pushUndo(){ undoStack.push(JSON.stringify(grid)); if (undoStack.length>300) undoStack.shift(); }
+function toggle(r, c, n){
+  pushUndo(); grid[r][c] ^= BIT(n); cur = {r, c};
+  flash(((grid[r][c]&BIT(n)) ? 'Punto '+n+' marcado' : 'Punto '+n+' quitado'));
+  render();
+}
+slate.addEventListener('click', e=>{
+  const d = e.target.closest('.dot'), cell = e.target.closest('.cell');
+  if (!cell) return;
+  if (flipped && mode==='neg'){ flash('Estás en el lado de lectura: vuelve a voltear la hoja para escribir', true); return; }
+  if (!d){ cur = {r:+cell.dataset.r, c:+cell.dataset.c}; render(); return; }
+  toggle(+cell.dataset.r, +cell.dataset.c, +d.dataset.n);
+  slate.focus({preventScroll:true});
+});
+slate.addEventListener('keydown', e=>{
+  if (e.ctrlKey || e.metaKey || e.altKey) return;
+  const k = e.key;
+  if (/^[1-6]$/.test(k)){
+    e.preventDefault();
+    if (flipped && mode==='neg'){ flash('Vuelve a voltear la hoja para escribir', true); return; }
+    toggle(cur.r, cur.c, +k); return;
+  }
+  /* las flechas siguen la pantalla: en el lado de escritura de la regleta común, la izquierda es la celda siguiente */
+  const mir = writingMirrored();
+  if (k==='ArrowLeft'){ e.preventDefault(); cur.c = Math.max(0, Math.min(COLS-1, cur.c + (mir?1:-1))); render(); }
+  else if (k==='ArrowRight'){ e.preventDefault(); cur.c = Math.max(0, Math.min(COLS-1, cur.c + (mir?-1:1))); render(); }
+  else if (k==='ArrowUp'){ e.preventDefault(); cur.r = Math.max(0, cur.r-1); render(); }
+  else if (k==='ArrowDown'){ e.preventDefault(); cur.r = Math.min(ROWS-1, cur.r+1); render(); }
+  else if (k==='Home'){ e.preventDefault(); cur.c = 0; render(); }
+  else if (k==='End'){ e.preventDefault(); cur.c = COLS-1; render(); }
+  else if (k==='Enter'){ e.preventDefault(); cur.r = Math.min(ROWS-1, cur.r+1); cur.c = 0; render(); }
+  else if (k===' '){ e.preventDefault(); cur.c = Math.min(COLS-1, cur.c+1); render(); }
+  else if (k==='Backspace' || k==='Delete'){ e.preventDefault(); if (grid[cur.r][cur.c]){ pushUndo(); grid[cur.r][cur.c] = 0; flash('Ventanilla borrada'); render(); } }
+});
+document.addEventListener('keydown', e=>{
+  if ((e.ctrlKey||e.metaKey) && (e.key==='z'||e.key==='Z') && !e.target.closest('input')){ e.preventDefault(); undo(); }
+});
+function undo(){ const s = undoStack.pop(); if (!s){ flash('No hay nada que deshacer', true); return; } grid = JSON.parse(s); flash('Deshecho'); render(); }
+$('undo').onclick = undo;
+
+let flashT = 0;
+function flash(t, err){ const m = $('msg'); m.textContent = t; m.classList.toggle('err', !!err); clearTimeout(flashT); flashT = setTimeout(()=>{ m.textContent = ''; }, 3500); }
+
+/* ---------- Modo, volteo, tamaño, opciones ---------- */
+$('mNeg').onclick = ()=>{ mode = 'neg'; render(); };
+$('mPos').onclick = ()=>{ mode = 'pos'; flipped = false; render(); };
+$('flip').onclick = ()=>{ flipped = !flipped; render(); };
+$('cols').onchange = ()=>{ pushUndo(); resize(+$('cols').value, ROWS); render(); };
+$('rows').onchange = ()=>{ pushUndo(); resize(COLS, +$('rows').value); render(); };
+$('optNum').onchange = render; $('optTr').onchange = render;
+$('clear').onclick = ()=>{ $('confirmClear').hidden = false; $('clearNo').focus(); };
+$('clearNo').onclick = ()=>{ $('confirmClear').hidden = true; };
+$('clearYes').onclick = ()=>{ pushUndo(); grid = blank(); cur = {r:0,c:0}; $('confirmClear').hidden = true; flash('Hoja borrada (Control + Z para recuperarla)'); render(); };
+
+/* ---------- Guardar ---------- */
+const BRF_ASCII = " A1B'K2L@CIF/MSP\"E3H9O6R^DJG>NTQ,*5<-U8V.%[$+X!&;:4\\0Z7(_?W]#Y)=";
+function usedLines(){ let last = ROWS-1; while (last>0 && grid[last].every(x=>x===0)) last--; return grid.slice(0, last+1).map(row=>{ let e = row.length; while (e>0 && row[e-1]===0) e--; return row.slice(0,e); }); }
+const toUnicode = () => usedLines().map(l=>l.map(c=>String.fromCharCode(0x2800+c)).join('')).join('\n') + '\n';
+const toBRF = () => usedLines().map(l=>l.map(c=>BRF_ASCII[c]).join('')).join('\r\n') + '\r\n';
+function baseName(suffix){
+  const clean = s => s.trim().replace(/[\\/:*?"<>|]+/g,'').replace(/\s+/g,' ').slice(0,60);
+  const parts = [clean($('student').value), clean($('exercise').value)].filter(Boolean);
+  return (parts.length ? parts.join(' - ') : 'regleta') + (suffix||'');
+}
+let dl = null; const dlReady = (async()=>{ try{ if (window.claude && claude.use) dl = await claude.use('downloads'); }catch(e){ dl = null; } })();
+async function offer(name, data){
+  await dlReady;
+  if (dl){
+    try{ await dl.save({filename:name, data}); flash('Guardado: '+name); }
+    catch(e){ if (e && e.code==='declined') flash('No se guardó', true); else flash('No se pudo guardar aquí ('+(e && e.code || 'error')+')', true); }
+    return;
+  }
+  try{
+    const blob = data instanceof Blob ? data : new Blob([data], {type: name.endsWith('.txt') ? 'text/plain;charset=utf-8' : 'application/octet-stream'});
+    const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = name; document.body.appendChild(a); a.click();
+    setTimeout(()=>{ URL.revokeObjectURL(a.href); a.remove(); }, 2000); flash('Guardado: '+name);
+  }catch(e){ flash('No se pudo guardar', true); }
+}
+function empty(){ if (grid.every(r=>r.every(x=>x===0))){ flash('La hoja está en blanco: no hay nada que guardar', true); return true; } return false; }
+/* Zip sin compresión de un solo archivo (dentro de Claude no se pueden descargar .brf sueltos) */
+const CRC = (()=>{ const t = new Uint32Array(256); for (let n=0;n<256;n++){ let c=n; for (let k=0;k<8;k++) c = c&1 ? 0xEDB88320^(c>>>1) : c>>>1; t[n]=c>>>0; } return t; })();
+const crc32 = b => { let c = 0xFFFFFFFF; for (const x of b) c = CRC[(c^x)&255]^(c>>>8); return (c^0xFFFFFFFF)>>>0; };
+function zip1(name, data){
+  const enc = new TextEncoder(), nm = enc.encode(name), crc = crc32(data), d = new Date();
+  const time = (d.getHours()<<11)|(d.getMinutes()<<5)|(d.getSeconds()>>1), date = ((d.getFullYear()-1980)<<9)|((d.getMonth()+1)<<5)|d.getDate();
+  const loc = new DataView(new ArrayBuffer(30)); loc.setUint32(0,0x04034b50,true); loc.setUint16(4,20,true); loc.setUint16(6,0x0800,true); loc.setUint16(10,time,true); loc.setUint16(12,date,true); loc.setUint32(14,crc,true); loc.setUint32(18,data.length,true); loc.setUint32(22,data.length,true); loc.setUint16(26,nm.length,true);
+  const cen = new DataView(new ArrayBuffer(46)); cen.setUint32(0,0x02014b50,true); cen.setUint16(4,20,true); cen.setUint16(6,20,true); cen.setUint16(8,0x0800,true); cen.setUint16(12,time,true); cen.setUint16(14,date,true); cen.setUint32(16,crc,true); cen.setUint32(20,data.length,true); cen.setUint32(24,data.length,true); cen.setUint16(28,nm.length,true);
+  const end = new DataView(new ArrayBuffer(22)); end.setUint32(0,0x06054b50,true); end.setUint16(8,1,true); end.setUint16(10,1,true); end.setUint32(12,46+nm.length,true); end.setUint32(16,30+nm.length+data.length,true);
+  return new Blob([loc, nm, data, cen, nm, end], {type:'application/zip'});
+}
+$('saveTxt').onclick = ()=>{ if (!empty()) offer(baseName('.txt'), toUnicode()); };
+$('saveBrf').onclick = async ()=>{
+  if (empty()) return;
+  const bytes = new Uint8Array([...toBRF()].map(ch=>ch.charCodeAt(0)));
+  await dlReady;
+  if (dl) offer(baseName('.zip'), zip1(baseName('.brf'), bytes)); else offer(baseName('.brf'), new Blob([bytes], {type:'application/octet-stream'}));
+};
+
+/* ---------- Abrir (el docente revisa) ---------- */
+$('openBtn').onclick = ()=>$('fileIn').click();
+function unzipFirst(buf){
+  const v = new DataView(buf); if (v.getUint32(0,true)!==0x04034b50) return null;
+  const method = v.getUint16(8,true), size = v.getUint32(18,true), nl = v.getUint16(26,true), xl = v.getUint16(28,true);
+  if (method!==0) return null;
+  return new Uint8Array(buf, 30+nl+xl, size);
+}
+function parse(text){
+  const lines = text.replace(/\r\n?/g,'\n').replace(/\f/g,'\n').split('\n');
+  while (lines.length && !lines[lines.length-1].trim()) lines.pop();
+  if (!lines.length) return null;
+  if (/[⠀-⠿]/.test(text)){
+    return lines.map(l=>[...l.replace(/\s+$/,'')].map(ch=>{ const k = ch.charCodeAt(0); return k>=0x2800 && k<=0x283F ? k-0x2800 : 0; }));
+  }
+  const out = [];
+  for (const l of lines){
+    const row = [];
+    for (const ch of l.replace(/\s+$/,'')){ let k = ch.charCodeAt(0); if (k>=0x60 && k<=0x7e) k -= 0x20; const i = BRF_ASCII.indexOf(String.fromCharCode(k)); if (i<0) return null; row.push(i); }
+    out.push(row);
+  }
+  return out;
+}
+$('fileIn').onchange = async ()=>{
+  const f = $('fileIn').files[0]; $('fileIn').value = ''; if (!f) return;
+  let text = '';
+  try{
+    if (/\.zip$/i.test(f.name)){ const b = unzipFirst(await f.arrayBuffer()); if (!b) throw 0; text = String.fromCharCode(...b); }
+    else text = await f.text();
+  }catch(e){ flash('No se pudo leer el archivo', true); return; }
+  const lines = parse(text);
+  if (!lines){ flash('El archivo no es braille Unicode ni BRF', true); return; }
+  const cols = Math.max(COLS, ...lines.map(l=>l.length)), rows = Math.max(lines.length, 4);
+  COLS = cols; ROWS = rows;
+  grid = Array.from({length:rows}, (_,r)=>Array.from({length:cols}, (_,c)=> (lines[r] && lines[r][c]) || 0));
+  original = grid.map(r=>r.slice()); undoStack.length = 0;
+  ensureOption($('cols'), cols); ensureOption($('rows'), rows); $('cols').value = cols; $('rows').value = rows;
+  const m = f.name.replace(/\.(txt|brf|brl|zip)$/i,'').split(' - ');
+  $('student').value = m[0] || ''; $('exercise').value = m.slice(1).join(' - ');
+  flipped = mode==='neg'; cur = {r:0,c:0};
+  $('optTr').checked = true;
+  flash('Abierto: '+f.name+'. Se muestra el lado de lectura.');
+  render();
+};
+function ensureOption(sel, n){ if (![...sel.options].some(o=>+o.value===n)){ const o = document.createElement('option'); o.value = n; o.textContent = n; sel.appendChild(o); } }
+
+/* Revisión: lista de ventanillas cambiadas respecto del archivo del estudiante */
+const U = c => String.fromCharCode(0x2800+c);
+const dotsTxt = c => c ? 'puntos '+[1,2,3,4,5,6].filter(n=>c&BIT(n)).join(' ') : 'en blanco';
+const name1 = c => c===0 ? 'espacio' : LET[c] ? '«'+LET[c]+'»' : PUN[c] ? '«'+PUN[c]+'»' : c===CAP ? 'mayúscula' : c===NUM ? 'signo de número' : 'signo no reconocido';
+function changes(){
+  const out = []; if (!original) return out;
+  for (let r=0;r<ROWS;r++) for (let c=0;c<COLS;c++) if (original[r][c]!==grid[r][c]) out.push({r, c, a:original[r][c], b:grid[r][c]});
+  return out;
+}
+function renderReview(){
+  const p = $('reviewPanel'); p.hidden = !original; if (!original) return;
+  const ch = changes(), list = $('revList'); list.innerHTML = '';
+  $('revInfo').textContent = ch.length ? ch.length+(ch.length===1?' corrección':' correcciones')+'. Las ventanillas corregidas se ven en naranja.' : 'Trabajo abierto para revisar. Corrige los puntos en el lado de escritura o con Punto positivo; cada corrección aparece aquí.';
+  ch.forEach(x=>{ const li = document.createElement('li');
+    li.innerHTML = 'Renglón '+(x.r+1)+', celda '+(x.c+1)+': escribió <span class="cells-inline">'+U(x.a)+'</span> ('+name1(x.a)+', '+dotsTxt(x.a)+'); va <span class="cells-inline">'+U(x.b)+'</span> ('+name1(x.b)+', '+dotsTxt(x.b)+').';
+    list.appendChild(li); });
+}
+function reviewText(){
+  const ch = changes(); const who = baseName('');
+  if (!ch.length) return 'Revisión de «'+who+'»: sin correcciones.';
+  return 'Revisión de «'+who+'»\n' + ch.map((x,i)=>(i+1)+'. Renglón '+(x.r+1)+', celda '+(x.c+1)+': escribió '+U(x.a)+' ('+name1(x.a)+', '+dotsTxt(x.a)+'); va '+U(x.b)+' ('+name1(x.b)+', '+dotsTxt(x.b)+').').join('\n');
+}
+$('copyRev').onclick = async ()=>{
+  const t = reviewText();
+  try{ await navigator.clipboard.writeText(t); flash('Correcciones copiadas'); }
+  catch(e){ const ta = document.createElement('textarea'); ta.value = t; ta.style.position='fixed'; ta.style.opacity='0'; document.body.appendChild(ta); ta.select(); try{ document.execCommand('copy'); flash('Correcciones copiadas'); }catch(_){ flash('No se pudo copiar', true); } ta.remove(); }
+};
+$('saveRev').onclick = ()=>{ if (!empty()) offer(baseName(' (corregido).txt'), toUnicode()); };
+
+/* ---------- Borrador en este navegador ---------- */
+function persist(){ try{ localStorage.setItem(STORE, JSON.stringify({grid, COLS, ROWS, mode, student:$('student').value, exercise:$('exercise').value, num:$('optNum').checked})); }catch(e){} }
+(function restore(){
+  try{
+    const d = JSON.parse(localStorage.getItem(STORE)||'null'); if (!d || !Array.isArray(d.grid)) return;
+    COLS = d.COLS||18; ROWS = d.ROWS||8; grid = blank(); d.grid.forEach((row,r)=>row.forEach((v,c)=>{ if (r<ROWS && c<COLS) grid[r][c] = v|0; }));
+    mode = d.mode==='pos' ? 'pos' : 'neg'; $('student').value = d.student||''; $('exercise').value = d.exercise||''; $('optNum').checked = d.num!==false;
+    ensureOption($('cols'), COLS); ensureOption($('rows'), ROWS); $('cols').value = COLS; $('rows').value = ROWS;
+  }catch(e){}
+})();
+$('student').oninput = $('exercise').oninput = persist;
+
+/* Ejemplo al abrir por primera vez: «hola» ya escrito en el primer renglón, para ver cómo queda */
+(function sample(){
+  try{ if (localStorage.getItem(STORE)) return; }catch(e){}
+  ['h','o','l','a'].forEach((ch,i)=>{ grid[0][i] = mk(L[ch]); });
+  cur = {r:0, c:4};
+})();
+render();
+</script>
+
+</body></html>

@@ -1,6 +1,6 @@
 /* Máquina Braille Virtual — caché para funcionar sin conexión.
    Al publicar una versión nueva, cambia VERSION para que los equipos la descarguen. */
-const VERSION = 'mbv-2026-11-11-6';
+const VERSION = 'mbv-2026-11-11-7';
 const FILES = ['./', './index.html', './manifest.webmanifest',
   './iconos/icono-192.png', './iconos/icono-512.png', './iconos/icono-maskable-512.png', './iconos/icono-180.png'];
 self.addEventListener('install', e => {
@@ -16,8 +16,9 @@ self.addEventListener('fetch', e => {
   if (url.origin === location.origin) {
     /* Páginas: primero la red (para recibir actualizaciones), si no hay conexión, la copia guardada */
     if (e.request.mode === 'navigate') {
-      e.respondWith(fetch(e.request).then(r => { const c = r.clone(); caches.open(VERSION).then(x => x.put('./index.html', c)); return r; })
-        .catch(() => caches.match('./index.html')));
+      /* cada página se guarda con su propia dirección (la aplicación y la Regleta Virtual en /regleta/) */
+      e.respondWith(fetch(e.request).then(r => { const c = r.clone(); caches.open(VERSION).then(x => x.put(e.request, c)); return r; })
+        .catch(() => caches.match(e.request).then(r => r || caches.match(url.pathname.startsWith('/regleta') ? './regleta/' : './index.html'))));
       return;
     }
     e.respondWith(caches.match(e.request).then(r => r || fetch(e.request)));
