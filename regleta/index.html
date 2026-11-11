@@ -226,6 +226,8 @@ function translateLine(cells){
     if (c===CAP){ cap = cells[i+1]===CAP ? 2 : (cap===2 ? 2 : 1); if (cells[i+1]===CAP){ out.push({t:''}); i++; } out.push({t:''}); continue; }
     if (num && DIG[c]!==undefined){ out.push({t:DIG[c]}); continue; }
     if (num && (c===mk('2') || c===mk('3')) && DIG[cells[i+1]]!==undefined){ out.push({t:c===mk('2')?',':'.'}); continue; }
+    /* interruptor (5) entre un número y una letra de la a a la j: 25cm */
+    if (c===mk('5') && out.length && /\d$/.test(out[out.length-1].t||'') && LET[cells[i+1]]!==undefined){ out.push({t:''}); num = false; continue; }
     num = false;
     if (LET[c]!==undefined){ let t = LET[c]; if (cap){ t = t.toUpperCase(); if (cap===1) cap = 0; } out.push({t}); continue; }
     if (PUN[c]!==undefined){
