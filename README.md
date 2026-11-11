@@ -5,10 +5,10 @@ con sonidos reales de una máquina Perkins, accesible con lectores de pantalla y
 
 Abrir la aplicación: https://maquinabraillevirtual.github.io
 
-## Regleta Virtual
+## Regleta Braille Virtual
 
 Regleta y punzón en pantalla, para aprender a formar las letras en espejo (de derecha a izquierda).
 Los trabajos se guardan en braille Unicode (.txt) o BRF
 para entregarlos al docente, que los abre en la misma Regleta para revisarlos.
 
-Abrir la Regleta Virtual: https://maquinabraillevirtual.github.io/regleta/
+Abrir la Regleta Braille Virtual: https://maquinabraillevirtual.github.io/regleta/
