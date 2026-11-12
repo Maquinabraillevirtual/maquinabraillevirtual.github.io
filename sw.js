@@ -1,6 +1,6 @@
 /* Máquina Braille Virtual — caché para funcionar sin conexión.
    Al publicar una versión nueva, cambia VERSION para que los equipos la descarguen. */
-const VERSION = 'mbv-2026-11-11-10';
+const VERSION = 'mbv-2026-11-11-11';
 const FILES = ['./', './index.html', './manifest.webmanifest',
   './iconos/icono-192.png', './iconos/icono-512.png', './iconos/icono-maskable-512.png', './iconos/icono-180.png'];
 self.addEventListener('install', e => {

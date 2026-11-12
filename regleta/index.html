@@ -131,7 +131,22 @@ dialog .row2{display:flex;flex-wrap:wrap;gap:12px 18px;align-items:flex-end}
 dialog label.f{display:flex;flex-direction:column;gap:2px;font-size:14px;color:var(--muted)}
 dialog select{font:inherit;font-size:15px;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:7px;padding:7px 9px}
 .dlg-btns{display:flex;justify-content:flex-end;gap:8px;margin-top:18px}
-#dlgHelp{max-width:min(760px,calc(100vw - 32px))}
+#dlgHelp{max-width:min(760px,calc(100vw - 32px));max-height:calc(88vh / var(--z,1));overflow:auto}
+#dlgHelp h3{font-size:17px;margin:18px 0 6px}
+#dlgHelp h3:focus{outline:2px solid var(--accent);outline-offset:3px}
+.signs{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:4px 18px;align-items:start}
+.signs table{border-collapse:collapse;width:100%;font-size:15px;margin:0 0 10px}
+.signs caption{text-align:left;font-weight:700;padding:6px 0 4px;color:var(--ink)}
+.signs th,.signs td{border-bottom:1px solid var(--line);padding:3px 6px;text-align:left;vertical-align:middle}
+.signs th{font-size:13px;color:var(--muted);font-weight:600}
+.signs .bc{font-size:22px;line-height:1;color:var(--accent)}
+/* Signo generador, en la esquina del encabezado */
+.gen{display:flex;gap:12px;align-items:flex-end}
+.gen figure{margin:0;display:flex;flex-direction:column;align-items:center;gap:6px;padding:8px 12px;border:1px solid var(--line);border-radius:8px;background:var(--paper)}
+.gen figure.now{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent)}
+.gen .g{display:grid;grid-template-columns:repeat(2,26px);grid-auto-rows:26px;gap:5px 8px}
+.gen .g span{display:grid;place-items:center;border-radius:50%;border:2px solid var(--accent);color:var(--ink);font:700 14px/1 var(--f-body)}
+.gen figcaption{font-size:12px;color:var(--muted);text-align:center;line-height:1.25}
 #dlgHelp ul{padding-left:20px;margin:0}
 #dlgHelp li{margin:5px 0}
 .holder{display:none}
@@ -155,6 +170,16 @@ dialog select{font:inherit;font-size:15px;color:var(--ink);background:var(--bg);
       <span class="mark" aria-hidden="true">⠗⠧</span>
       <div><h1>Regleta Braille Virtual</h1>
         <p class="lead">Escribe braille punto a punto, como con regleta y punzón: de derecha a izquierda y en espejo. Luego voltea la hoja para leer lo que escribiste.</p></div>
+    </div>
+    <div class="gen">
+      <figure id="genRead" role="img" aria-label="Signo generador, como se lee: puntos 1, 2 y 3 en la columna izquierda, de arriba abajo; puntos 4, 5 y 6 en la columna derecha.">
+        <div class="g" aria-hidden="true"><span>1</span><span>4</span><span>2</span><span>5</span><span>3</span><span>6</span></div>
+        <figcaption aria-hidden="true">Signo generador<br>(como se lee)</figcaption>
+      </figure>
+      <figure id="genWrite" role="img" aria-label="Signo generador en la regleta común, en espejo: puntos 1, 2 y 3 en la columna derecha, de arriba abajo; puntos 4, 5 y 6 en la columna izquierda.">
+        <div class="g" aria-hidden="true"><span>4</span><span>1</span><span>5</span><span>2</span><span>6</span><span>3</span></div>
+        <figcaption aria-hidden="true">En la regleta común<br>(en espejo)</figcaption>
+      </figure>
     </div>
   </header>
 
@@ -205,6 +230,7 @@ dialog select{font:inherit;font-size:15px;color:var(--ink);background:var(--bg);
         <ul class="menu" role="menu" id="mHelp" aria-label="Ayuda" hidden>
           <li role="none"><button role="menuitem" tabindex="-1" data-cmd="help" aria-keyshortcuts="F1"><span class="ck"></span>Cómo se usa<span class="sc">F1</span></button></li>
           <li role="none"><button role="menuitem" tabindex="-1" data-cmd="keys"><span class="ck"></span>Atajos de teclado</button></li>
+          <li role="none"><button role="menuitem" tabindex="-1" data-cmd="signs"><span class="ck"></span>Tabla de signos</button></li>
           <li role="none"><button role="menuitem" tabindex="-1" data-cmd="about"><span class="ck"></span>Acerca de la Regleta Braille Virtual</button></li>
         </ul>
       </li>
@@ -274,6 +300,9 @@ dialog select{font:inherit;font-size:15px;color:var(--ink);background:var(--bg);
       <li><b>Entregar el trabajo:</b> escribe tu nombre y el ejercicio, pulsa <b>Guardar</b> y sube el archivo a la carpeta o al aula virtual que indique el docente. Se guarda el lado de lectura, en braille Unicode (.txt) o en BRF.</li>
       <li><b>Para el docente:</b> <b>Abrir trabajo</b> carga el archivo del estudiante. Al corregir un punto, la ventanilla se marca en naranja y la corrección aparece en la lista de revisión, que se puede copiar para enviarla como devolución. El archivo también se abre en la Máquina Braille Virtual.</li>
     </ul>
+      <h3 id="hSigns" tabindex="-1">Signos que reconoce la aplicación</h3>
+      <p style="margin:0 0 6px">Al voltear la hoja, la aplicación muestra en tinta lo escrito con estos signos (braille integral). Un signo que no está en la tabla aparece como «¿?».</p>
+      <div class="signs" id="signs"></div>
       <div class="dlg-btns"><button class="btn primary" value="close">Cerrar</button></div>
     </form>
   </dialog>
@@ -418,6 +447,7 @@ function render(){
   $('flip').setAttribute('aria-pressed', flipped); $('flip').hidden = mode==='pos';
   $('mNeg').setAttribute('aria-pressed', mode==='neg'); $('mPos').setAttribute('aria-pressed', mode==='pos');
   syncMenus();
+  $('genWrite').classList.toggle('now', writingMirrored()); $('genRead').classList.toggle('now', !writingMirrored());
   $('sRow').textContent = cur.r+1; $('sCol').textContent = cur.c+1;
   const dots = [1,2,3,4,5,6].filter(n=>grid[cur.r][cur.c] & BIT(n)); $('sDots').textContent = dots.length ? dots.join(' ') : '—';
   renderSays(); renderReview(); persist();
@@ -659,9 +689,10 @@ const COMMANDS = {
   modeNeg: ()=>{ clickBtn('mNeg'); persist(); flash('Regleta común'); }, modePos: ()=>{ clickBtn('mPos'); persist(); flash('Regleta de punto positivo'); },
   paperA4: ()=>setPaper('a4'), paperA4w: ()=>setPaper('a4w'), paperCurso: ()=>setPaper('curso'),
   paperCustom: ()=>{ $('cols').value = COLS; $('rows').value = ROWS; openDialog($('dlgSize')); },
-  help: ()=>openDialog($('dlgHelp')), keys: ()=>openDialog($('dlgKeys')), about: ()=>openDialog($('dlgAbout'))
+  help: ()=>{ openDialog($('dlgHelp')); $('dlgHelp').scrollTop = 0; },
+  signs: ()=>{ openDialog($('dlgHelp')); setTimeout(()=>{ const h = $('hSigns'); h.focus(); h.scrollIntoView({block:'start'}); }, 0); }, keys: ()=>openDialog($('dlgKeys')), about: ()=>openDialog($('dlgAbout'))
 };
-const OPENS = {new:1, open:1, paperCustom:1, help:1, keys:1, about:1, mbv:1};
+const OPENS = {signs:1, new:1, open:1, paperCustom:1, help:1, keys:1, about:1, mbv:1};
 function runCmd(cmd){ closeMenus(); if (!OPENS[cmd]) backToSlate(); COMMANDS[cmd](); }
 TOPS.forEach((top, i)=>{
   top.addEventListener('click', ()=>{ top.getAttribute('aria-expanded')==='true' ? (closeMenus(), focusTop(top)) : openMenu(top, 'first'); });
@@ -738,6 +769,18 @@ window.addEventListener('keydown', e=>{
   if (e.key==='F4'){ e.preventDefault(); runCmd('optTr'); return; }
 }, true);
 slate.addEventListener('keydown', ()=>setTimeout(showCur, 0));
+
+/* ---------- Ayuda: tabla de signos, hecha con los mismos datos que usa la traducción ---------- */
+(function buildSigns(){
+  const row = (name, dots) => '<tr><td>'+name+'</td><td>'+dots.split(' ').map(d=>d.split('').join(' ')).join(', ')+'</td><td><span class="bc" aria-hidden="true">'+dots.split(' ').map(d=>U(mk(d))).join('')+'</span></td></tr>';
+  const table = (cap, rows) => '<table><caption>'+cap+'</caption><thead><tr><th scope="col">Signo</th><th scope="col">Puntos</th><th scope="col">Braille</th></tr></thead><tbody>'+rows.join('')+'</tbody></table>';
+  const letters = 'abcdefghijklmnñopqrstuvwxyz'.split('').map(ch=>row(ch, L[ch]));
+  const accents = ['á','é','í','ó','ú','ü'].map(ch=>row(ch, L[ch]));
+  const special = [row('Mayúscula (antes de la letra)','46'), row('Palabra en mayúsculas','46 46'), row('Signo de número','3456'), row('Separa un número de la letra que sigue (25cm)','5')];
+  const nums = ['1','2','3','4','5','6','7','8','9','0'].map((d,i)=>row(d, L['abcdefghij'[i]]));
+  const punct = [['Coma','2'],['Punto','3'],['Punto y coma','23'],['Dos puntos','25'],['¿ y ? (interrogación)','26'],['¡ y ! (exclamación)','235'],['Comillas','236'],['Abre paréntesis','126'],['Cierra paréntesis','345'],['Guion','36'],['Asterisco','35'],['Arroba','5']].map(([n,d])=>row(n,d));
+  $('signs').innerHTML = table('Letras', letters) + '<div>'+table('Vocales con tilde y ü', accents)+table('Mayúsculas y números', special)+table('Números (después del signo de número)', nums)+'</div><div>'+table('Puntuación', punct)+'</div>';
+})();
 
 /* ---------- Borrador en este navegador ---------- */
 function persist(){ try{ localStorage.setItem(STORE, JSON.stringify({grid, COLS, ROWS, mode, student:$('student').value, exercise:$('exercise').value, num:$('optNum').checked})); }catch(e){} }
