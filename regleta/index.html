@@ -161,6 +161,21 @@ dialog select{font:inherit;font-size:15px;color:var(--ink);background:var(--bg);
 .app{zoom:var(--z,1);max-width:min(1240px,calc((100vw - 32px) / var(--z,1)))}
 [hidden]{display:none!important}
 .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+/* Ventanilla grande: para escribir con el dedo en celulares y tabletas */
+.big{position:sticky;bottom:0;z-index:5;background:var(--paper);border:1px solid var(--metal-edge);border-radius:12px;padding:10px 12px 12px;box-shadow:0 -8px 24px -14px rgba(0,0,0,.45);display:flex;flex-direction:column;gap:8px}
+.big-head{display:flex;flex-wrap:wrap;justify-content:space-between;gap:4px 12px;font-size:15px}
+.big-head .says1{color:var(--accent);font-weight:700}
+.big-main{display:flex;align-items:center;justify-content:center;gap:clamp(10px,4vw,28px)}
+.big-cell{display:grid;grid-template-columns:repeat(2,var(--bd));grid-auto-rows:var(--bd);gap:10px 16px;padding:12px 16px;background:var(--metal);border:2px solid var(--metal-edge);border-radius:12px;--bd:clamp(50px,13.5vw,68px);touch-action:manipulation}
+.bdot{appearance:none;border:2px solid var(--hole-ring);border-radius:50%;background:var(--hole);color:var(--muted);font:700 20px/1 var(--f-body);cursor:pointer;touch-action:manipulation;padding:0}
+.bdot[aria-pressed="true"]{background:radial-gradient(circle at 35% 30%,var(--dot-hi),var(--dot) 65%);color:transparent;border-color:var(--dot)}
+.bdot:disabled{cursor:default;opacity:.85}
+.bdot:focus-visible,.bnav:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
+.bnav{appearance:none;font:700 16px/1.2 var(--f-body);color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:10px;min-width:92px;min-height:64px;padding:8px 6px;font-size:15px;cursor:pointer;touch-action:manipulation}
+.bnav .ar{display:block;font-size:24px;line-height:1}
+.big-foot{display:flex;flex-wrap:wrap;gap:8px;justify-content:center}
+.big-foot .btn{min-height:44px}
+.has-big .cell{scroll-margin-bottom:330px}
 @media (max-width:640px){ h1{font-size:23px} .bar input[type=text]{width:150px} }
 </style>
 
@@ -208,6 +223,7 @@ dialog select{font:inherit;font-size:15px;color:var(--ink);background:var(--bg);
           <li role="none"><button role="menuitemcheckbox" tabindex="-1" data-cmd="flip" aria-checked="false" aria-keyshortcuts="F2"><span class="ck" aria-hidden="true"></span>Voltear la hoja (lado de lectura)<span class="sc">F2</span></button></li>
           <li role="none"><button role="menuitemcheckbox" tabindex="-1" data-cmd="optTr" aria-checked="false" aria-keyshortcuts="F4"><span class="ck" aria-hidden="true"></span>Mostrar lo que dice<span class="sc">F4</span></button></li>
           <li role="none"><button role="menuitemcheckbox" tabindex="-1" data-cmd="optNum" aria-checked="true"><span class="ck" aria-hidden="true"></span>Números de los puntos</button></li>
+          <li role="none"><button role="menuitemcheckbox" tabindex="-1" data-cmd="bigCell" aria-checked="false"><span class="ck" aria-hidden="true"></span>Ventanilla grande (para pantallas táctiles)</button></li>
           <li role="separator"></li>
           <li role="none"><button role="menuitemcheckbox" tabindex="-1" data-cmd="contrast" aria-checked="false" aria-keyshortcuts="Control+Shift+C"><span class="ck" aria-hidden="true"></span>Fondo oscuro y letras blancas<span class="sc">Ctrl+Mayús+C</span></button></li>
           <li role="none"><button role="menuitem" tabindex="-1" data-cmd="zoomIn" aria-keyshortcuts="Control+Plus"><span class="ck"></span>Aumentar zoom<span class="sc">Ctrl++</span></button></li>
@@ -275,6 +291,18 @@ dialog select{font:inherit;font-size:15px;color:var(--ink);background:var(--bg);
   <div class="scroller"><div class="slate" id="slate" tabindex="0" role="application" aria-roledescription="regleta braille" aria-label="Regleta"></div></div>
   <div class="status" aria-live="polite"><span>Renglón <b id="sRow">1</b></span><span>Celda <b id="sCol">1</b></span><span>Puntos <b id="sDots">—</b></span><span class="msg" id="msg"></span></div>
 
+  <section class="big" id="big" hidden aria-labelledby="bigT">
+    <div class="big-head"><h2 id="bigT" style="font-size:15px;margin:0">Ventanilla grande · <span id="bigPos">renglón 1, celda 1</span></h2><span class="says1" id="bigSays" aria-live="polite"></span></div>
+    <div class="big-main" id="bigMain">
+      <button class="bnav" id="bPrev" type="button"><span class="ar" aria-hidden="true" id="bPrevAr">→</span>Anterior</button>
+      <div class="big-cell" id="bigCell" role="group" aria-label="Puntos de la ventanilla">
+        <button class="bdot" type="button" data-n="1" aria-pressed="false">1</button><button class="bdot" type="button" data-n="2" aria-pressed="false">2</button><button class="bdot" type="button" data-n="3" aria-pressed="false">3</button><button class="bdot" type="button" data-n="4" aria-pressed="false">4</button><button class="bdot" type="button" data-n="5" aria-pressed="false">5</button><button class="bdot" type="button" data-n="6" aria-pressed="false">6</button>
+      </div>
+      <button class="bnav" id="bNext" type="button"><span class="ar" aria-hidden="true" id="bNextAr">←</span>Siguiente</button>
+    </div>
+    <div class="big-foot"><button class="btn" id="bLine" type="button">Renglón siguiente</button><button class="btn" id="bClear" type="button">Borrar ventanilla</button><button class="btn" id="bFlip" type="button">Voltear la hoja</button></div>
+  </section>
+
   <section class="panel" id="saysPanel" hidden aria-labelledby="saysT">
     <h2 id="saysT">Lo que dice la hoja (lado de lectura, braille integral)</h2>
     <div class="says" id="says"></div>
@@ -296,6 +324,7 @@ dialog select{font:inherit;font-size:15px;color:var(--ink);background:var(--bg);
       <li><b>Punto positivo:</b> para las regletas de punto positivo, que escriben de izquierda a derecha como se lee.</li>
       <li><b>Menús:</b> <kbd>F10</kbd> o <kbd>Alt</kbd> con la letra subrayada (<kbd>Alt</kbd> + <kbd>A</kbd> Archivo, <kbd>E</kbd> Edición, <kbd>V</kbd> Ver, <kbd>H</kbd> Hoja, <kbd>Y</kbd> Ayuda) abren la barra de menús; se recorre con las flechas, <kbd>Enter</kbd> elige y <kbd>Escape</kbd> vuelve a la regleta.</li>
       <li><b>Baja visión:</b> Ver › Fondo oscuro y letras blancas (<kbd>Control</kbd> + <kbd>Mayúsculas</kbd> + <kbd>C</kbd>) y el zoom (<kbd>Control</kbd> + <kbd>Más</kbd>, <kbd>Control</kbd> + <kbd>Menos</kbd>, <kbd>Control</kbd> + <kbd>0</kbd>). Con zoom, las ventanillas se agrandan y el renglón se recorre a los lados.</li>
+      <li><b>Celular o tableta:</b> abajo aparece la <b>ventanilla grande</b>, con los seis puntos grandes de la ventanilla actual: se tocan para marcarlos o quitarlos. Los botones <b>Siguiente</b> y <b>Anterior</b> mueven la ventanilla (en la regleta común, la siguiente queda a la izquierda, como con el punzón). En la computadora se activa en Ver › Ventanilla grande.</li>
       <li><b>Teclado:</b> con la regleta seleccionada, las teclas <kbd>1</kbd> a <kbd>6</kbd> marcan o quitan los puntos de la ventanilla actual; las flechas mueven la ventanilla; <kbd>Retroceso</kbd> borra la ventanilla; <kbd>Control</kbd> + <kbd>Z</kbd> deshace.</li>
       <li><b>Entregar el trabajo:</b> escribe tu nombre y el ejercicio, pulsa <b>Guardar</b> y sube el archivo a la carpeta o al aula virtual que indique el docente. Se guarda el lado de lectura, en braille Unicode (.txt) o en BRF.</li>
       <li><b>Para el docente:</b> <b>Abrir trabajo</b> carga el archivo del estudiante. Al corregir un punto, la ventanilla se marca en naranja y la corrección aparece en la lista de revisión, que se puede copiar para enviarla como devolución. El archivo también se abre en la Máquina Braille Virtual.</li>
@@ -337,6 +366,10 @@ let COLS = 28, ROWS = 27;
 const PAPERS = {a4:[28,27], a4w:[30,27], curso:[18,8]};
 let grid = [], original = null, mode = 'neg', flipped = false;
 let contrast = false, zoom = 1;   // Ver › Fondo oscuro y zoom
+/* Ventanilla grande: se muestra sola en pantallas táctiles (celular, tableta); en la computadora, desde Ver */
+let bigPref = null;
+const touchScreen = (()=>{ try{ return matchMedia('(pointer: coarse)').matches; }catch(e){ return false; } })();
+const bigOn = () => bigPref===null ? touchScreen : bigPref;
 let cur = {r:0, c:0};          // ventanilla actual, en orden de lectura
 const undoStack = [];
 const STORE = 'regleta-virtual-v1';
@@ -440,13 +473,13 @@ function render(){
   }
   $('sideName').textContent = mode==='pos' ? 'Regleta de punto positivo' : flipped ? 'Lado de lectura (hoja volteada)' : 'Lado de escritura';
   $('dirLbl').textContent = mode==='pos' || flipped ? 'se lee → de izquierda a derecha' : 'se escribe ← de derecha a izquierda';
-  $('sideHint').textContent = mode==='pos' ? 'Los puntos 1, 2 y 3 están a la izquierda. Haz clic en los agujeros para marcar los puntos.'
+  $('sideHint').textContent = mode==='pos' ? 'Los puntos 1, 2 y 3 están a la izquierda. '+(touchScreen ? 'Toca' : 'Haz clic en')+' los agujeros para marcar los puntos.'
     : flipped ? 'Así queda la hoja para leerla con los dedos. Vuelve a voltearla para seguir escribiendo.'
-    : 'En cada ventanilla, el punto 1 está arriba a la derecha. Haz clic en los agujeros para marcar los puntos.';
+    : 'En cada ventanilla, el punto 1 está arriba a la derecha. '+(touchScreen ? 'Toca' : 'Haz clic en')+' los agujeros para marcar los puntos.';
   $('flip').textContent = flipped ? 'Volver al lado de escritura' : 'Voltear la hoja';
   $('flip').setAttribute('aria-pressed', flipped); $('flip').hidden = mode==='pos';
   $('mNeg').setAttribute('aria-pressed', mode==='neg'); $('mPos').setAttribute('aria-pressed', mode==='pos');
-  syncMenus();
+  syncMenus(); renderBig();
   $('genWrite').classList.toggle('now', writingMirrored()); $('genRead').classList.toggle('now', !writingMirrored());
   $('sRow').textContent = cur.r+1; $('sCol').textContent = cur.c+1;
   const dots = [1,2,3,4,5,6].filter(n=>grid[cur.r][cur.c] & BIT(n)); $('sDots').textContent = dots.length ? dots.join(' ') : '—';
@@ -652,7 +685,7 @@ function openMenu(top, which){
 function backToSlate(){ try{ slate.focus({preventScroll:true}); }catch(e){} }
 function setCheck(cmd, on, radio){ const b = document.querySelector('[data-cmd="'+cmd+'"]'); if (!b) return; b.setAttribute('aria-checked', !!on); b.querySelector('.ck').textContent = on ? (radio ? '●' : '✓') : ''; }
 function syncMenus(){
-  setCheck('flip', flipped); setCheck('optTr', $('optTr').checked); setCheck('optNum', $('optNum').checked); setCheck('contrast', contrast);
+  setCheck('flip', flipped); setCheck('optTr', $('optTr').checked); setCheck('optNum', $('optNum').checked); setCheck('contrast', contrast); setCheck('bigCell', bigOn());
   setCheck('modeNeg', mode==='neg', 1); setCheck('modePos', mode==='pos', 1);
   const k = Object.keys(PAPERS).find(k=>PAPERS[k][0]===COLS && PAPERS[k][1]===ROWS);
   setCheck('paperA4', k==='a4', 1); setCheck('paperA4w', k==='a4w', 1); setCheck('paperCurso', k==='curso', 1); setCheck('paperCustom', !k, 1);
@@ -685,6 +718,7 @@ const COMMANDS = {
   flip: ()=>{ if (mode==='pos'){ flash('Con punto positivo no hace falta voltear la hoja'); return; } clickBtn('flip'); flash(flipped ? 'Lado de lectura' : 'Lado de escritura'); },
   optTr: ()=>{ $('optTr').checked = !$('optTr').checked; render(); flash($('optTr').checked ? (flipped||mode==='pos' ? 'Se muestra lo que dice' : 'Lo que dice se muestra al voltear la hoja') : 'No se muestra lo que dice'); },
   optNum: ()=>{ $('optNum').checked = !$('optNum').checked; render(); persist(); },
+  bigCell: ()=>{ bigPref = !bigOn(); savePrefs(); render(); flash(bigOn() ? 'Ventanilla grande activada' : 'Ventanilla grande desactivada'); },
   contrast: ()=>toggleContrast(), zoomIn: ()=>setZoom(+1), zoomOut: ()=>setZoom(-1), zoomReset: ()=>setZoom(0),
   modeNeg: ()=>{ clickBtn('mNeg'); persist(); flash('Regleta común'); }, modePos: ()=>{ clickBtn('mPos'); persist(); flash('Regleta de punto positivo'); },
   paperA4: ()=>setPaper('a4'), paperA4w: ()=>setPaper('a4w'), paperCurso: ()=>setPaper('curso'),
@@ -728,7 +762,7 @@ $('menubar').addEventListener('focusout', e=>{ if (!$('menubar').contains(e.rela
 
 /* Ver › Fondo oscuro y letras blancas, y zoom de 100 % a 200 % (agranda toda la aplicación, como en la Máquina Braille Virtual) */
 const PREFS = 'regleta-virtual-prefs';
-function savePrefs(){ try{ localStorage.setItem(PREFS, JSON.stringify({contrast, zoom})); }catch(e){} }
+function savePrefs(){ try{ localStorage.setItem(PREFS, JSON.stringify({contrast, zoom, big:bigPref})); }catch(e){} }
 function applyContrast(){ if (contrast) document.documentElement.setAttribute('data-contrast','hc'); else document.documentElement.removeAttribute('data-contrast'); setCheck('contrast', contrast); }
 function toggleContrast(){ contrast = !contrast; applyContrast(); savePrefs(); flash(contrast ? 'Fondo oscuro y letras blancas' : 'Colores normales'); }
 function applyZoom(){
@@ -744,7 +778,7 @@ function setZoom(dir){
   if (z<1){ flash('Zoom normal: 100 %'); return; }
   zoom = z; applyZoom(); savePrefs(); flash('Zoom '+Math.round(zoom*100)+' %');
 }
-try{ const pr = JSON.parse(localStorage.getItem(PREFS)||'null'); if (pr){ contrast = !!pr.contrast; zoom = Math.min(2, Math.max(1, +pr.zoom||1)); } }catch(e){}
+try{ const pr = JSON.parse(localStorage.getItem(PREFS)||'null'); if (pr){ if (typeof pr.big==='boolean') bigPref = pr.big; contrast = !!pr.contrast; zoom = Math.min(2, Math.max(1, +pr.zoom||1)); } }catch(e){}
 applyContrast(); applyZoom();
 
 /* Teclado general */
@@ -769,6 +803,41 @@ window.addEventListener('keydown', e=>{
   if (e.key==='F4'){ e.preventDefault(); runCmd('optTr'); return; }
 }, true);
 slate.addEventListener('keydown', ()=>setTimeout(showCur, 0));
+
+/* ---------- Ventanilla grande ---------- */
+function renderBig(){
+  const box = $('big'); box.hidden = !bigOn(); document.body.classList.toggle('has-big', !box.hidden); if (box.hidden) return;
+  const mir = writingMirrored(), readSide = flipped && mode==='neg', v = grid[cur.r][cur.c];
+  $('bigPos').textContent = 'renglón '+(cur.r+1)+', celda '+(cur.c+1);
+  const order = mir ? [4,1,5,2,6,3] : [1,4,2,5,3,6];
+  $('bigCell').querySelectorAll('.bdot').forEach(b=>{
+    const n = +b.dataset.n, on = !!(v & BIT(n));
+    b.style.order = order.indexOf(n); b.setAttribute('aria-pressed', on);
+    b.setAttribute('aria-label', 'Punto '+n); b.disabled = readSide;
+  });
+  $('bigCell').setAttribute('aria-label', readSide ? 'Puntos de la ventanilla (lado de lectura: no se puede escribir)' : 'Puntos de la ventanilla');
+  /* la ventanilla siguiente queda hacia donde avanza la escritura: a la izquierda en el lado de escritura de la regleta común */
+  $('bNext').style.order = mir ? 0 : 2; $('bPrev').style.order = mir ? 2 : 0; $('bigCell').style.order = 1;
+  $('bNextAr').textContent = mir ? '←' : '→'; $('bPrevAr').textContent = mir ? '→' : '←';
+  $('bNext').setAttribute('aria-label', 'Ventanilla siguiente'); $('bPrev').setAttribute('aria-label', 'Ventanilla anterior');
+  const t = v ? (LET[v] || PUN[v] || (v===CAP ? 'mayúscula' : v===NUM ? 'signo de número' : '')) : '';
+  $('bigSays').textContent = readSide && v ? 'Se lee: '+(t ? '«'+t+'»' : 'signo no reconocido') : '';
+  $('bFlip').hidden = mode==='pos'; $('bFlip').textContent = flipped ? 'Volver al lado de escritura' : 'Voltear la hoja';
+}
+function bigMove(d){
+  let {r, c} = cur; c += d;
+  if (c>=COLS){ if (r<ROWS-1){ r++; c = 0; flash('Renglón '+(r+1)); } else { c = COLS-1; flash('Fin de la hoja', true); } }
+  else if (c<0){ if (r>0){ r--; c = COLS-1; flash('Renglón '+(r+1)); } else { c = 0; flash('Principio de la hoja', true); } }
+  cur = {r, c}; render(); showCur();
+}
+$('bigCell').addEventListener('click', e=>{
+  const b = e.target.closest('.bdot'); if (!b || b.disabled) return;
+  toggle(cur.r, cur.c, +b.dataset.n); try{ navigator.vibrate && navigator.vibrate(12); }catch(_){}
+});
+$('bNext').onclick = ()=>bigMove(1); $('bPrev').onclick = ()=>bigMove(-1);
+$('bLine').onclick = ()=>{ if (cur.r<ROWS-1){ cur = {r:cur.r+1, c:0}; flash('Renglón '+(cur.r+1)); render(); showCur(); } else flash('Es el último renglón', true); };
+$('bClear').onclick = ()=>COMMANDS.clearCell();
+$('bFlip').onclick = ()=>COMMANDS.flip();
 
 /* ---------- Ayuda: tabla de signos, hecha con los mismos datos que usa la traducción ---------- */
 (function buildSigns(){
