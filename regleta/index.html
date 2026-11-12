@@ -5,7 +5,7 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=Atkinson+Hyperlegible+Mono:wght@400;600&display=swap">
 <style>
 /* Layout: la regleta es la protagonista — un marco de aluminio con ventanillas de seis agujeros sobre la hoja;
-   arriba la barra de trabajo (estudiante, modo, voltear), abajo lo que dice y la revisión del docente. */
+   arriba la barra de menús y las acciones rápidas (voltear, guardar), abajo lo que dice y las correcciones. */
 :root{
   --bg:#ECEEF0; --paper:#FBFAF6; --ink:#1A2129; --muted:#5B6672; --line:#CDD3D9;
   --metal:#C9CFD6; --metal-2:#AEB6BF; --metal-edge:#8E98A3; --hole:#F3F1EA; --hole-ring:#7D8793;
@@ -253,16 +253,14 @@ dialog select{font:inherit;font-size:15px;color:var(--ink);background:var(--bg);
     </ul>
   </nav>
 
-  <div class="bar" role="group" aria-label="Datos del trabajo">
-    <label class="f" for="student">Estudiante<input type="text" id="student" autocomplete="name" placeholder="Nombre y apellido"></label>
-    <label class="f" for="exercise">Ejercicio<input type="text" id="exercise" placeholder="Ejercicio 1: abecedario"></label>
-    <span class="sep"></span>
+  <div class="bar" role="group" aria-label="Acciones rápidas">
     <button class="btn" id="flip" aria-pressed="false">Voltear la hoja</button>
     <button class="btn primary" id="saveTxt">Guardar</button>
   </div>
 
   <!-- controles que guardan el estado; se manejan desde los menús -->
   <div class="holder" aria-hidden="true">
+    <input type="text" id="student" tabindex="-1"><input type="text" id="exercise" tabindex="-1">
     <button id="mNeg" tabindex="-1"></button><button id="mPos" tabindex="-1"></button>
     <button id="saveBrf" tabindex="-1"></button><button id="openBtn" tabindex="-1"></button>
     <button id="undo" tabindex="-1"></button><button id="clear" tabindex="-1"></button>
@@ -309,7 +307,7 @@ dialog select{font:inherit;font-size:15px;color:var(--ink);background:var(--bg);
   </section>
 
   <section class="panel review" id="reviewPanel" hidden aria-labelledby="revT">
-    <h2 id="revT">Revisión del docente</h2>
+    <h2 id="revT">Correcciones</h2>
     <p style="margin:0;color:var(--muted)" id="revInfo"></p>
     <ol id="revList"></ol>
     <div style="display:flex;flex-wrap:wrap;gap:8px"><button class="btn" id="copyRev">Copiar las correcciones</button><button class="btn" id="saveRev">Guardar el trabajo corregido</button></div>
@@ -326,8 +324,8 @@ dialog select{font:inherit;font-size:15px;color:var(--ink);background:var(--bg);
       <li><b>Baja visión:</b> Ver › Fondo oscuro y letras blancas (<kbd>Control</kbd> + <kbd>Mayúsculas</kbd> + <kbd>C</kbd>) y el zoom (<kbd>Control</kbd> + <kbd>Más</kbd>, <kbd>Control</kbd> + <kbd>Menos</kbd>, <kbd>Control</kbd> + <kbd>0</kbd>). Con zoom, las ventanillas se agrandan y el renglón se recorre a los lados.</li>
       <li><b>Celular o tableta:</b> abajo aparece la <b>ventanilla grande</b>, con los seis puntos grandes de la ventanilla actual: se tocan para marcarlos o quitarlos. Los botones <b>Siguiente</b> y <b>Anterior</b> mueven la ventanilla (en la regleta común, la siguiente queda a la izquierda, como con el punzón). En la computadora se activa en Ver › Ventanilla grande.</li>
       <li><b>Teclado:</b> con la regleta seleccionada, las teclas <kbd>1</kbd> a <kbd>6</kbd> marcan o quitan los puntos de la ventanilla actual; las flechas mueven la ventanilla; <kbd>Retroceso</kbd> borra la ventanilla; <kbd>Control</kbd> + <kbd>Z</kbd> deshace.</li>
-      <li><b>Entregar el trabajo:</b> escribe tu nombre y el ejercicio, pulsa <b>Guardar</b> y sube el archivo a la carpeta o al aula virtual que indique el docente. Se guarda el lado de lectura, en braille Unicode (.txt) o en BRF.</li>
-      <li><b>Para el docente:</b> <b>Abrir trabajo</b> carga el archivo del estudiante. Al corregir un punto, la ventanilla se marca en naranja y la corrección aparece en la lista de revisión, que se puede copiar para enviarla como devolución. El archivo también se abre en la Máquina Braille Virtual.</li>
+      <li><b>Guardar:</b> el botón <b>Guardar</b> o <kbd>Control</kbd> + <kbd>G</kbd> guarda el lado de lectura en braille Unicode (.txt); Archivo › Guardar en BRF (<kbd>Control</kbd> + <kbd>Mayús</kbd> + <kbd>G</kbd>) lo guarda para imprimir en una impresora braille. El archivo también se abre en la Máquina Braille Virtual.</li>
+      <li><b>Revisar un trabajo:</b> Archivo › Abrir trabajo carga un archivo guardado. Al corregir un punto, la ventanilla se marca en naranja y la corrección aparece en la lista de correcciones, que se puede copiar o guardar.</li>
     </ul>
       <h3 id="hSigns" tabindex="-1">Signos que reconoce la aplicación</h3>
       <p style="margin:0 0 6px">Al voltear la hoja, la aplicación muestra en tinta lo escrito con estos signos (braille integral). Un signo que no está en la tabla aparece como «¿?».</p>
@@ -557,7 +555,8 @@ const toBRF = () => usedLines().map(l=>l.map(c=>BRF_ASCII[c]).join('')).join('\r
 function baseName(suffix){
   const clean = s => s.trim().replace(/[\\/:*?"<>|]+/g,'').replace(/\s+/g,' ').slice(0,60);
   const parts = [clean($('student').value), clean($('exercise').value)].filter(Boolean);
-  return (parts.length ? parts.join(' - ') : 'regleta') + (suffix||'');
+  const d = new Date(), p2 = n => String(n).padStart(2,'0');
+  return (parts.length ? parts.join(' - ') : 'Regleta braille '+d.getFullYear()+'-'+p2(d.getMonth()+1)+'-'+p2(d.getDate())+' '+p2(d.getHours())+'.'+p2(d.getMinutes())) + (suffix||'');
 }
 let dl = null; const dlReady = (async()=>{ try{ if (window.claude && claude.use) dl = await claude.use('downloads'); }catch(e){ dl = null; } })();
 async function offer(name, data){
