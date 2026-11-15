@@ -150,6 +150,10 @@ dialog select{font:inherit;font-size:15px;color:var(--ink);background:var(--bg);
 #dlgHelp ul{padding-left:20px;margin:0}
 #dlgHelp li{margin:5px 0}
 .holder{display:none}
+.exit{max-width:560px;margin:12vh auto 0;display:flex;flex-direction:column;align-items:flex-start;gap:12px;background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:24px}
+.exit .mark{font-size:34px;color:var(--accent);letter-spacing:3px;line-height:1}
+.exit h1{font-size:24px}
+.exit p{margin:0}
 /* Ver › Fondo oscuro y letras blancas: negro puro, letras blancas y realces en amarillo (baja visión) */
 :root[data-contrast="hc"]{
   --bg:#000; --paper:#000; --ink:#FFF; --muted:#E6E6E6; --line:#9A9A9A;
@@ -206,11 +210,14 @@ dialog select{font:inherit;font-size:15px;color:var(--ink);background:var(--bg);
         <ul class="menu" role="menu" id="mFile" aria-label="Archivo" hidden>
           <li role="none"><button role="menuitem" tabindex="-1" data-cmd="new"><span class="ck"></span>Hoja nueva (borrar todo)…</button></li>
           <li role="none"><button role="menuitem" tabindex="-1" data-cmd="open" aria-keyshortcuts="Control+O"><span class="ck"></span>Abrir trabajo…<span class="sc">Ctrl+O</span></button></li>
-          <li role="none"><button role="menuitem" tabindex="-1" data-cmd="saveTxt" aria-keyshortcuts="Control+G"><span class="ck"></span>Guardar en braille Unicode (.txt)<span class="sc">Ctrl+G</span></button></li>
-          <li role="none"><button role="menuitem" tabindex="-1" data-cmd="saveBrf" aria-keyshortcuts="Control+Shift+G"><span class="ck"></span>Guardar en BRF<span class="sc">Ctrl+Mayús+G</span></button></li>
+          <li role="none"><button role="menuitem" tabindex="-1" data-cmd="save" aria-keyshortcuts="Control+G"><span class="ck"></span>Guardar (.mbv, como la Máquina Braille Virtual)<span class="sc">Ctrl+G</span></button></li>
+          <li role="none"><button role="menuitem" tabindex="-1" data-cmd="saveBrf" aria-keyshortcuts="Control+Shift+G"><span class="ck"></span>Guardar en BRF (impresora braille)<span class="sc">Ctrl+Mayús+G</span></button></li>
+          <li role="none"><button role="menuitem" tabindex="-1" data-cmd="saveTxt"><span class="ck"></span>Guardar en braille Unicode (.txt)</button></li>
           <li role="separator" id="sepRev"></li>
           <li role="none"><button role="menuitem" tabindex="-1" data-cmd="saveRev"><span class="ck"></span>Guardar el trabajo corregido</button></li>
           <li role="none"><button role="menuitem" tabindex="-1" data-cmd="copyRev"><span class="ck"></span>Copiar las correcciones</button></li>
+          <li role="separator"></li>
+          <li role="none"><button role="menuitem" tabindex="-1" data-cmd="exit"><span class="ck"></span>Salir</button></li>
         </ul>
       </li>
       <li role="none"><button class="mb" role="menuitem" id="mbEdit" aria-haspopup="menu" aria-expanded="false" aria-controls="mEdit" aria-keyshortcuts="Alt+E" tabindex="-1"><span><u>E</u>dición</span></button>
@@ -264,7 +271,8 @@ dialog select{font:inherit;font-size:15px;color:var(--ink);background:var(--bg);
     <button class="btn" id="flip" aria-pressed="false">Voltear la hoja</button>
     <button class="btn" id="readLine" aria-keyshortcuts="F7">Leer renglón <kbd>F7</kbd></button>
     <button class="btn" id="readAll" aria-keyshortcuts="F8">Leer hoja <kbd>F8</kbd></button>
-    <button class="btn primary" id="saveTxt">Guardar</button>
+    <button class="btn primary" id="saveBtn">Guardar</button>
+    <button id="saveTxt" hidden></button>
   </div>
 
   <!-- controles que guardan el estado; se manejan desde los menús -->
@@ -276,7 +284,7 @@ dialog select{font:inherit;font-size:15px;color:var(--ink);background:var(--bg);
     <input type="checkbox" id="optNum" checked tabindex="-1"><input type="checkbox" id="optTr" tabindex="-1">
     <select id="paper" tabindex="-1"><option value="a4">A4</option><option value="a4w">A4 30</option><option value="curso">curso</option><option value="custom">custom</option></select>
   </div>
-  <input type="file" id="fileIn" accept=".txt,.brf,.brl,.zip" hidden>
+  <input type="file" id="fileIn" accept=".mbv,.pks,.json,.txt,.brf,.brl,.zip" hidden>
 
   <dialog id="dlgSize" aria-labelledby="dlgSizeT">
     <form method="dialog">
@@ -341,7 +349,7 @@ dialog select{font:inherit;font-size:15px;color:var(--ink);background:var(--bg);
       <li><b>Leer en voz alta:</b> <b>Leer renglón</b> (<kbd>F7</kbd>) lee el renglón donde está la ventanilla actual y <b>Leer hoja</b> (<kbd>F8</kbd>) lee toda la hoja, renglón por renglón, tal como se leerá con los dedos. Un signo que no se reconoce se lee como «puntos» con sus números. Para detener la lectura, otra vez <kbd>F8</kbd>, <kbd>Escape</kbd> o el botón <b>Detener lectura</b>. Si usas TalkBack o VoiceOver en el celular o la tableta, apaga Ver › Voz de la aplicación: así las dos voces no se encimen y el texto lo lee tu lector de pantalla.</li>
       <li><b>Sonido:</b> cada punto suena como el punzón: un clic seco al marcarlo y uno más suave al quitarlo. Se apaga en Ver › Sonido al marcar los puntos. En iPhone y iPad con un sistema anterior a iOS 17, si el interruptor de silencio está activado, el clic no se oye.</li>
       <li><b>Teclado:</b> con la regleta seleccionada, las teclas <kbd>1</kbd> a <kbd>6</kbd> marcan o quitan los puntos de la ventanilla actual; las flechas mueven la ventanilla; <kbd>Retroceso</kbd> borra la ventanilla; <kbd>Control</kbd> + <kbd>Z</kbd> deshace.</li>
-      <li><b>Guardar:</b> el botón <b>Guardar</b> o <kbd>Control</kbd> + <kbd>G</kbd> guarda el lado de lectura en braille Unicode (.txt); Archivo › Guardar en BRF (<kbd>Control</kbd> + <kbd>Mayús</kbd> + <kbd>G</kbd>) lo guarda para imprimir en una impresora braille. El archivo también se abre en la Máquina Braille Virtual.</li>
+      <li><b>Guardar:</b> el botón <b>Guardar</b> o <kbd>Control</kbd> + <kbd>G</kbd> guarda el trabajo en el formato de la Máquina Braille Virtual (.mbv): se abre en la regleta y en la máquina. Archivo › Guardar en braille Unicode (.txt) lo guarda como texto braille; Archivo › Guardar en BRF (<kbd>Control</kbd> + <kbd>Mayús</kbd> + <kbd>G</kbd>) lo guarda para imprimir en una impresora braille. La regleta empieza siempre con la hoja en blanco; al salir (Archivo › Salir) pregunta si quieres guardar los cambios.</li>
       <li><b>Revisar un trabajo:</b> Archivo › Abrir trabajo carga un archivo guardado. Al corregir un punto, la ventanilla se marca en naranja y la corrección aparece en la lista de correcciones, que se puede copiar o guardar.</li>
     </ul>
       <h3 id="hSigns" tabindex="-1">Signos que reconoce la aplicación</h3>
@@ -357,10 +365,24 @@ dialog select{font:inherit;font-size:15px;color:var(--ink);background:var(--bg);
         <li><kbd>1</kbd> a <kbd>6</kbd>: marcar o quitar el punto en la ventanilla actual</li>
         <li>Flechas: mover la ventanilla · <kbd>Enter</kbd>: renglón siguiente · <kbd>Supr</kbd> o <kbd>Retroceso</kbd>: borrar la ventanilla</li>
         <li><kbd>F2</kbd>: voltear la hoja · <kbd>F4</kbd>: mostrar lo que dice · <kbd>F7</kbd>: leer el renglón · <kbd>F8</kbd>: leer la hoja (otra vez, o <kbd>Escape</kbd>, la detiene) · <kbd>F1</kbd>: ayuda · <kbd>F10</kbd>: barra de menús</li>
-        <li><kbd>Control</kbd> + <kbd>G</kbd>: guardar (.txt) · <kbd>Control</kbd> + <kbd>Mayús</kbd> + <kbd>G</kbd>: guardar BRF · <kbd>Control</kbd> + <kbd>O</kbd>: abrir · <kbd>Control</kbd> + <kbd>Z</kbd>: deshacer</li>
+        <li><kbd>Control</kbd> + <kbd>G</kbd>: guardar (.mbv) · <kbd>Control</kbd> + <kbd>Mayús</kbd> + <kbd>G</kbd>: guardar BRF · <kbd>Control</kbd> + <kbd>O</kbd>: abrir · <kbd>Control</kbd> + <kbd>Z</kbd>: deshacer</li>
         <li><kbd>Control</kbd> + <kbd>Mayús</kbd> + <kbd>C</kbd>: fondo oscuro · <kbd>Control</kbd> + <kbd>Más</kbd> / <kbd>Menos</kbd> / <kbd>0</kbd>: zoom</li>
       </ul>
       <div class="dlg-btns"><button class="btn primary" value="close">Cerrar</button></div>
+    </form>
+  </dialog>
+  <dialog id="dlgExit" aria-labelledby="dlgExitT" aria-describedby="dlgExitD">
+    <form method="dialog">
+      <h2 id="dlgExitT">Salir de la Regleta Braille Virtual</h2>
+      <p id="dlgExitD">¿Deseas guardar los cambios de la hoja antes de salir? Si no los guardas, se perderán: la próxima vez la regleta empezará con una hoja en blanco.</p>
+      <div class="dlg-btns"><button class="btn primary" value="yes" autofocus>Sí, guardar</button><button class="btn" value="no">No</button><button class="btn" value="cancel">Cancelar</button></div>
+    </form>
+  </dialog>
+  <dialog id="dlgOpenWarn" aria-labelledby="dlgOpenWarnT" aria-describedby="dlgOpenWarnD">
+    <form method="dialog">
+      <h2 id="dlgOpenWarnT">Abrir otro trabajo</h2>
+      <p id="dlgOpenWarnD">La hoja tiene cambios sin guardar. ¿Deseas guardarlos antes de abrir otro trabajo?</p>
+      <div class="dlg-btns"><button class="btn primary" value="yes" autofocus>Sí, guardar</button><button class="btn" value="no">No, abrir sin guardar</button><button class="btn" value="cancel">Cancelar</button></div>
     </form>
   </dialog>
   <dialog id="dlgAbout" aria-labelledby="dlgAboutT">
@@ -372,6 +394,13 @@ dialog select{font:inherit;font-size:15px;color:var(--ink);background:var(--bg);
     </form>
   </dialog>
 </div>
+<main class="exit" id="exitScreen" hidden>
+  <span class="mark" aria-hidden="true">⠗⠧</span>
+  <h1 id="exitT" tabindex="-1">Has salido de la Regleta Braille Virtual</h1>
+  <p>La próxima vez que abras la regleta empezará con una hoja en blanco. Para continuar un trabajo guardado, ábrelo con Archivo › Abrir trabajo (Control + O).</p>
+  <p>Ya puedes cerrar esta pestaña.</p>
+  <button class="btn primary" id="exitBack">Volver a la Regleta Braille Virtual</button>
+</main>
 
 <script>
 /* ---------- Datos: la hoja se guarda en orden de lectura (lado de lectura, de izquierda a derecha) ---------- */
@@ -689,6 +718,32 @@ const BRF_ASCII = " A1B'K2L@CIF/MSP\"E3H9O6R^DJG>NTQ,*5<-U8V.%[$+X!&;:4\\0Z7(_?W
 function usedLines(){ let last = ROWS-1; while (last>0 && grid[last].every(x=>x===0)) last--; return grid.slice(0, last+1).map(row=>{ let e = row.length; while (e>0 && row[e-1]===0) e--; return row.slice(0,e); }); }
 const toUnicode = () => usedLines().map(l=>l.map(c=>String.fromCharCode(0x2800+c)).join('')).join('\n') + '\n';
 const toBRF = () => usedLines().map(l=>l.map(c=>BRF_ASCII[c]).join('')).join('\r\n') + '\r\n';
+/* Formato de la Máquina Braille Virtual (.mbv): un JSON con cada renglón en braille Unicode.
+   Lo que es propio de la regleta (tipo de regleta, celdas y renglones) va aparte, en «regleta»; la máquina lo ignora. */
+function toMBV(name){
+  const lines = usedLines(), U = l => l.map(c=>String.fromCharCode(0x2800+c)).join('');
+  const o = {formato:'maquina-braille-virtual', version:1, titulo:name||'', signografia:'integral',
+    signografias: lines.map(()=>'integral'), ancho: COLS, lineasPorHoja: ROWS, orientacion:'vertical', papel:'custom',
+    guardado: new Date().toISOString(), lineas: lines.map(U),
+    regleta: {regleta: mode==='pos' ? 'punto positivo' : 'común', celdas: COLS, renglones: ROWS,
+      alumno: $('student').value.trim(), ejercicio: $('exercise').value.trim()}};
+  if (COLS<20 || COLS>48) delete o.ancho;            // la máquina admite de 20 a 48 celdas por línea
+  if (ROWS<15 || ROWS>40) delete o.lineasPorHoja;
+  return JSON.stringify(o, null, 1);
+}
+/* Cambios sin guardar: la hoja no está en blanco y es distinta de la última que se guardó o abrió */
+let savedSig = '';
+const sheetSig = () => JSON.stringify(usedLines());
+const isDirty = () => grid.some(r=>r.some(Boolean)) && sheetSig()!==savedSig;
+function markSaved(){ savedSig = sheetSig(); }
+async function saveWork(suffix){
+  if (empty()) return false;
+  await dlReady;
+  const base = baseName(suffix||'');
+  const ok = await offer(base + (dl ? '.mbv.json' : '.mbv'), toMBV(base));   // dentro de Claude el visor no admite .mbv
+  if (ok) markSaved();
+  return ok;
+}
 function baseName(suffix){
   const clean = s => s.trim().replace(/[\\/:*?"<>|]+/g,'').replace(/\s+/g,' ').slice(0,60);
   const parts = [clean($('student').value), clean($('exercise').value)].filter(Boolean);
@@ -699,15 +754,15 @@ let dl = null; const dlReady = (async()=>{ try{ if (window.claude && claude.use)
 async function offer(name, data){
   await dlReady;
   if (dl){
-    try{ await dl.save({filename:name, data}); flash('Guardado: '+name); }
+    try{ await dl.save({filename:name, data}); flash('Guardado: '+name); return true; }
     catch(e){ if (e && e.code==='declined') flash('No se guardó', true); else flash('No se pudo guardar aquí ('+(e && e.code || 'error')+')', true); }
-    return;
+    return false;
   }
   try{
     const blob = data instanceof Blob ? data : new Blob([data], {type: name.endsWith('.txt') ? 'text/plain;charset=utf-8' : 'application/octet-stream'});
     const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = name; document.body.appendChild(a); a.click();
-    setTimeout(()=>{ URL.revokeObjectURL(a.href); a.remove(); }, 2000); flash('Guardado: '+name);
-  }catch(e){ flash('No se pudo guardar', true); }
+    setTimeout(()=>{ URL.revokeObjectURL(a.href); a.remove(); }, 2000); flash('Guardado: '+name); return true;
+  }catch(e){ flash('No se pudo guardar', true); return false; }
 }
 function empty(){ if (grid.every(r=>r.every(x=>x===0))){ flash('La hoja está en blanco: no hay nada que guardar', true); return true; } return false; }
 /* Zip sin compresión de un solo archivo (dentro de Claude no se pueden descargar .brf sueltos) */
@@ -722,6 +777,7 @@ function zip1(name, data){
   return new Blob([loc, nm, data, cen, nm, end], {type:'application/zip'});
 }
 $('saveTxt').onclick = ()=>{ if (!empty()) offer(baseName('.txt'), toUnicode()); };
+$('saveBtn').onclick = ()=>saveWork();
 $('saveBrf').onclick = async ()=>{
   if (empty()) return;
   const bytes = new Uint8Array([...toBRF()].map(ch=>ch.charCodeAt(0)));
@@ -730,7 +786,23 @@ $('saveBrf').onclick = async ()=>{
 };
 
 /* ---------- Abrir (el docente revisa) ---------- */
-$('openBtn').onclick = ()=>$('fileIn').click();
+function openWork(){ if (isDirty()){ openDialog($('dlgOpenWarn')); return; } $('fileIn').click(); }
+$('openBtn').onclick = openWork;
+$('dlgOpenWarn').addEventListener('close', async ()=>{
+  const v = $('dlgOpenWarn').returnValue; $('dlgOpenWarn').returnValue = '';
+  if (v==='yes'){ if (await saveWork()) $('fileIn').click(); else backToSlate(); }
+  else if (v==='no') $('fileIn').click();
+  else backToSlate();
+});
+/* Trabajo de la Máquina Braille Virtual (.mbv) o de la regleta: devuelve los renglones y el tamaño, o null */
+function parseMBV(text){
+  let o; try{ o = JSON.parse(text); }catch(e){ return null; }
+  if (!o || (o.formato!=='maquina-braille-virtual' && o.formato!=='perkins-virtual') || !Array.isArray(o.lineas)) return null;
+  const lines = o.lineas.map(l=>[...String(l)].map(ch=>{ const k = ch.charCodeAt(0); return k>=0x2800 && k<=0x283F ? k-0x2800 : 0; }));
+  const g = o.regleta || {};
+  return {lines, cols: +g.celdas || +o.ancho || 0, rows: +g.renglones || +o.lineasPorHoja || 0,
+    mode: g.regleta==='punto positivo' ? 'pos' : g.regleta==='común' ? 'neg' : null, student: g.alumno, exercise: g.ejercicio};
+}
 function unzipFirst(buf){
   const v = new DataView(buf); if (v.getUint32(0,true)!==0x04034b50) return null;
   const method = v.getUint16(8,true), size = v.getUint32(18,true), nl = v.getUint16(26,true), xl = v.getUint16(28,true);
@@ -759,15 +831,19 @@ $('fileIn').onchange = async ()=>{
     if (/\.zip$/i.test(f.name)){ const b = unzipFirst(await f.arrayBuffer()); if (!b) throw 0; text = String.fromCharCode(...b); }
     else text = await f.text();
   }catch(e){ flash('No se pudo leer el archivo', true); return; }
-  const lines = parse(text);
-  if (!lines){ flash('El archivo no es braille Unicode ni BRF', true); return; }
-  const cols = Math.max(COLS, ...lines.map(l=>l.length)), rows = Math.max(lines.length, 4);
+  const mbv = parseMBV(text);
+  const lines = mbv ? mbv.lines : parse(text);
+  if (!lines){ flash('El archivo no es un trabajo de la regleta o de la Máquina Braille Virtual, ni braille Unicode o BRF', true); return; }
+  const cols = Math.max(mbv && mbv.cols>=10 && mbv.cols<=48 ? mbv.cols : COLS, ...lines.map(l=>l.length)),
+        rows = Math.max(mbv && mbv.rows>=4 && mbv.rows<=40 ? mbv.rows : 0, lines.length, 4);
   COLS = cols; ROWS = rows;
   grid = Array.from({length:rows}, (_,r)=>Array.from({length:cols}, (_,c)=> (lines[r] && lines[r][c]) || 0));
   original = grid.map(r=>r.slice()); undoStack.length = 0;
   ensureOption($('cols'), cols); ensureOption($('rows'), rows); $('cols').value = cols; $('rows').value = rows;
-  const m = f.name.replace(/\.(txt|brf|brl|zip)$/i,'').split(' - ');
-  $('student').value = m[0] || ''; $('exercise').value = m.slice(1).join(' - ');
+  const m = f.name.replace(/(\.(mbv|pks))?\.(mbv|pks|json|txt|brf|brl|zip)$/i,'').replace(/ \(corregido\)$/,'').split(' - ');
+  $('student').value = (mbv && mbv.student) || m[0] || ''; $('exercise').value = (mbv && mbv.exercise) || m.slice(1).join(' - ');
+  if (mbv && mbv.mode) mode = mbv.mode;
+  markSaved();
   flipped = mode==='neg'; cur = {r:0,c:0};
   $('optTr').checked = true;
   flash('Abierto: '+f.name+'. Se muestra el lado de lectura.');
@@ -802,7 +878,7 @@ $('copyRev').onclick = async ()=>{
   try{ await navigator.clipboard.writeText(t); flash('Correcciones copiadas'); }
   catch(e){ const ta = document.createElement('textarea'); ta.value = t; ta.style.position='fixed'; ta.style.opacity='0'; document.body.appendChild(ta); ta.select(); try{ document.execCommand('copy'); flash('Correcciones copiadas'); }catch(_){ flash('No se pudo copiar', true); } ta.remove(); }
 };
-$('saveRev').onclick = ()=>{ if (!empty()) offer(baseName(' (corregido).txt'), toUnicode()); };
+$('saveRev').onclick = ()=>saveWork(' (corregido)');
 
 
 /* ---------- Barra de menús (como en la Máquina Braille Virtual) ----------
@@ -847,7 +923,7 @@ $('dlgSize').addEventListener('close', ()=>{
 ['dlgHelp','dlgKeys','dlgAbout'].forEach(id=>$(id).addEventListener('close', ()=>setTimeout(backToSlate, 0)));
 function clickBtn(id){ $(id).click(); }
 const COMMANDS = {
-  new: ()=>clickBtn('clear'), open: ()=>clickBtn('openBtn'), saveTxt: ()=>clickBtn('saveTxt'), saveBrf: ()=>clickBtn('saveBrf'),
+  new: ()=>clickBtn('clear'), open: ()=>openWork(), save: ()=>saveWork(), exit: ()=>exitApp(), saveTxt: ()=>clickBtn('saveTxt'), saveBrf: ()=>clickBtn('saveBrf'),
   saveRev: ()=>clickBtn('saveRev'), copyRev: ()=>clickBtn('copyRev'),
   mbv: ()=>{ location.href = 'https://maquinabraillevirtual.github.io/'; },
   undo, clearCell: ()=>{ if (grid[cur.r][cur.c]){ pushUndo(); grid[cur.r][cur.c] = 0; flash('Ventanilla borrada'); render(); } else flash('La ventanilla ya está vacía'); },
@@ -865,7 +941,7 @@ const COMMANDS = {
   help: ()=>{ openDialog($('dlgHelp')); $('dlgHelp').scrollTop = 0; },
   signs: ()=>{ openDialog($('dlgHelp')); setTimeout(()=>{ const h = $('hSigns'); h.focus(); h.scrollIntoView({block:'start'}); }, 0); }, keys: ()=>openDialog($('dlgKeys')), about: ()=>openDialog($('dlgAbout'))
 };
-const OPENS = {signs:1, new:1, open:1, paperCustom:1, help:1, keys:1, about:1, mbv:1};
+const OPENS = {signs:1, new:1, open:1, exit:1, paperCustom:1, help:1, keys:1, about:1, mbv:1};
 function runCmd(cmd){ closeMenus(); if (!OPENS[cmd]) backToSlate(); COMMANDS[cmd](); }
 TOPS.forEach((top, i)=>{
   top.addEventListener('click', ()=>{ top.getAttribute('aria-expanded')==='true' ? (closeMenus(), focusTop(top)) : openMenu(top, 'first'); });
@@ -934,7 +1010,7 @@ window.addEventListener('keydown', e=>{
     if (e.key==='-' || e.code==='NumpadSubtract'){ e.preventDefault(); setZoom(-1); return; }
     if ((e.key==='0' || e.code==='Numpad0') && !e.shiftKey){ e.preventDefault(); setZoom(0); return; }
     if (e.shiftKey && e.code==='KeyC'){ e.preventDefault(); closeMenus(); toggleContrast(); return; }
-    if (e.code==='KeyG'){ e.preventDefault(); closeMenus(); if (!e.repeat) runCmd(e.shiftKey ? 'saveBrf' : 'saveTxt'); return; }
+    if (e.code==='KeyG'){ e.preventDefault(); closeMenus(); if (!e.repeat) runCmd(e.shiftKey ? 'saveBrf' : 'save'); return; }
     if (e.code==='KeyO' && !e.shiftKey){ e.preventDefault(); closeMenus(); if (!e.repeat) runCmd('open'); return; }
     if (e.code==='KeyZ' && !e.shiftKey && !(e.target && /^(INPUT|SELECT)$/.test(e.target.tagName))){ e.preventDefault(); undo(); return; }
   }
@@ -953,6 +1029,28 @@ window.addEventListener('keydown', e=>{
   if (e.key==='Escape' && readingAll){ e.preventDefault(); stopReading(); flash('Lectura detenida'); return; }
 }, true);
 slate.addEventListener('keydown', ()=>setTimeout(showCur, 0));
+
+/* ---------- Salir: pregunta si guardar los cambios, como la Máquina Braille Virtual ----------
+   El navegador solo deja cerrar pestañas abiertas por un script; si no se cierra, se muestra la pantalla de salida. */
+let leaving = false;
+window.addEventListener('beforeunload', e=>{ if (!leaving && isDirty()){ e.preventDefault(); e.returnValue = ''; } });
+function exitApp(){ if (isDirty()){ openDialog($('dlgExit')); return; } leaveApp(); }
+$('dlgExit').addEventListener('close', async ()=>{
+  const v = $('dlgExit').returnValue; $('dlgExit').returnValue = '';
+  if (v==='yes'){ if (await saveWork()) setTimeout(leaveApp, 600); else backToSlate(); }
+  else if (v==='no') leaveApp();
+  else backToSlate();
+});
+function leaveApp(){
+  leaving = true; stopReading();
+  try{ window.close(); }catch(e){}
+  setTimeout(()=>{ document.querySelector('.app').hidden = true; $('exitScreen').hidden = false; $('exitT').focus(); }, 150);
+}
+$('exitBack').onclick = ()=>{
+  leaving = false; grid = blank(); cur = {r:0,c:0}; original = null; undoStack.length = 0; flipped = false; markSaved();
+  $('student').value = ''; $('exercise').value = '';
+  $('exitScreen').hidden = true; document.querySelector('.app').hidden = false; render(); backToSlate();
+};
 
 /* ---------- Ventanilla grande ---------- */
 function renderBig(){
@@ -1069,19 +1167,14 @@ function persist(){ try{ localStorage.setItem(STORE, JSON.stringify({grid, COLS,
     /* un borrador vacío o con solo el ejemplo «hola» toma la hoja nueva por defecto (A4) */
     const marks = d.grid.flat().filter(Boolean), hola = ['125','135','123','1'].map(mk).join();
     if (!marks.length || (marks.length===4 && d.grid[0].slice(0,4).join()===hola)){ mode = d.mode==='pos' ? 'pos' : 'neg'; $('student').value = d.student||''; $('exercise').value = d.exercise||''; $('optNum').checked = d.num!==false; return; }
-    COLS = d.COLS||18; ROWS = d.ROWS||8; grid = blank(); d.grid.forEach((row,r)=>row.forEach((v,c)=>{ if (r<ROWS && c<COLS) grid[r][c] = v|0; }));
-    mode = d.mode==='pos' ? 'pos' : 'neg'; $('student').value = d.student||''; $('exercise').value = d.exercise||''; $('optNum').checked = d.num!==false;
+    /* la hoja empieza en blanco: solo se recuerdan el tamaño de la hoja, el tipo de regleta y los números de los puntos */
+    COLS = d.COLS||28; ROWS = d.ROWS||27; grid = blank();
+    mode = d.mode==='pos' ? 'pos' : 'neg'; $('optNum').checked = d.num!==false;
     ensureOption($('cols'), COLS); ensureOption($('rows'), ROWS); $('cols').value = COLS; $('rows').value = ROWS;
   }catch(e){}
 })();
 $('student').oninput = $('exercise').oninput = persist;
 
-/* Ejemplo al abrir por primera vez: «hola» ya escrito en el primer renglón, para ver cómo queda */
-(function sample(){
-  try{ if (localStorage.getItem(STORE)) return; }catch(e){}
-  ['h','o','l','a'].forEach((ch,i)=>{ grid[0][i] = mk(L[ch]); });
-  cur = {r:0, c:4};
-})();
 render();
 </script>
 
