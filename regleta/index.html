@@ -919,6 +919,8 @@ function setZoom(dir){
 }
 try{ const pr = JSON.parse(localStorage.getItem(PREFS)||'null'); if (pr){ if (typeof pr.big==='boolean') bigPref = pr.big; contrast = !!pr.contrast; sound = pr.sound!==false; voice = pr.voice!==false; zoom = Math.min(2, Math.max(1, +pr.zoom||1)); } }catch(e){}
 applyContrast(); applyZoom();
+/* en la computadora, la regleta empieza con el foco para escribir con el teclado enseguida */
+if (!touchScreen) setTimeout(()=>{ try{ slate.focus({preventScroll:true}); }catch(e){} }, 0);
 
 /* Teclado general */
 window.addEventListener('keydown', e=>{
@@ -938,6 +940,12 @@ window.addEventListener('keydown', e=>{
   }
   if (e.target && e.target.closest && e.target.closest('#menubar')) return;
   if (e.target && /^(INPUT|SELECT)$/.test(e.target.tagName)) return;
+  /* las teclas 1 a 6 marcan puntos aunque el foco esté en un botón o en la página: llevan el foco a la regleta */
+  if (/^[1-6]$/.test(e.key) && !e.ctrlKey && !e.metaKey && !e.altKey && !slate.contains(e.target) && !$('big').contains(e.target)){
+    e.preventDefault(); slate.focus({preventScroll:true});
+    if (flipped && mode==='neg'){ flash('Vuelve a voltear la hoja para escribir', true); return; }
+    toggle(cur.r, cur.c, +e.key); showCur(); return;
+  }
   if (e.key==='F2'){ e.preventDefault(); runCmd('flip'); return; }
   if (e.key==='F4'){ e.preventDefault(); runCmd('optTr'); return; }
   if (e.key==='F7'){ e.preventDefault(); if (!e.repeat) readLine(); return; }
