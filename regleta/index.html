@@ -171,7 +171,15 @@ dialog select{font:inherit;font-size:15px;color:var(--ink);background:var(--bg);
 .big-head .says1{color:var(--accent);font-weight:700}
 .big-main{display:flex;align-items:center;justify-content:center;gap:clamp(10px,4vw,28px)}
 .big-main{touch-action:pan-x pan-y;user-select:none;-webkit-user-select:none}
-.big-hint{text-align:center;font-size:13px;color:var(--muted);margin:0}
+.adj-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.adj{position:relative;display:block;height:64px;touch-action:none;user-select:none;-webkit-user-select:none}
+.adj input{-webkit-appearance:none;appearance:none;display:block;width:100%;height:100%;margin:0;background:var(--bg);border:2px solid var(--metal-edge);border-radius:12px;cursor:ns-resize;touch-action:none}
+.adj input::-webkit-slider-runnable-track{background:transparent;height:100%}
+.adj input::-webkit-slider-thumb{-webkit-appearance:none;width:0;height:0}
+.adj input::-moz-range-thumb{width:0;height:0;border:0;background:transparent}
+.adj input:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
+.adj-t{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;pointer-events:none;font-size:16px;line-height:1.15;color:var(--ink)}
+.adj-t .ar{font-size:13px;color:var(--muted)}
 .big-cell{display:grid;grid-template-columns:repeat(2,var(--bd));grid-auto-rows:var(--bd);gap:10px 16px;padding:12px 16px;background:var(--metal);border:2px solid var(--metal-edge);border-radius:12px;--bd:clamp(50px,13.5vw,68px);touch-action:manipulation}
 .bdot{appearance:none;border:2px solid var(--hole-ring);border-radius:50%;background:var(--hole);color:var(--muted);font:700 20px/1 var(--f-body);cursor:pointer;touch-action:manipulation;padding:0}
 .bdot.on{background:radial-gradient(circle at 35% 30%,var(--dot-hi),var(--dot) 65%);color:transparent;border-color:var(--dot)}
@@ -181,7 +189,8 @@ dialog select{font:inherit;font-size:15px;color:var(--ink);background:var(--bg);
 .bnav .ar{display:block;font-size:24px;line-height:1}
 .big-foot{display:flex;flex-wrap:wrap;gap:8px;justify-content:center}
 .big-foot .btn{min-height:44px}
-.has-big .cell{scroll-margin-bottom:330px}
+.has-big .cell{scroll-margin-bottom:420px}
+@media (max-width:440px){ .bnav{min-width:72px;padding:8px 4px;font-size:14px} .big-main{gap:8px} .big-cell{--bd:clamp(46px,13vw,62px);gap:10px 14px;padding:10px 12px} }
 @media (max-width:640px){ h1{font-size:23px} .bar input[type=text]{width:150px} }
 </style>
 
@@ -314,13 +323,12 @@ dialog select{font:inherit;font-size:15px;color:var(--ink);background:var(--bg);
       <div class="big-cell" id="bigCell" role="group" aria-label="Puntos de la ventanilla">
         <button class="bdot" type="button" data-n="1">1</button><button class="bdot" type="button" data-n="2">2</button><button class="bdot" type="button" data-n="3">3</button><button class="bdot" type="button" data-n="4">4</button><button class="bdot" type="button" data-n="5">5</button><button class="bdot" type="button" data-n="6">6</button>
       </div>
-      <div class="sr" id="adjBox">
-        <input type="range" id="adjLetter" min="0" max="2" step="1" value="1" aria-label="Letras: desliza hacia arriba para avanzar, hacia abajo para retroceder" aria-valuetext="letras">
-        <input type="range" id="adjWord" min="0" max="2" step="1" value="1" aria-label="Palabras: desliza hacia arriba para avanzar, hacia abajo para retroceder" aria-valuetext="palabras">
-      </div>
       <button class="bnav" id="bNext" type="button"><span class="ar" aria-hidden="true" id="bNextAr">←</span>Siguiente</button>
     </div>
-    <p class="big-hint" id="bigHint" aria-hidden="true">Desliza el dedo sobre la ventanilla: a los lados, de letra en letra; arriba o abajo, de palabra en palabra.</p>
+    <div class="adj-row">
+      <label class="adj" id="adjLetterBox"><span class="adj-t" aria-hidden="true"><b>Letras</b><span class="ar">↑ avanza · ↓ retrocede</span></span><input type="range" id="adjLetter" min="0" max="100" step="1" value="50" aria-label="Letras. Desliza un dedo hacia arriba para avanzar, hacia abajo para retroceder" aria-valuetext="Letras"></label>
+      <label class="adj" id="adjWordBox"><span class="adj-t" aria-hidden="true"><b>Palabras</b><span class="ar">↑ avanza · ↓ retrocede</span></span><input type="range" id="adjWord" min="0" max="100" step="1" value="50" aria-label="Palabras. Desliza un dedo hacia arriba para avanzar, hacia abajo para retroceder" aria-valuetext="Palabras"></label>
+    </div>
     <div class="big-foot"><button class="btn" id="bLine" type="button">Renglón siguiente</button><button class="btn" id="bClear" type="button">Borrar ventanilla</button><button class="btn" id="bFlip" type="button">Voltear la hoja</button><button class="btn" id="bReadLine" type="button">Leer renglón</button><button class="btn" id="bReadAll" type="button">Leer hoja</button></div>
   </section>
 
@@ -345,7 +353,7 @@ dialog select{font:inherit;font-size:15px;color:var(--ink);background:var(--bg);
       <li><b>Punto positivo:</b> para las regletas de punto positivo, que escriben de izquierda a derecha como se lee.</li>
       <li><b>Menús:</b> <kbd>F10</kbd> o <kbd>Alt</kbd> con la letra subrayada (<kbd>Alt</kbd> + <kbd>A</kbd> Archivo, <kbd>E</kbd> Edición, <kbd>V</kbd> Ver, <kbd>H</kbd> Hoja, <kbd>Y</kbd> Ayuda) abren la barra de menús; se recorre con las flechas, <kbd>Enter</kbd> elige y <kbd>Escape</kbd> vuelve a la regleta.</li>
       <li><b>Baja visión:</b> Ver › Fondo oscuro y letras blancas (<kbd>Control</kbd> + <kbd>Mayúsculas</kbd> + <kbd>C</kbd>) y el zoom (<kbd>Control</kbd> + <kbd>Más</kbd>, <kbd>Control</kbd> + <kbd>Menos</kbd>, <kbd>Control</kbd> + <kbd>0</kbd>). Con zoom, las ventanillas se agrandan y el renglón se recorre a los lados.</li>
-      <li><b>Celular o tableta:</b> abajo aparece la <b>ventanilla grande</b>, con los seis puntos grandes de la ventanilla actual: se tocan para marcarlos o quitarlos. Al pulsar <b>Siguiente</b> se dice la letra que quedó escrita, y al dejar un espacio, la palabra completa; <b>Anterior</b> dice la letra a la que se llega. También se puede deslizar el dedo sobre la ventanilla: a los lados, de letra en letra (hacia donde apunta la flecha de Siguiente se avanza); hacia arriba o abajo, de palabra en palabra. <b>Con VoiceOver o TalkBack</b>, después de los seis puntos están los controles <b>Letras</b> y <b>Palabras</b>: desliza un dedo hacia arriba para avanzar y hacia abajo para retroceder. Los botones <b>Siguiente</b> y <b>Anterior</b> mueven la ventanilla (en la regleta común, la siguiente queda a la izquierda, como con el punzón). En la computadora se activa en Ver › Ventanilla grande.</li>
+      <li><b>Celular o tableta:</b> abajo aparece la <b>ventanilla grande</b>, con los seis puntos grandes de la ventanilla actual: se tocan para marcarlos o quitarlos. Al pulsar <b>Siguiente</b> se dice la letra que quedó escrita, y al dejar un espacio, la palabra completa; <b>Anterior</b> dice la letra a la que se llega. Debajo de la ventanilla están las barras <b>Letras</b> y <b>Palabras</b>: pon el dedo en una de ellas y deslízalo <b>hacia arriba</b> para avanzar o <b>hacia abajo</b> para retroceder. El gesto es el mismo con VoiceOver (iPhone, iPad), con TalkBack (Android) y sin lector de pantalla. Los botones <b>Siguiente</b> y <b>Anterior</b> mueven la ventanilla (en la regleta común, la siguiente queda a la izquierda, como con el punzón). En la computadora se activa en Ver › Ventanilla grande.</li>
       <li><b>Leer en voz alta:</b> <b>Leer renglón</b> (<kbd>F7</kbd>) lee el renglón donde está la ventanilla actual y <b>Leer hoja</b> (<kbd>F8</kbd>) lee toda la hoja, renglón por renglón, tal como se leerá con los dedos. Un signo que no se reconoce se lee como «puntos» con sus números. Para detener la lectura, otra vez <kbd>F8</kbd>, <kbd>Escape</kbd> o el botón <b>Detener lectura</b>. Si usas TalkBack o VoiceOver en el celular o la tableta, apaga Ver › Voz de la aplicación: así las dos voces no se encimen y el texto lo lee tu lector de pantalla.</li>
       <li><b>Sonido:</b> cada punto suena como el punzón: un clic seco al marcarlo y uno más suave al quitarlo. Se apaga en Ver › Sonido al marcar los puntos. En iPhone y iPad con un sistema anterior a iOS 17, si el interruptor de silencio está activado, el clic no se oye.</li>
       <li><b>Teclado:</b> con la regleta seleccionada, las teclas <kbd>1</kbd> a <kbd>6</kbd> marcan o quitan los puntos de la ventanilla actual; las flechas mueven la ventanilla; <kbd>Retroceso</kbd> borra la ventanilla; <kbd>Control</kbd> + <kbd>Z</kbd> deshace.</li>
@@ -1118,8 +1126,18 @@ function wordMove(d, adj){
 }
 /* Controles ajustables: VoiceOver y TalkBack cambian el valor al deslizar arriba o abajo; se toma solo la dirección */
 [['adjLetter', bigMove], ['adjWord', wordMove]].forEach(([id, fn])=>{
-  const el = $(id);
-  el.addEventListener('input', ()=>{ const v = +el.value; el.value = 1; if (v===1) return; fn(v>1 ? 1 : -1, el); });
+  const el = $(id), box = el.parentElement; let st = null;
+  /* VoiceOver y TalkBack: al deslizar arriba o abajo cambian el valor; solo cuenta la dirección y vuelve al centro */
+  el.addEventListener('input', ()=>{ const v = +el.value; el.value = 50; if (st || v===50) return; fn(v>50 ? 1 : -1, el); });
+  el.addEventListener('change', ()=>{ el.value = 50; });
+  /* sin lector de pantalla: el mismo gesto con el dedo, arriba o abajo sobre la barra (un toque no hace nada) */
+  const down = e=>{ e.preventDefault(); st = {y:e.clientY, id:e.pointerId}; try{ box.setPointerCapture(e.pointerId); }catch(_){} };
+  box.addEventListener('pointerdown', down);
+  box.addEventListener('pointerup', e=>{ if (!st) return; const dy = e.clientY - st.y; st = null; el.value = 50; if (Math.abs(dy)>=28) fn(dy<0 ? 1 : -1); });
+  box.addEventListener('pointercancel', ()=>{ st = null; el.value = 50; });
+  box.addEventListener('mousedown', e=>e.preventDefault());
+  box.addEventListener('touchstart', e=>{ if (e.cancelable) e.preventDefault(); }, {passive:false});
+  box.addEventListener('click', e=>e.preventDefault());
 });
 /* Gestos con el dedo sobre la ventanilla grande (sin lector de pantalla) */
 (function swipes(){
