@@ -166,6 +166,8 @@ dialog select{font:inherit;font-size:15px;color:var(--ink);background:var(--bg);
 .big-head{display:flex;flex-wrap:wrap;justify-content:space-between;gap:4px 12px;font-size:15px}
 .big-head .says1{color:var(--accent);font-weight:700}
 .big-main{display:flex;align-items:center;justify-content:center;gap:clamp(10px,4vw,28px)}
+.big-main{touch-action:pan-x pan-y;user-select:none;-webkit-user-select:none}
+.big-hint{text-align:center;font-size:13px;color:var(--muted);margin:0}
 .big-cell{display:grid;grid-template-columns:repeat(2,var(--bd));grid-auto-rows:var(--bd);gap:10px 16px;padding:12px 16px;background:var(--metal);border:2px solid var(--metal-edge);border-radius:12px;--bd:clamp(50px,13.5vw,68px);touch-action:manipulation}
 .bdot{appearance:none;border:2px solid var(--hole-ring);border-radius:50%;background:var(--hole);color:var(--muted);font:700 20px/1 var(--f-body);cursor:pointer;touch-action:manipulation;padding:0}
 .bdot[aria-pressed="true"]{background:radial-gradient(circle at 35% 30%,var(--dot-hi),var(--dot) 65%);color:transparent;border-color:var(--dot)}
@@ -304,8 +306,13 @@ dialog select{font:inherit;font-size:15px;color:var(--ink);background:var(--bg);
       <div class="big-cell" id="bigCell" role="group" aria-label="Puntos de la ventanilla">
         <button class="bdot" type="button" data-n="1" aria-pressed="false">1</button><button class="bdot" type="button" data-n="2" aria-pressed="false">2</button><button class="bdot" type="button" data-n="3" aria-pressed="false">3</button><button class="bdot" type="button" data-n="4" aria-pressed="false">4</button><button class="bdot" type="button" data-n="5" aria-pressed="false">5</button><button class="bdot" type="button" data-n="6" aria-pressed="false">6</button>
       </div>
+      <div class="sr" id="adjBox">
+        <input type="range" id="adjLetter" min="0" max="2" step="1" value="1" aria-label="Letras: desliza hacia arriba para avanzar, hacia abajo para retroceder" aria-valuetext="letras">
+        <input type="range" id="adjWord" min="0" max="2" step="1" value="1" aria-label="Palabras: desliza hacia arriba para avanzar, hacia abajo para retroceder" aria-valuetext="palabras">
+      </div>
       <button class="bnav" id="bNext" type="button"><span class="ar" aria-hidden="true" id="bNextAr">←</span>Siguiente</button>
     </div>
+    <p class="big-hint" id="bigHint" aria-hidden="true">Desliza el dedo sobre la ventanilla: a los lados, de letra en letra; arriba o abajo, de palabra en palabra.</p>
     <div class="big-foot"><button class="btn" id="bLine" type="button">Renglón siguiente</button><button class="btn" id="bClear" type="button">Borrar ventanilla</button><button class="btn" id="bFlip" type="button">Voltear la hoja</button><button class="btn" id="bReadLine" type="button">Leer renglón</button><button class="btn" id="bReadAll" type="button">Leer hoja</button></div>
   </section>
 
@@ -330,7 +337,7 @@ dialog select{font:inherit;font-size:15px;color:var(--ink);background:var(--bg);
       <li><b>Punto positivo:</b> para las regletas de punto positivo, que escriben de izquierda a derecha como se lee.</li>
       <li><b>Menús:</b> <kbd>F10</kbd> o <kbd>Alt</kbd> con la letra subrayada (<kbd>Alt</kbd> + <kbd>A</kbd> Archivo, <kbd>E</kbd> Edición, <kbd>V</kbd> Ver, <kbd>H</kbd> Hoja, <kbd>Y</kbd> Ayuda) abren la barra de menús; se recorre con las flechas, <kbd>Enter</kbd> elige y <kbd>Escape</kbd> vuelve a la regleta.</li>
       <li><b>Baja visión:</b> Ver › Fondo oscuro y letras blancas (<kbd>Control</kbd> + <kbd>Mayúsculas</kbd> + <kbd>C</kbd>) y el zoom (<kbd>Control</kbd> + <kbd>Más</kbd>, <kbd>Control</kbd> + <kbd>Menos</kbd>, <kbd>Control</kbd> + <kbd>0</kbd>). Con zoom, las ventanillas se agrandan y el renglón se recorre a los lados.</li>
-      <li><b>Celular o tableta:</b> abajo aparece la <b>ventanilla grande</b>, con los seis puntos grandes de la ventanilla actual: se tocan para marcarlos o quitarlos. Al pulsar <b>Siguiente</b> se dice la letra que quedó escrita, y al dejar un espacio, la palabra completa. Los botones <b>Siguiente</b> y <b>Anterior</b> mueven la ventanilla (en la regleta común, la siguiente queda a la izquierda, como con el punzón). En la computadora se activa en Ver › Ventanilla grande.</li>
+      <li><b>Celular o tableta:</b> abajo aparece la <b>ventanilla grande</b>, con los seis puntos grandes de la ventanilla actual: se tocan para marcarlos o quitarlos. Al pulsar <b>Siguiente</b> se dice la letra que quedó escrita, y al dejar un espacio, la palabra completa; <b>Anterior</b> dice la letra a la que se llega. También se puede deslizar el dedo sobre la ventanilla: a los lados, de letra en letra (hacia donde apunta la flecha de Siguiente se avanza); hacia arriba o abajo, de palabra en palabra. <b>Con VoiceOver o TalkBack</b>, después de los seis puntos están los controles <b>Letras</b> y <b>Palabras</b>: desliza un dedo hacia arriba para avanzar y hacia abajo para retroceder. Los botones <b>Siguiente</b> y <b>Anterior</b> mueven la ventanilla (en la regleta común, la siguiente queda a la izquierda, como con el punzón). En la computadora se activa en Ver › Ventanilla grande.</li>
       <li><b>Leer en voz alta:</b> <b>Leer renglón</b> (<kbd>F7</kbd>) lee el renglón donde está la ventanilla actual y <b>Leer hoja</b> (<kbd>F8</kbd>) lee toda la hoja, renglón por renglón, tal como se leerá con los dedos. Un signo que no se reconoce se lee como «puntos» con sus números. Para detener la lectura, otra vez <kbd>F8</kbd>, <kbd>Escape</kbd> o el botón <b>Detener lectura</b>. Si usas TalkBack o VoiceOver en el celular o la tableta, apaga Ver › Voz de la aplicación: así las dos voces no se encimen y el texto lo lee tu lector de pantalla.</li>
       <li><b>Sonido:</b> cada punto suena como el punzón: un clic seco al marcarlo y uno más suave al quitarlo. Se apaga en Ver › Sonido al marcar los puntos. En iPhone y iPad con un sistema anterior a iOS 17, si el interruptor de silencio está activado, el clic no se oye.</li>
       <li><b>Teclado:</b> con la regleta seleccionada, las teclas <kbd>1</kbd> a <kbd>6</kbd> marcan o quitan los puntos de la ventanilla actual; las flechas mueven la ventanilla; <kbd>Retroceso</kbd> borra la ventanilla; <kbd>Control</kbd> + <kbd>Z</kbd> deshace.</li>
@@ -959,16 +966,71 @@ function renderBig(){
   $('bigSays').textContent = readSide && v ? 'Se lee: '+(t ? '«'+t+'»' : 'signo no reconocido') : '';
   $('bFlip').hidden = mode==='pos'; $('bFlip').textContent = flipped ? 'Volver al lado de escritura' : 'Voltear la hoja';
 }
-function bigMove(d){
-  if (d>0){ const was = cur; let t = cellName(was.r, was.c);
-    if (!grid[was.r][was.c]){ const w = wordBefore(was.r, was.c); if (w) t = 'espacio. Palabra: '+w; }
-    const nr = was.c+1>=COLS && was.r<ROWS-1 ? '. Renglón '+(was.r+2) : '';
-    echo(t + nr); }
-  let {r, c} = cur; c += d;
-  if (c>=COLS){ if (r<ROWS-1){ r++; c = 0; flash('Renglón '+(r+1)); } else { c = COLS-1; flash('Fin de la hoja', true); } }
-  else if (c<0){ if (r>0){ r--; c = COLS-1; flash('Renglón '+(r+1)); } else { c = 0; flash('Principio de la hoja', true); } }
-  cur = {r, c}; render(); showCur();
+/* Lo que se dice al moverse: con los controles ajustables lo lee el lector de pantalla (aria-valuetext);
+   con los botones y los gestos, la voz de la aplicación o el lector */
+function navSay(msg, adj){
+  if (!msg) return;
+  if (adj){ adj.setAttribute('aria-valuetext', msg); if (voice) echo(msg); }
+  else echo(msg);
 }
+/* Siguiente: dice lo escrito en la ventanilla que se deja. Anterior: dice la ventanilla a la que se llega. */
+function bigMove(d, adj){
+  let msg = '';
+  if (d>0){ const was = cur; msg = cellName(was.r, was.c);
+    if (!grid[was.r][was.c]){ const w = wordBefore(was.r, was.c); if (w) msg = 'espacio. Palabra: '+w; } }
+  let {r, c} = cur; c += d;
+  if (c>=COLS){ if (r<ROWS-1){ r++; c = 0; msg += '. Renglón '+(r+1); } else { c = COLS-1; msg += '. Fin de la hoja'; } }
+  else if (c<0){ if (r>0){ r--; c = COLS-1; } else { c = 0; msg = 'Principio de la hoja'; } }
+  const rowChange = r!==cur.r;
+  cur = {r, c}; render(); showCur();
+  if (d<0 && msg!=='Principio de la hoja') msg = cellName(r, c) + (rowChange ? '. Renglón '+(r+1) : '');
+  navSay(msg, adj);
+}
+/* Palabras: grupos de ventanillas escritas sin espacio, en toda la hoja */
+function wordsOfSheet(){
+  const out = [];
+  for (let r=0;r<ROWS;r++){ let c = 0;
+    while (c<COLS){ if (!grid[r][c]){ c++; continue; } const s0 = c; while (c<COLS && grid[r][c]) c++; out.push({r, s:s0, e:c-1}); } }
+  return out;
+}
+function wordMove(d, adj){
+  const ws = wordsOfSheet(), lin = cur.r*COLS+cur.c, L = w => w.r*COLS+w.s;
+  if (!ws.length){ navSay('La hoja está en blanco', adj); return; }
+  let t = null, msg = '';
+  if (d>0) t = ws.find(w=>L(w)>lin);
+  else { const before = ws.filter(w=>L(w)<lin); t = before[before.length-1]; }
+  if (t){
+    const rowChange = t.r!==cur.r; cur = {r:t.r, c:t.s};
+    msg = 'Palabra: '+wordBefore(t.r, t.e+1) + (rowChange ? '. Renglón '+(t.r+1) : '');
+  } else if (d>0){
+    /* después de la última palabra: deja un espacio y queda lista la ventanilla para seguir escribiendo */
+    const last = ws[ws.length-1]; let r = last.r, c = last.e+2;
+    if (c>=COLS){ if (r<ROWS-1){ r++; c = 0; } else c = COLS-1; }
+    cur = {r, c}; msg = 'Final del texto: renglón '+(r+1)+', celda '+(c+1);
+  } else msg = 'Principio del texto';
+  render(); showCur(); navSay(msg, adj);
+}
+/* Controles ajustables: VoiceOver y TalkBack cambian el valor al deslizar arriba o abajo; se toma solo la dirección */
+[['adjLetter', bigMove], ['adjWord', wordMove]].forEach(([id, fn])=>{
+  const el = $(id);
+  el.addEventListener('input', ()=>{ const v = +el.value; el.value = 1; if (v===1) return; fn(v>1 ? 1 : -1, el); });
+});
+/* Gestos con el dedo sobre la ventanilla grande (sin lector de pantalla) */
+(function swipes(){
+  const area = $('bigMain'); let st = null, swallow = 0;
+  area.addEventListener('pointerdown', e=>{ st = {x:e.clientX, y:e.clientY, t:Date.now(), id:e.pointerId}; }, {passive:true});
+  area.addEventListener('pointercancel', ()=>{ st = null; });
+  area.addEventListener('pointerup', e=>{
+    if (!st || e.pointerId!==st.id) return; const dx = e.clientX-st.x, dy = e.clientY-st.y, dt = Date.now()-st.t; st = null;
+    if (dt>900 || Math.max(Math.abs(dx), Math.abs(dy))<45) return;
+    if (Math.abs(dx) > Math.abs(dy)*1.4){
+      /* hacia donde apunta la flecha de «Siguiente»: a la izquierda en el lado de escritura de la regleta común */
+      const fwd = writingMirrored() ? dx<0 : dx>0; swallow = Date.now(); bigMove(fwd ? 1 : -1);
+    } else if (Math.abs(dy) > Math.abs(dx)*1.4){ swallow = Date.now(); wordMove(dy<0 ? 1 : -1); }
+  });
+  /* que el deslizamiento no marque un punto ni pulse un botón al soltar el dedo */
+  area.addEventListener('click', e=>{ if (Date.now()-swallow<400){ e.stopPropagation(); e.preventDefault(); } }, true);
+})();
 $('bigCell').addEventListener('click', e=>{
   const b = e.target.closest('.bdot'); if (!b || b.disabled) return;
   toggle(cur.r, cur.c, +b.dataset.n); try{ navigator.vibrate && navigator.vibrate(12); }catch(_){}
