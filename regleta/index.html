@@ -170,7 +170,7 @@ dialog select{font:inherit;font-size:15px;color:var(--ink);background:var(--bg);
 .big-hint{text-align:center;font-size:13px;color:var(--muted);margin:0}
 .big-cell{display:grid;grid-template-columns:repeat(2,var(--bd));grid-auto-rows:var(--bd);gap:10px 16px;padding:12px 16px;background:var(--metal);border:2px solid var(--metal-edge);border-radius:12px;--bd:clamp(50px,13.5vw,68px);touch-action:manipulation}
 .bdot{appearance:none;border:2px solid var(--hole-ring);border-radius:50%;background:var(--hole);color:var(--muted);font:700 20px/1 var(--f-body);cursor:pointer;touch-action:manipulation;padding:0}
-.bdot[aria-pressed="true"]{background:radial-gradient(circle at 35% 30%,var(--dot-hi),var(--dot) 65%);color:transparent;border-color:var(--dot)}
+.bdot.on{background:radial-gradient(circle at 35% 30%,var(--dot-hi),var(--dot) 65%);color:transparent;border-color:var(--dot)}
 .bdot:disabled{cursor:default;opacity:.85}
 .bdot:focus-visible,.bnav:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
 .bnav{appearance:none;font:700 16px/1.2 var(--f-body);color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:10px;min-width:92px;min-height:64px;padding:8px 6px;font-size:15px;cursor:pointer;touch-action:manipulation}
@@ -304,7 +304,7 @@ dialog select{font:inherit;font-size:15px;color:var(--ink);background:var(--bg);
     <div class="big-main" id="bigMain">
       <button class="bnav" id="bPrev" type="button"><span class="ar" aria-hidden="true" id="bPrevAr">→</span>Anterior</button>
       <div class="big-cell" id="bigCell" role="group" aria-label="Puntos de la ventanilla">
-        <button class="bdot" type="button" data-n="1" aria-pressed="false">1</button><button class="bdot" type="button" data-n="2" aria-pressed="false">2</button><button class="bdot" type="button" data-n="3" aria-pressed="false">3</button><button class="bdot" type="button" data-n="4" aria-pressed="false">4</button><button class="bdot" type="button" data-n="5" aria-pressed="false">5</button><button class="bdot" type="button" data-n="6" aria-pressed="false">6</button>
+        <button class="bdot" type="button" data-n="1">1</button><button class="bdot" type="button" data-n="2">2</button><button class="bdot" type="button" data-n="3">3</button><button class="bdot" type="button" data-n="4">4</button><button class="bdot" type="button" data-n="5">5</button><button class="bdot" type="button" data-n="6">6</button>
       </div>
       <div class="sr" id="adjBox">
         <input type="range" id="adjLetter" min="0" max="2" step="1" value="1" aria-label="Letras: desliza hacia arriba para avanzar, hacia abajo para retroceder" aria-valuetext="letras">
@@ -465,7 +465,7 @@ function pickVoice(){
 if ('speechSynthesis' in window){ pickVoice(); try{ speechSynthesis.addEventListener('voiceschanged', pickVoice); }catch(e){} }
 function utter(text){ const u = new SpeechSynthesisUtterance(text); u.lang = esVoice ? esVoice.lang : 'es-ES'; if (esVoice) u.voice = esVoice; u.rate = 1; return u; }
 function stopReading(){ const was = readingAll; readingAll = false; try{ speechSynthesis.cancel(); }catch(e){} setReadBtns(); return was; }
-function setReadBtns(){ ['readAll','bReadAll'].forEach(id=>{ const b = $(id); if (!b) return; b.setAttribute('aria-pressed', readingAll);
+function setReadBtns(){ ['readAll','bReadAll'].forEach(id=>{ const b = $(id); if (!b) return;
   b.firstChild.textContent = readingAll ? 'Detener lectura ' : (id==='readAll' ? 'Leer hoja ' : 'Leer hoja'); }); }
 function announce(text){ const el = $('sayLive'); el.textContent = ''; setTimeout(()=>{ el.textContent = text; }, 60); }
 function speak(parts){
@@ -954,8 +954,8 @@ function renderBig(){
   const order = mir ? [4,1,5,2,6,3] : [1,4,2,5,3,6];
   $('bigCell').querySelectorAll('.bdot').forEach(b=>{
     const n = +b.dataset.n, on = !!(v & BIT(n));
-    b.style.order = order.indexOf(n); b.setAttribute('aria-pressed', on);
-    b.setAttribute('aria-label', 'Punto '+n); b.disabled = readSide;
+    b.style.order = order.indexOf(n); b.classList.toggle('on', on);
+    b.setAttribute('aria-label', 'Punto '+n+(on ? ', marcado' : '')); b.disabled = readSide;
   });
   $('bigCell').setAttribute('aria-label', readSide ? 'Puntos de la ventanilla (lado de lectura: no se puede escribir)' : 'Puntos de la ventanilla');
   /* la ventanilla siguiente queda hacia donde avanza la escritura: a la izquierda en el lado de escritura de la regleta común */
