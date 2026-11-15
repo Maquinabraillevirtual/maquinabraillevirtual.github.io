@@ -222,8 +222,13 @@ dialog select{font:inherit;font-size:15px;color:var(--ink);background:var(--bg);
         <ul class="menu" role="menu" id="mView" aria-label="Ver" hidden>
           <li role="none"><button role="menuitemcheckbox" tabindex="-1" data-cmd="flip" aria-checked="false" aria-keyshortcuts="F2"><span class="ck" aria-hidden="true"></span>Voltear la hoja (lado de lectura)<span class="sc">F2</span></button></li>
           <li role="none"><button role="menuitemcheckbox" tabindex="-1" data-cmd="optTr" aria-checked="false" aria-keyshortcuts="F4"><span class="ck" aria-hidden="true"></span>Mostrar lo que dice<span class="sc">F4</span></button></li>
+          <li role="none"><button role="menuitem" tabindex="-1" data-cmd="readLine" aria-keyshortcuts="F7"><span class="ck"></span>Leer en voz alta el renglón<span class="sc">F7</span></button></li>
+          <li role="none"><button role="menuitem" tabindex="-1" data-cmd="readAll" aria-keyshortcuts="F8"><span class="ck"></span>Leer en voz alta toda la hoja<span class="sc">F8</span></button></li>
+          <li role="none"><button role="menuitemcheckbox" tabindex="-1" data-cmd="voice" aria-checked="true"><span class="ck" aria-hidden="true"></span>Voz de la aplicación (apágala si usas TalkBack o VoiceOver)</button></li>
+          <li role="separator"></li>
           <li role="none"><button role="menuitemcheckbox" tabindex="-1" data-cmd="optNum" aria-checked="true"><span class="ck" aria-hidden="true"></span>Números de los puntos</button></li>
           <li role="none"><button role="menuitemcheckbox" tabindex="-1" data-cmd="bigCell" aria-checked="false"><span class="ck" aria-hidden="true"></span>Ventanilla grande (para pantallas táctiles)</button></li>
+          <li role="none"><button role="menuitemcheckbox" tabindex="-1" data-cmd="sound" aria-checked="true"><span class="ck" aria-hidden="true"></span>Sonido al marcar los puntos</button></li>
           <li role="separator"></li>
           <li role="none"><button role="menuitemcheckbox" tabindex="-1" data-cmd="contrast" aria-checked="false" aria-keyshortcuts="Control+Shift+C"><span class="ck" aria-hidden="true"></span>Fondo oscuro y letras blancas<span class="sc">Ctrl+Mayús+C</span></button></li>
           <li role="none"><button role="menuitem" tabindex="-1" data-cmd="zoomIn" aria-keyshortcuts="Control+Plus"><span class="ck"></span>Aumentar zoom<span class="sc">Ctrl++</span></button></li>
@@ -255,6 +260,8 @@ dialog select{font:inherit;font-size:15px;color:var(--ink);background:var(--bg);
 
   <div class="bar" role="group" aria-label="Acciones rápidas">
     <button class="btn" id="flip" aria-pressed="false">Voltear la hoja</button>
+    <button class="btn" id="readLine" aria-keyshortcuts="F7">Leer renglón <kbd>F7</kbd></button>
+    <button class="btn" id="readAll" aria-keyshortcuts="F8">Leer hoja <kbd>F8</kbd></button>
     <button class="btn primary" id="saveTxt">Guardar</button>
   </div>
 
@@ -289,6 +296,7 @@ dialog select{font:inherit;font-size:15px;color:var(--ink);background:var(--bg);
   <div class="scroller"><div class="slate" id="slate" tabindex="0" role="application" aria-roledescription="regleta braille" aria-label="Regleta"></div></div>
   <div class="status" aria-live="polite"><span>Renglón <b id="sRow">1</b></span><span>Celda <b id="sCol">1</b></span><span>Puntos <b id="sDots">—</b></span><span class="msg" id="msg"></span></div>
 
+  <div class="sr" id="sayLive" role="status" aria-live="polite"></div>
   <section class="big" id="big" hidden aria-labelledby="bigT">
     <div class="big-head"><h2 id="bigT" style="font-size:15px;margin:0">Ventanilla grande · <span id="bigPos">renglón 1, celda 1</span></h2><span class="says1" id="bigSays" aria-live="polite"></span></div>
     <div class="big-main" id="bigMain">
@@ -298,7 +306,7 @@ dialog select{font:inherit;font-size:15px;color:var(--ink);background:var(--bg);
       </div>
       <button class="bnav" id="bNext" type="button"><span class="ar" aria-hidden="true" id="bNextAr">←</span>Siguiente</button>
     </div>
-    <div class="big-foot"><button class="btn" id="bLine" type="button">Renglón siguiente</button><button class="btn" id="bClear" type="button">Borrar ventanilla</button><button class="btn" id="bFlip" type="button">Voltear la hoja</button></div>
+    <div class="big-foot"><button class="btn" id="bLine" type="button">Renglón siguiente</button><button class="btn" id="bClear" type="button">Borrar ventanilla</button><button class="btn" id="bFlip" type="button">Voltear la hoja</button><button class="btn" id="bReadLine" type="button">Leer renglón</button><button class="btn" id="bReadAll" type="button">Leer hoja</button></div>
   </section>
 
   <section class="panel" id="saysPanel" hidden aria-labelledby="saysT">
@@ -322,7 +330,9 @@ dialog select{font:inherit;font-size:15px;color:var(--ink);background:var(--bg);
       <li><b>Punto positivo:</b> para las regletas de punto positivo, que escriben de izquierda a derecha como se lee.</li>
       <li><b>Menús:</b> <kbd>F10</kbd> o <kbd>Alt</kbd> con la letra subrayada (<kbd>Alt</kbd> + <kbd>A</kbd> Archivo, <kbd>E</kbd> Edición, <kbd>V</kbd> Ver, <kbd>H</kbd> Hoja, <kbd>Y</kbd> Ayuda) abren la barra de menús; se recorre con las flechas, <kbd>Enter</kbd> elige y <kbd>Escape</kbd> vuelve a la regleta.</li>
       <li><b>Baja visión:</b> Ver › Fondo oscuro y letras blancas (<kbd>Control</kbd> + <kbd>Mayúsculas</kbd> + <kbd>C</kbd>) y el zoom (<kbd>Control</kbd> + <kbd>Más</kbd>, <kbd>Control</kbd> + <kbd>Menos</kbd>, <kbd>Control</kbd> + <kbd>0</kbd>). Con zoom, las ventanillas se agrandan y el renglón se recorre a los lados.</li>
-      <li><b>Celular o tableta:</b> abajo aparece la <b>ventanilla grande</b>, con los seis puntos grandes de la ventanilla actual: se tocan para marcarlos o quitarlos. Los botones <b>Siguiente</b> y <b>Anterior</b> mueven la ventanilla (en la regleta común, la siguiente queda a la izquierda, como con el punzón). En la computadora se activa en Ver › Ventanilla grande.</li>
+      <li><b>Celular o tableta:</b> abajo aparece la <b>ventanilla grande</b>, con los seis puntos grandes de la ventanilla actual: se tocan para marcarlos o quitarlos. Al pulsar <b>Siguiente</b> se dice la letra que quedó escrita, y al dejar un espacio, la palabra completa. Los botones <b>Siguiente</b> y <b>Anterior</b> mueven la ventanilla (en la regleta común, la siguiente queda a la izquierda, como con el punzón). En la computadora se activa en Ver › Ventanilla grande.</li>
+      <li><b>Leer en voz alta:</b> <b>Leer renglón</b> (<kbd>F7</kbd>) lee el renglón donde está la ventanilla actual y <b>Leer hoja</b> (<kbd>F8</kbd>) lee toda la hoja, renglón por renglón, tal como se leerá con los dedos. Un signo que no se reconoce se lee como «puntos» con sus números. Para detener la lectura, otra vez <kbd>F8</kbd>, <kbd>Escape</kbd> o el botón <b>Detener lectura</b>. Si usas TalkBack o VoiceOver en el celular o la tableta, apaga Ver › Voz de la aplicación: así las dos voces no se encimen y el texto lo lee tu lector de pantalla.</li>
+      <li><b>Sonido:</b> cada punto suena como el punzón: un clic seco al marcarlo y uno más suave al quitarlo. Se apaga en Ver › Sonido al marcar los puntos. En iPhone y iPad con un sistema anterior a iOS 17, si el interruptor de silencio está activado, el clic no se oye.</li>
       <li><b>Teclado:</b> con la regleta seleccionada, las teclas <kbd>1</kbd> a <kbd>6</kbd> marcan o quitan los puntos de la ventanilla actual; las flechas mueven la ventanilla; <kbd>Retroceso</kbd> borra la ventanilla; <kbd>Control</kbd> + <kbd>Z</kbd> deshace.</li>
       <li><b>Guardar:</b> el botón <b>Guardar</b> o <kbd>Control</kbd> + <kbd>G</kbd> guarda el lado de lectura en braille Unicode (.txt); Archivo › Guardar en BRF (<kbd>Control</kbd> + <kbd>Mayús</kbd> + <kbd>G</kbd>) lo guarda para imprimir en una impresora braille. El archivo también se abre en la Máquina Braille Virtual.</li>
       <li><b>Revisar un trabajo:</b> Archivo › Abrir trabajo carga un archivo guardado. Al corregir un punto, la ventanilla se marca en naranja y la corrección aparece en la lista de correcciones, que se puede copiar o guardar.</li>
@@ -339,7 +349,7 @@ dialog select{font:inherit;font-size:15px;color:var(--ink);background:var(--bg);
       <ul style="padding-left:20px;margin:0">
         <li><kbd>1</kbd> a <kbd>6</kbd>: marcar o quitar el punto en la ventanilla actual</li>
         <li>Flechas: mover la ventanilla · <kbd>Enter</kbd>: renglón siguiente · <kbd>Supr</kbd> o <kbd>Retroceso</kbd>: borrar la ventanilla</li>
-        <li><kbd>F2</kbd>: voltear la hoja · <kbd>F4</kbd>: mostrar lo que dice · <kbd>F1</kbd>: ayuda · <kbd>F10</kbd>: barra de menús</li>
+        <li><kbd>F2</kbd>: voltear la hoja · <kbd>F4</kbd>: mostrar lo que dice · <kbd>F7</kbd>: leer el renglón · <kbd>F8</kbd>: leer la hoja (otra vez, o <kbd>Escape</kbd>, la detiene) · <kbd>F1</kbd>: ayuda · <kbd>F10</kbd>: barra de menús</li>
         <li><kbd>Control</kbd> + <kbd>G</kbd>: guardar (.txt) · <kbd>Control</kbd> + <kbd>Mayús</kbd> + <kbd>G</kbd>: guardar BRF · <kbd>Control</kbd> + <kbd>O</kbd>: abrir · <kbd>Control</kbd> + <kbd>Z</kbd>: deshacer</li>
         <li><kbd>Control</kbd> + <kbd>Mayús</kbd> + <kbd>C</kbd>: fondo oscuro · <kbd>Control</kbd> + <kbd>Más</kbd> / <kbd>Menos</kbd> / <kbd>0</kbd>: zoom</li>
       </ul>
@@ -363,7 +373,7 @@ const BIT = n => 1 << (n-1);
 let COLS = 28, ROWS = 27;
 const PAPERS = {a4:[28,27], a4w:[30,27], curso:[18,8]};
 let grid = [], original = null, mode = 'neg', flipped = false;
-let contrast = false, zoom = 1;   // Ver › Fondo oscuro y zoom
+let contrast = false, zoom = 1, sound = true, voice = true;   // Ver › Fondo oscuro y zoom
 /* Ventanilla grande: se muestra sola en pantallas táctiles (celular, tableta); en la computadora, desde Ver */
 let bigPref = null;
 const touchScreen = (()=>{ try{ return matchMedia('(pointer: coarse)').matches; }catch(e){ return false; } })();
@@ -423,6 +433,67 @@ function translateLine(cells){
 function lineText(r){
   const cells = grid[r].slice(); let e = cells.length; while (e>0 && cells[e-1]===0) e--;
   return translateLine(cells.slice(0,e));
+}
+
+/* ---------- Lectura en voz alta (como en la Máquina Braille Virtual) ----------
+   Lee lo que dice la hoja en tinta, en orden de lectura, con la voz del navegador.
+   Un signo que no se reconoce se lee como «puntos …» para que se pueda corregir. */
+const SAYPUN = {'¿':'abre interrogación','¡':'abre exclamación','“':'abre comillas','”':'cierra comillas','(':'abre paréntesis',')':'cierra paréntesis','*':'asterisco','@':'arroba','-':'guion'};
+const dotsList = c => [1,2,3,4,5,6].filter(n=>c & BIT(n)).join(' ');
+function speakLine(r){
+  const cells = grid[r]; let e = cells.length; while (e>0 && cells[e-1]===0) e--;
+  const items = translateLine(cells.slice(0,e));
+  const t = items.map((it,i)=> it.unk ? ' (puntos '+dotsList(cells[i])+') ' : SAYPUN[it.t] ? ' '+SAYPUN[it.t]+' ' : it.t).join('')
+    .replace(/ +/g,' ').replace(/ ([,.;:?!])/g,'$1').trim();
+  return t;
+}
+let esVoice = null, readingAll = false;
+function pickVoice(){
+  try{ const vs = speechSynthesis.getVoices().filter(v=>/^es/i.test(v.lang)); if (!vs.length) return;
+    const pref = ['es-PE','es-419','es-MX','es-US','es-CO','es-AR','es-CL','es-ES'];
+    vs.sort((a,b)=>{ const ia = pref.indexOf(a.lang.replace('_','-')), ib = pref.indexOf(b.lang.replace('_','-'));
+      return (ia<0?99:ia)-(ib<0?99:ib) || (b.localService?1:0)-(a.localService?1:0); });
+    esVoice = vs[0]; }catch(e){}
+}
+if ('speechSynthesis' in window){ pickVoice(); try{ speechSynthesis.addEventListener('voiceschanged', pickVoice); }catch(e){} }
+function utter(text){ const u = new SpeechSynthesisUtterance(text); u.lang = esVoice ? esVoice.lang : 'es-ES'; if (esVoice) u.voice = esVoice; u.rate = 1; return u; }
+function stopReading(){ const was = readingAll; readingAll = false; try{ speechSynthesis.cancel(); }catch(e){} setReadBtns(); return was; }
+function setReadBtns(){ ['readAll','bReadAll'].forEach(id=>{ const b = $(id); if (!b) return; b.setAttribute('aria-pressed', readingAll);
+  b.firstChild.textContent = readingAll ? 'Detener lectura ' : (id==='readAll' ? 'Leer hoja ' : 'Leer hoja'); }); }
+function announce(text){ const el = $('sayLive'); el.textContent = ''; setTimeout(()=>{ el.textContent = text; }, 60); }
+function speak(parts){
+  if (!voice){ announce(parts.join(' ')); return; }
+  if (!('speechSynthesis' in window)){ flash('Este navegador no tiene voz: '+parts.join(' '), true); return; }
+  try{ const s = speechSynthesis; s.cancel(); readingAll = parts.length>1;
+    parts.forEach((t,k)=>{ const u = utter(t); if (k===parts.length-1){ u.onend = u.onerror = ()=>{ readingAll = false; setReadBtns(); }; } s.speak(u); });
+    setReadBtns();
+  }catch(e){ readingAll = false; setReadBtns(); }
+}
+/* Nombre de lo escrito en una ventanilla, según el renglón (mayúsculas, números, signos) */
+const NAMEP = Object.assign({',':'coma','.':'punto',';':'punto y coma',':':'dos puntos','?':'cierra interrogación','!':'cierra exclamación','"':'comillas'}, SAYPUN);
+function cellName(r, c){
+  const v = grid[r][c]; if (!v) return 'espacio';
+  if (v===CAP) return 'signo de mayúscula'; if (v===NUM) return 'signo de número';
+  const it = lineText(r)[c];
+  if (!it || it.unk) return 'puntos '+dotsList(v)+', signo no reconocido';
+  if (!it.t) return 'puntos '+dotsList(v);
+  if (NAMEP[it.t]) return NAMEP[it.t];
+  if (/\d/.test(it.t)) return it.t;
+  if (it.t!==it.t.toLowerCase()) return it.t.toLowerCase()+' mayúscula';
+  return it.t;
+}
+/* la palabra que termina justo antes de la ventanilla c */
+function wordBefore(r, c){ let s = c-1; while (s>=0 && grid[r][s]) s--; return lineText(r).slice(s+1, c).map((it,k)=>it.unk ? ' puntos '+dotsList(grid[r][s+1+k])+' ' : NAMEP[it.t] ? ' '+NAMEP[it.t]+' ' : it.t).join('').replace(/ +/g,' ').trim(); }
+function echo(text){ stopReading(); speak([text]); }
+function readLine(){
+  stopReading(); const t = speakLine(cur.r);
+  speak(['Renglón '+(cur.r+1)+': '+(t || 'vacío')]);
+}
+function readAll(){
+  if (stopReading()){ flash('Lectura detenida'); return; }     // el mismo botón (o F8) la detiene
+  const parts = []; for (let r=0;r<ROWS;r++){ const t = speakLine(r); if (t) parts.push('Renglón '+(r+1)+': '+t.replace(/[.…]$/,'')+'.'); }
+  if (!parts.length){ speak(['La hoja está en blanco']); return; }
+  if (voice) flash('Leyendo la hoja. F8 o Escape para detener'); speak(parts);
 }
 
 /* ---------- Dibujo ---------- */
@@ -494,10 +565,69 @@ function renderSays(){
   if (grid.every(row=>row.every(x=>x===0))) box.textContent = 'La hoja está en blanco.';
 }
 
+/* ---------- Sonido del punzón ----------
+   Un clic breve hecho con Web Audio: seco y agudo al marcar un punto, más suave y grave al quitarlo,
+   para distinguir de oído una cosa de la otra. */
+let actx = null, noiseBuf = null;
+function audio(){
+  if (!actx){ const AC = window.AudioContext || window.webkitAudioContext; if (!AC) return null;
+    actx = new AC();
+    noiseBuf = actx.createBuffer(1, Math.floor(actx.sampleRate*0.08), actx.sampleRate);
+    const d = noiseBuf.getChannelData(0); for (let i=0; i<d.length; i++) d[i] = (Math.random()*2-1) * Math.pow(1 - i/d.length, 3); }
+  if (actx.state==='suspended') actx.resume();
+  return actx;
+}
+/* Respaldo: el mismo clic grabado como WAV y tocado con <audio>, que en iPhone y iPad funciona de forma más segura */
+function wavClick(on){
+  const sr = 22050, n = Math.floor(sr*0.07), pcm = new Int16Array(n); let lp = 0;
+  for (let i=0;i<n;i++){ const t = i/sr;
+    const nz = (Math.random()*2-1); lp += (nz-lp)*(on?0.75:0.35); const hp = on ? nz-lp : lp;   // ruido agudo o grave
+    const envN = Math.exp(-t/(on?0.007:0.012)), envT = Math.exp(-t/(on?0.010:0.013));
+    const f0 = on?1100:500, f1 = on?220:160, ph = 2*Math.PI*(f1*t + (f0-f1)*0.012*(1-Math.exp(-t/0.012)));
+    const v = hp*envN*(on?0.9:0.6) + Math.sin(ph)*envT*(on?0.45:0.3);
+    pcm[i] = Math.max(-1, Math.min(1, v))*32767; }
+  const buf = new ArrayBuffer(44 + n*2), dv = new DataView(buf), w = (o,str)=>{ for (let k=0;k<str.length;k++) dv.setUint8(o+k, str.charCodeAt(k)); };
+  w(0,'RIFF'); dv.setUint32(4, 36+n*2, true); w(8,'WAVE'); w(12,'fmt '); dv.setUint32(16,16,true); dv.setUint16(20,1,true); dv.setUint16(22,1,true);
+  dv.setUint32(24,sr,true); dv.setUint32(28,sr*2,true); dv.setUint16(32,2,true); dv.setUint16(34,16,true); w(36,'data'); dv.setUint32(40,n*2,true);
+  new Int16Array(buf, 44).set(pcm);
+  const url = URL.createObjectURL(new Blob([buf], {type:'audio/wav'}));
+  return Array.from({length:3}, ()=>{ const a = new Audio(url); a.preload = 'auto'; return a; });
+}
+let wavOn = null, wavOff = null, wavI = 0;
+function playWav(on){
+  try{ if (!wavOn){ wavOn = wavClick(true); wavOff = wavClick(false); }
+    const a = (on ? wavOn : wavOff)[wavI++ % 3]; a.currentTime = 0; const pr = a.play(); if (pr && pr.catch) pr.catch(()=>{}); }catch(e){}
+}
+const iOS = /iP(hone|ad|od)/.test(navigator.userAgent) || (navigator.platform==='MacIntel' && navigator.maxTouchPoints>1);
+function clickSound(on){
+  if (!sound) return;
+  if (iOS){ playWav(on); return; }                 // en iPhone y iPad, directamente con <audio>
+  try{
+    const ctx = audio(); if (!ctx || ctx.state!=='running'){ playWav(on); return; }
+    const t = ctx.currentTime + 0.001;
+    const src = ctx.createBufferSource(); src.buffer = noiseBuf;
+    const bp = ctx.createBiquadFilter(); bp.type = 'bandpass'; bp.frequency.value = on ? 3400 : 1300; bp.Q.value = on ? 1.4 : 0.8;
+    const g = ctx.createGain(); g.gain.setValueAtTime(0.0001, t);
+    g.gain.exponentialRampToValueAtTime(on ? 1 : 0.55, t + 0.002); g.gain.exponentialRampToValueAtTime(0.0001, t + (on ? 0.03 : 0.05));
+    src.connect(bp); bp.connect(g); g.connect(ctx.destination); src.start(t); src.stop(t + 0.08);
+    /* el golpe del punzón contra la hoja: un "toc" corto que baja de tono */
+    const o = ctx.createOscillator(), g2 = ctx.createGain(); o.type = 'triangle';
+    o.frequency.setValueAtTime(on ? 1100 : 500, t); o.frequency.exponentialRampToValueAtTime(on ? 220 : 160, t + 0.03);
+    g2.gain.setValueAtTime(on ? 0.4 : 0.25, t); g2.gain.exponentialRampToValueAtTime(0.0001, t + 0.045);
+    o.connect(g2); g2.connect(ctx.destination); o.start(t); o.stop(t + 0.06);
+  }catch(e){}
+}
+/* los navegadores de celulares solo dejan sonar el audio después de un toque: se prepara en el primer gesto */
+/* en iPhone y iPad: que el clic suene aunque el interruptor de silencio esté activado (Safari 17 o posterior) */
+try{ if (navigator.audioSession) navigator.audioSession.type = 'playback'; }catch(e){}
+/* con VoiceOver o TalkBack el doble toque llega como «click», sin pointerdown: también prepara el audio */
+['pointerdown','keydown','touchstart','touchend','click'].forEach(ev=>document.addEventListener(ev, ()=>{ if (sound && !iOS) try{ audio(); }catch(e){} }, {capture:true, passive:true}));
+
 /* ---------- Marcar puntos ---------- */
 function pushUndo(){ undoStack.push(JSON.stringify(grid)); if (undoStack.length>300) undoStack.shift(); }
 function toggle(r, c, n){
   pushUndo(); grid[r][c] ^= BIT(n); cur = {r, c};
+  clickSound(!!(grid[r][c]&BIT(n)));
   flash(((grid[r][c]&BIT(n)) ? 'Punto '+n+' marcado' : 'Punto '+n+' quitado'));
   render();
 }
@@ -684,7 +814,7 @@ function openMenu(top, which){
 function backToSlate(){ try{ slate.focus({preventScroll:true}); }catch(e){} }
 function setCheck(cmd, on, radio){ const b = document.querySelector('[data-cmd="'+cmd+'"]'); if (!b) return; b.setAttribute('aria-checked', !!on); b.querySelector('.ck').textContent = on ? (radio ? '●' : '✓') : ''; }
 function syncMenus(){
-  setCheck('flip', flipped); setCheck('optTr', $('optTr').checked); setCheck('optNum', $('optNum').checked); setCheck('contrast', contrast); setCheck('bigCell', bigOn());
+  setCheck('flip', flipped); setCheck('optTr', $('optTr').checked); setCheck('optNum', $('optNum').checked); setCheck('contrast', contrast); setCheck('bigCell', bigOn()); setCheck('sound', sound); setCheck('voice', voice);
   setCheck('modeNeg', mode==='neg', 1); setCheck('modePos', mode==='pos', 1);
   const k = Object.keys(PAPERS).find(k=>PAPERS[k][0]===COLS && PAPERS[k][1]===ROWS);
   setCheck('paperA4', k==='a4', 1); setCheck('paperA4w', k==='a4w', 1); setCheck('paperCurso', k==='curso', 1); setCheck('paperCustom', !k, 1);
@@ -718,6 +848,9 @@ const COMMANDS = {
   optTr: ()=>{ $('optTr').checked = !$('optTr').checked; render(); flash($('optTr').checked ? (flipped||mode==='pos' ? 'Se muestra lo que dice' : 'Lo que dice se muestra al voltear la hoja') : 'No se muestra lo que dice'); },
   optNum: ()=>{ $('optNum').checked = !$('optNum').checked; render(); persist(); },
   bigCell: ()=>{ bigPref = !bigOn(); savePrefs(); render(); flash(bigOn() ? 'Ventanilla grande activada' : 'Ventanilla grande desactivada'); },
+  sound: ()=>{ sound = !sound; savePrefs(); syncMenus(); if (sound) clickSound(true); flash(sound ? 'Sonido de los puntos activado' : 'Sonido de los puntos desactivado'); },
+  readLine: ()=>readLine(), readAll: ()=>readAll(),
+  voice: ()=>{ voice = !voice; if (!voice) stopReading(); savePrefs(); syncMenus(); flash(voice ? 'Voz de la aplicación activada' : 'Voz de la aplicación desactivada: el texto lo leerá tu lector de pantalla'); },
   contrast: ()=>toggleContrast(), zoomIn: ()=>setZoom(+1), zoomOut: ()=>setZoom(-1), zoomReset: ()=>setZoom(0),
   modeNeg: ()=>{ clickBtn('mNeg'); persist(); flash('Regleta común'); }, modePos: ()=>{ clickBtn('mPos'); persist(); flash('Regleta de punto positivo'); },
   paperA4: ()=>setPaper('a4'), paperA4w: ()=>setPaper('a4w'), paperCurso: ()=>setPaper('curso'),
@@ -761,7 +894,7 @@ $('menubar').addEventListener('focusout', e=>{ if (!$('menubar').contains(e.rela
 
 /* Ver › Fondo oscuro y letras blancas, y zoom de 100 % a 200 % (agranda toda la aplicación, como en la Máquina Braille Virtual) */
 const PREFS = 'regleta-virtual-prefs';
-function savePrefs(){ try{ localStorage.setItem(PREFS, JSON.stringify({contrast, zoom, big:bigPref})); }catch(e){} }
+function savePrefs(){ try{ localStorage.setItem(PREFS, JSON.stringify({contrast, zoom, big:bigPref, sound, voice})); }catch(e){} }
 function applyContrast(){ if (contrast) document.documentElement.setAttribute('data-contrast','hc'); else document.documentElement.removeAttribute('data-contrast'); setCheck('contrast', contrast); }
 function toggleContrast(){ contrast = !contrast; applyContrast(); savePrefs(); flash(contrast ? 'Fondo oscuro y letras blancas' : 'Colores normales'); }
 function applyZoom(){
@@ -777,7 +910,7 @@ function setZoom(dir){
   if (z<1){ flash('Zoom normal: 100 %'); return; }
   zoom = z; applyZoom(); savePrefs(); flash('Zoom '+Math.round(zoom*100)+' %');
 }
-try{ const pr = JSON.parse(localStorage.getItem(PREFS)||'null'); if (pr){ if (typeof pr.big==='boolean') bigPref = pr.big; contrast = !!pr.contrast; zoom = Math.min(2, Math.max(1, +pr.zoom||1)); } }catch(e){}
+try{ const pr = JSON.parse(localStorage.getItem(PREFS)||'null'); if (pr){ if (typeof pr.big==='boolean') bigPref = pr.big; contrast = !!pr.contrast; sound = pr.sound!==false; voice = pr.voice!==false; zoom = Math.min(2, Math.max(1, +pr.zoom||1)); } }catch(e){}
 applyContrast(); applyZoom();
 
 /* Teclado general */
@@ -800,6 +933,9 @@ window.addEventListener('keydown', e=>{
   if (e.target && /^(INPUT|SELECT)$/.test(e.target.tagName)) return;
   if (e.key==='F2'){ e.preventDefault(); runCmd('flip'); return; }
   if (e.key==='F4'){ e.preventDefault(); runCmd('optTr'); return; }
+  if (e.key==='F7'){ e.preventDefault(); if (!e.repeat) readLine(); return; }
+  if (e.key==='F8'){ e.preventDefault(); if (!e.repeat) readAll(); return; }
+  if (e.key==='Escape' && readingAll){ e.preventDefault(); stopReading(); flash('Lectura detenida'); return; }
 }, true);
 slate.addEventListener('keydown', ()=>setTimeout(showCur, 0));
 
@@ -824,6 +960,10 @@ function renderBig(){
   $('bFlip').hidden = mode==='pos'; $('bFlip').textContent = flipped ? 'Volver al lado de escritura' : 'Voltear la hoja';
 }
 function bigMove(d){
+  if (d>0){ const was = cur; let t = cellName(was.r, was.c);
+    if (!grid[was.r][was.c]){ const w = wordBefore(was.r, was.c); if (w) t = 'espacio. Palabra: '+w; }
+    const nr = was.c+1>=COLS && was.r<ROWS-1 ? '. Renglón '+(was.r+2) : '';
+    echo(t + nr); }
   let {r, c} = cur; c += d;
   if (c>=COLS){ if (r<ROWS-1){ r++; c = 0; flash('Renglón '+(r+1)); } else { c = COLS-1; flash('Fin de la hoja', true); } }
   else if (c<0){ if (r>0){ r--; c = COLS-1; flash('Renglón '+(r+1)); } else { c = 0; flash('Principio de la hoja', true); } }
@@ -833,8 +973,9 @@ $('bigCell').addEventListener('click', e=>{
   const b = e.target.closest('.bdot'); if (!b || b.disabled) return;
   toggle(cur.r, cur.c, +b.dataset.n); try{ navigator.vibrate && navigator.vibrate(12); }catch(_){}
 });
+$('readLine').onclick = $('bReadLine').onclick = ()=>readLine(); $('readAll').onclick = $('bReadAll').onclick = ()=>readAll();
 $('bNext').onclick = ()=>bigMove(1); $('bPrev').onclick = ()=>bigMove(-1);
-$('bLine').onclick = ()=>{ if (cur.r<ROWS-1){ cur = {r:cur.r+1, c:0}; flash('Renglón '+(cur.r+1)); render(); showCur(); } else flash('Es el último renglón', true); };
+$('bLine').onclick = ()=>{ if (cur.r<ROWS-1){ { const w = grid[cur.r][cur.c] ? cellName(cur.r, cur.c) : wordBefore(cur.r, cur.c); echo((w ? w+'. ' : '')+'Renglón '+(cur.r+2)); } cur = {r:cur.r+1, c:0}; flash('Renglón '+(cur.r+1)); render(); showCur(); } else flash('Es el último renglón', true); };
 $('bClear').onclick = ()=>COMMANDS.clearCell();
 $('bFlip').onclick = ()=>COMMANDS.flip();
 
