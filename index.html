@@ -270,7 +270,7 @@ dialog input[type="text"]:focus-visible{outline:2px solid var(--accent);outline-
     <ul class="menubar" id="menubar" role="menubar" aria-label="Menú principal">
       <li role="none"><button class="mb" role="menuitem" id="mbFile" aria-haspopup="menu" aria-expanded="false" aria-controls="mFile" aria-keyshortcuts="Alt+A" tabindex="0"><span><u>A</u>rchivo</span></button>
         <ul class="menu" role="menu" id="mFile" aria-label="Archivo" hidden>
-          <li role="none"><button role="menuitem" tabindex="-1" data-cmd="new"><span class="chk"></span>Nueva hoja…</button></li>
+          <li role="none"><button role="menuitem" tabindex="-1" data-cmd="new" aria-keyshortcuts="Control+U"><span class="chk"></span>Nueva hoja…<span class="sc">Ctrl+U</span></button></li>
           <li role="none"><button role="menuitem" tabindex="-1" data-cmd="open" aria-keyshortcuts="Control+O"><span class="chk"></span>Abrir…<span class="sc">Ctrl+O</span></button></li>
           <li role="none"><button role="menuitem" tabindex="-1" data-cmd="save" aria-keyshortcuts="Control+G"><span class="chk"></span>Guardar<span class="sc">Ctrl+G</span></button></li>
           <li role="none"><button role="menuitem" tabindex="-1" data-cmd="saveAs" aria-keyshortcuts="Control+Shift+G"><span class="chk"></span>Guardar como…<span class="sc">Ctrl+Mayús+G</span></button></li>
@@ -281,6 +281,7 @@ dialog input[type="text"]:focus-visible{outline:2px solid var(--accent);outline-
           <li role="none"><button role="menuitem" tabindex="-1" data-cmd="expBra"><span class="chk"></span>Exportar a braille ASCII español (.bra)</button></li>
           <li role="none"><button role="menuitem" tabindex="-1" data-cmd="expBan"><span class="chk"></span>Exportar a braille ANSI español (.ban)</button></li>
           <li role="separator"></li>
+          <li role="none"><button role="menuitem" tabindex="-1" data-cmd="close" aria-keyshortcuts="Control+R"><span class="chk"></span>Cerrar<span class="sc">Ctrl+R</span></button></li>
           <li role="none"><button role="menuitem" tabindex="-1" data-cmd="exit"><span class="chk"></span>Salir</button></li>
         </ul>
       </li>
@@ -293,6 +294,9 @@ dialog input[type="text"]:focus-visible{outline:2px solid var(--accent);outline-
           <li role="none"><button role="menuitem" tabindex="-1" data-cmd="selAll" aria-keyshortcuts="Control+A"><span class="chk"></span>Seleccionar todo<span class="sc">Ctrl+A</span></button></li>
           <li role="separator"></li>
           <li role="none"><button role="menuitem" tabindex="-1" data-cmd="copyBr"><span class="chk"></span>Copiar como braille Unicode</button></li>
+          <li role="separator"></li>
+          <li role="none"><button role="menuitem" tabindex="-1" data-cmd="toSteno"><span class="chk"></span>Transcribir a estenografía…</button></li>
+          <li role="none" id="undoStenoItem" hidden><button role="menuitem" tabindex="-1" data-cmd="undoSteno"><span class="chk"></span>Deshacer la transcripción</button></li>
           <li role="separator"></li>
           <li role="none"><button role="menuitem" tabindex="-1" data-cmd="chkNext" aria-keyshortcuts="F7"><span class="chk"></span>Revisar: problema siguiente<span class="sc">F7</span></button></li>
           <li role="none"><button role="menuitem" tabindex="-1" data-cmd="chkPrev" aria-keyshortcuts="Shift+F7"><span class="chk"></span>Revisar: problema anterior<span class="sc">Mayús+F7</span></button></li>
@@ -384,7 +388,10 @@ dialog input[type="text"]:focus-visible{outline:2px solid var(--accent);outline-
         <ul>
           <li><b>Mayúsculas + flechas</b> selecciona letra por letra; con <b>Control</b>, palabra por palabra. <b>Control + A</b> selecciona todo.</li>
           <li><b>Control + X</b> corta, <b>Control + C</b> copia y <b>Control + V</b> pega. Si escribes con algo seleccionado, lo reemplazas.</li>
-          <li>Lo copiado se pega en otros programas como texto en tinta. El texto que pegues desde otros programas se convierte a braille integral.</li>
+          <li>Lo copiado se pega en otros programas como texto en tinta.</li>
+          <li>Al pegar desde otros programas (Word, Excel, el navegador): el <b>braille Unicode</b> se pega tal cual, celda por celda, en cualquier signografía. El <b>texto en tinta</b> se transcribe según el bloque donde está el cursor: en un bloque de <b>Matemáticas</b>, con el Código Matemático Unificado; en los demás, en braille integral. Al terminar se anuncia «Pegado» y, si hubo signos que no se pudieron transcribir, cuántos se omitieron.</li>
+          <li>Al pegar tinta en Matemáticas: cada número lleva su signo de número; las letras de la a a la j pegadas a un número llevan el prefijo 5 (2a); las mayúsculas, el 46; las griegas, el 4 o el 45; ℕ, ℤ, ℚ, ℝ y ℂ, el 456. Los espacios junto a signos de operación o de relación se quitan (3 + 4 queda 3+4). Se reconocen potencias (x², x^2, x^(a+b)), subíndices (a₁, a_1), raíces (√49, ∛8, √(16+9)), fracciones con barra de fracción (3⁄4) y números mixtos (2 1⁄2), periodos (0,3̅), conjuntos y lógica. Los paréntesis de un exponente o de un radicando con varios términos, y los que tocan la raya de fracción (∕), pasan a paréntesis auxiliares. También se aceptan las formas de Excel: * para multiplicar, ^ para potencia, &lt;=, &gt;= y &lt;&gt;.</li>
+          <li>Con números en tinta, el punto seguido de tres cifras se toma como separador de miles (12.500) y en los demás casos como coma decimal (3.25 queda 3,25). La barra común (/) se transcribe como barra de división, puntos 256; para una fracción con el denominador abajo, usa la barra de fracción (⁄). Después de pegar, conviene revisar con F7 y releer con las flechas.</li>
         </ul>
         <h4>Ver la hoja</h4>
         <ul>
@@ -400,10 +407,13 @@ dialog input[type="text"]:focus-visible{outline:2px solid var(--accent);outline-
           <li>Un documento puede mezclar signografías por <b>bloques</b>: un bloque es un grupo de líneas seguidas, y entre bloques de distinta signografía hay siempre una línea en blanco, como en los textos escolares. Cada bloque se lee, se revisa y se guarda con su propia signografía.</li>
           <li>Si cambias de signografía en el punto de escritura, la aplicación deja la línea en blanco y empieza un bloque nuevo. Lo escrito antes conserva su signografía.</li>
           <li>Si pones el cursor dentro de un bloque ya escrito (con las flechas) y cambias de signografía, ese bloque pasa a la nueva. Sirve para corregir un bloque escrito con la signografía equivocada.</li>
+          <li>Cambiar la signografía no cambia las celdas, solo cómo se leen. Para <b>transcribir</b> un texto de braille integral a estenografía, usa <b>Edición › Transcribir a estenografía</b>: todos los bloques en braille integral de la hoja se escriben de nuevo en estenografía (documento técnico B 16-1), con el listado de palabras, los principios, las terminaciones, las secuencias y las contracciones. Los párrafos (dos celdas en blanco al comienzo) se vuelven a repartir en las líneas y las palabras partidas se juntan; los títulos (cuatro o más celdas en blanco delante) quedan solos. Las mayúsculas, los números y las siglas se escriben como en integral; las palabras con k o w, y las que el lector de estenografía no leería igual, se escriben sin abreviar, con punto 5 delante. Los bloques de matemáticas no cambian. Al terminar se dice cuántas palabras se transcribieron y cuántas quedaron sin abreviar.</li>
+          <li><b>Edición › Deshacer la transcripción</b> devuelve la hoja a como estaba antes de transcribir, mientras no hayas hecho otro cambio. Conviene releer el resultado: donde la norma admite más de una forma, la aplicación elige la más abreviada.</li>
           <li>Están disponibles el <b>braille integral</b> y <b>Matemáticas</b> (Código Matemático Unificado para Iberoamérica: aritmética, álgebra, conjuntos y lógica). Y la <b>estenografía</b> española (documento técnico B 16-1 de la Comisión Braille Española).</li>
         </ul>
         <h4>Guardar e imprimir</h4>
         <ul>
+          <li><b>Archivo › Cerrar</b> (Control + R) cierra el trabajo y deja una hoja en blanco, como en Word. Si hay cambios sin guardar, pregunta antes: <b>Sí, guardar</b> lo guarda y después cierra; <b>No</b> cierra sin guardar; <b>Cancelar</b> vuelve a la hoja.</li>
           <li>La aplicación siempre empieza con una hoja en blanco. Al salir con <b>Archivo › Salir</b>, si hay cambios sin guardar, pregunta si quieres guardarlos: <b>Sí, guardar</b> abre la opción de guardar en el formato de la Máquina Braille Virtual (.mbv) y después sale; <b>No</b> sale sin guardar; <b>Cancelar</b> vuelve a la hoja. Se conservan el tamaño de hoja y las preferencias.</li>
           <li>Si cierras la ventana de la aplicación (con la X, Alt + F4 o Control + W) sin haber guardado los últimos cambios, el navegador solo muestra su aviso general de «¿Salir?»: no permite a las páginas preguntar si quieres guardar. Por eso, al volver a abrir la aplicación, se ofrece <b>Recuperar el trabajo sin guardar</b>: con <b>Sí, recuperar</b> vuelve la hoja tal como estaba, para seguir y guardarla con Control + G. Si al salir con Archivo › Salir respondes <b>No</b>, el trabajo se descarta y no se ofrece recuperarlo.</li>
           <li><b>Archivo › Guardar</b> (Control + G) guarda el trabajo en un archivo de la Máquina Braille Virtual (.mbv) que puedes llevar a otra computadora o entregar a tu profesor. <b>Guardar como</b> (Control + Mayúsculas + G) lo guarda con otro nombre.</li>
@@ -474,7 +484,7 @@ dialog input[type="text"]:focus-visible{outline:2px solid var(--accent);outline-
           <li><b>Control + Mayúsculas + 1, 2 o 3:</b> braille integral, estenografía o matemáticas</li>
           <li><b>Control + Más / Menos / 0:</b> aumentar, reducir o restablecer el zoom · <b>Control + Mayúsculas + C:</b> fondo oscuro · <b>Control + Mayúsculas + V:</b> voz de la aplicación · <b>Alt + L:</b> modo línea braille</li>
           <li><b>F7:</b> siguiente problema de escritura · <b>Mayúsculas + F7:</b> problema anterior</li>
-          <li><b>Control + G:</b> guardar · <b>Control + Mayúsculas + G:</b> guardar como · <b>Control + O:</b> abrir</li>
+          <li><b>Control + U:</b> nueva hoja (pregunta antes de borrar) · <b>Control + R:</b> cerrar el trabajo · <b>Control + G:</b> guardar · <b>Control + Mayúsculas + G:</b> guardar como · <b>Control + O:</b> abrir</li>
           <li><b>F1:</b> ayuda · <b>F2:</b> cambiar vista · <b>F4:</b> leer línea · <b>F8:</b> leer hoja</li>
           <li><b>Alt + A:</b> Archivo · <b>Alt + E:</b> Edición · <b>Alt + V:</b> Ver · <b>Alt + O:</b> Formato · <b>Alt + S:</b> Signografía · <b>Alt + Y:</b> Ayuda · <b>F10:</b> barra de menús</li>
         </ul>
@@ -638,8 +648,8 @@ dialog input[type="text"]:focus-visible{outline:2px solid var(--accent);outline-
 <tr><th scope="row">Más (+)</th><td>235</td><td class="bc" aria-hidden="true">⠖</td></tr>
 <tr><th scope="row">Menos (−)</th><td>36</td><td class="bc" aria-hidden="true">⠤</td></tr>
 <tr><th scope="row">Multiplicado por (×)</th><td>236</td><td class="bc" aria-hidden="true">⠦</td></tr>
-<tr><th scope="row">Dividido entre (÷), como en el Código Matemático Unificado</th><td>256</td><td class="bc" aria-hidden="true">⠲</td></tr>
-<tr><th scope="row">Dividido entre (÷), según el documento B 2 de la ONCE</th><td>5 – 2</td><td class="bc" aria-hidden="true">⠐⠂</td></tr>
+<tr><th scope="row">Dividido entre (÷), con la barra de división</th><td>256</td><td class="bc" aria-hidden="true">⠲</td></tr>
+<tr><th scope="row">Dividido entre (÷), según el documento B 2 de la ONCE y el Código Matemático Unificado (5.1)</th><td>5 – 2</td><td class="bc" aria-hidden="true">⠐⠂</td></tr>
 <tr><th scope="row">Igual (=)</th><td>2356</td><td class="bc" aria-hidden="true">⠶</td></tr>
 <tr><th scope="row">Por ciento (%)</th><td>456 – 356</td><td class="bc" aria-hidden="true">⠸⠴</td></tr>
 </tbody></table>
@@ -657,7 +667,7 @@ dialog input[type="text"]:focus-visible{outline:2px solid var(--accent);outline-
       </section>
       <section>
         <h3 id="hMath" tabindex="-1">Matemáticas: Código Matemático Unificado</h3>
-        <p>Con <b>Signografía › Matemáticas</b> (Control + Mayúsculas + 3) la hoja se lee según el <b>Código Matemático Unificado para Iberoamérica</b> (Consejo Iberoamericano del Braille, 2023). Cubre aritmética y álgebra (números, fracciones, operaciones, potencias, raíces, índices, relaciones y delimitadores), y teoría de conjuntos y lógica.</p>
+        <p>Con <b>Signografía › Matemáticas</b> (Control + Mayúsculas + 3) la hoja se lee según el <b>Código Matemático Unificado para Iberoamérica</b> (Consejo Iberoamericano del Braille, 2023). Cubre aritmética y álgebra (números, fracciones, operaciones, potencias, raíces, índices, relaciones y delimitadores), teoría de conjuntos, lógica, geometría, funciones, números romanos y monedas.</p>
         <h4>Cómo escribir</h4>
         <ul>
           <li>El signo de número vale para todo el número. Las cifras van en la parte de arriba de la celda; en una fracción, el denominador va abajo (5.ª serie) y <b>después se deja un espacio</b>: tres cuartos es 3456 – 14 – 256 y espacio.</li>
@@ -711,7 +721,7 @@ dialog input[type="text"]:focus-visible{outline:2px solid var(--accent);outline-
 <tr><th scope="row">× por (aspa)</th><td>236</td><td class="bc" aria-hidden="true">⠦</td></tr>
 <tr><th scope="row">· por (punto)</th><td>6</td><td class="bc" aria-hidden="true">⠠</td></tr>
 <tr><th scope="row">/ entre (barra de división: 10/2). Se lee «sobre» cuando separa términos entre paréntesis auxiliares, como la raya de una fracción: (5+8×7)/5</th><td>256</td><td class="bc" aria-hidden="true">⠲</td></tr>
-<tr><th scope="row">: dividido entre</th><td>5 – 2</td><td class="bc" aria-hidden="true">⠐⠂</td></tr>
+<tr><th scope="row">÷ y : dividido entre</th><td>5 – 2</td><td class="bc" aria-hidden="true">⠐⠂</td></tr>
 <tr><th scope="row">± más menos</th><td>235 – 25 – 36</td><td class="bc" aria-hidden="true">⠖⠒⠤</td></tr>
 <tr><th scope="row">∓ menos más</th><td>36 – 25 – 235</td><td class="bc" aria-hidden="true">⠤⠒⠖</td></tr>
 <tr><th scope="row">% por ciento</th><td>456 – 356</td><td class="bc" aria-hidden="true">⠸⠴</td></tr>
@@ -733,7 +743,7 @@ dialog input[type="text"]:focus-visible{outline:2px solid var(--accent);outline-
 <tr><th scope="row">Raíz cuadrada de 8 (√8)</th><td>1246 – 156 – 3456 – 125</td><td class="bc" aria-hidden="true">⠫⠱⠼⠓</td></tr>
 <tr><th scope="row">Raíz cúbica de 8 (∛8)</th><td>1246 – 3456 – 14 – 156 – 3456 – 125</td><td class="bc" aria-hidden="true">⠫⠼⠉⠱⠼⠓</td></tr>
 <tr><th scope="row">′ prima</th><td>1256</td><td class="bc" aria-hidden="true">⠳</td></tr>
-<tr><th scope="row">° grados</th><td>356 – 3</td><td class="bc" aria-hidden="true">⠴⠄</td></tr>
+<tr><th scope="row">° grados (sin punto 3 detrás; 356 – 3 es la marca de círculo)</th><td>356</td><td class="bc" aria-hidden="true">⠴</td></tr>
 </tbody></table>
         <h4>Relaciones</h4>
 <table class="signs" aria-labelledby="tmR">
@@ -792,7 +802,7 @@ dialog input[type="text"]:focus-visible{outline:2px solid var(--accent);outline-
 <tr><th scope="row">⋃ gran unión</th><td>123456 – 345</td><td class="bc" aria-hidden="true">⠿⠜</td></tr>
 <tr><th scope="row">⋂ gran intersección</th><td>123456 – 156</td><td class="bc" aria-hidden="true">⠿⠱</td></tr>
 <tr><th scope="row">∖ diferencia de conjuntos</th><td>5 – 3</td><td class="bc" aria-hidden="true">⠐⠄</td></tr>
-<tr><th scope="row">∆ diferencia simétrica</th><td>56 – 256</td><td class="bc" aria-hidden="true">⠰⠲</td></tr>
+<tr><th scope="row">∆ diferencia simétrica</th><td>45 – 145</td><td class="bc" aria-hidden="true">⠘⠙</td></tr>
 <tr><th scope="row">× producto cartesiano</th><td>46 – 236</td><td class="bc" aria-hidden="true">⠨⠦</td></tr>
 <tr><th scope="row">∅ conjunto vacío</th><td>456 – 245</td><td class="bc" aria-hidden="true">⠸⠚</td></tr>
 <tr><th scope="row">𝒰 conjunto universal</th><td>456 – 136</td><td class="bc" aria-hidden="true">⠸⠥</td></tr>
@@ -815,22 +825,92 @@ dialog input[type="text"]:focus-visible{outline:2px solid var(--accent);outline-
 <tr><th scope="row">∄ no existe</th><td>45 – 46 – 26</td><td class="bc" aria-hidden="true">⠘⠨⠢</td></tr>
 <tr><th scope="row">¬∀ no para todo</th><td>45 – 46 – 3</td><td class="bc" aria-hidden="true">⠘⠨⠄</td></tr>
 <tr><th scope="row">¬ no (negación)</th><td>6 – 3</td><td class="bc" aria-hidden="true">⠠⠄</td></tr>
-<tr><th scope="row">∧ y (conjunción)</th><td>56 – 2</td><td class="bc" aria-hidden="true">⠰⠂</td></tr>
-<tr><th scope="row">∨ o (disyunción)</th><td>56 – 3</td><td class="bc" aria-hidden="true">⠰⠄</td></tr>
-<tr><th scope="row">⊻ o excluyente (disyunción excluyente)</th><td>56 – 356</td><td class="bc" aria-hidden="true">⠰⠴</td></tr>
-<tr><th scope="row">⋀ conjunción (tamaño mayor)</th><td>456 – 26</td><td class="bc" aria-hidden="true">⠸⠢</td></tr>
-<tr><th scope="row">⋁ disyunción (tamaño mayor)</th><td>456 – 24</td><td class="bc" aria-hidden="true">⠸⠊</td></tr>
+<tr><th scope="row">∧ y (conjunción)</th><td>456 – 26</td><td class="bc" aria-hidden="true">⠸⠢</td></tr>
+<tr><th scope="row">∨ o (disyunción)</th><td>456 – 24</td><td class="bc" aria-hidden="true">⠸⠊</td></tr>
+<tr><th scope="row">⊻ o excluyente (disyunción excluyente)</th><td>456 – 2346</td><td class="bc" aria-hidden="true">⠸⠮</td></tr>
+<tr><th scope="row">⋀ conjunción de una familia de proposiciones (cierra con 156)</th><td>123456 – 26</td><td class="bc" aria-hidden="true">⠿⠢</td></tr>
+<tr><th scope="row">⋁ disyunción de una familia de proposiciones (cierra con 156)</th><td>123456 – 24</td><td class="bc" aria-hidden="true">⠿⠊</td></tr>
 <tr><th scope="row">⇒ implica</th><td>25 – 135</td><td class="bc" aria-hidden="true">⠒⠕</td></tr>
 <tr><th scope="row">⇐ es implicado por</th><td>246 – 25</td><td class="bc" aria-hidden="true">⠪⠒</td></tr>
 <tr><th scope="row">⇔ si y solo si (doble implicación)</th><td>246 – 25 – 135</td><td class="bc" aria-hidden="true">⠪⠒⠕</td></tr>
 <tr><th scope="row">⊤ proposición verdadera</th><td>456 – 234</td><td class="bc" aria-hidden="true">⠸⠎</td></tr>
 <tr><th scope="row">⊥ proposición falsa</th><td>456 – 126</td><td class="bc" aria-hidden="true">⠸⠣</td></tr>
-<tr><th scope="row">⊢ tautología</th><td>456 – 25</td><td class="bc" aria-hidden="true">⠸⠒</td></tr>
+<tr><th scope="row">⊩ tautología</th><td>456 – 2356</td><td class="bc" aria-hidden="true">⠸⠶</td></tr>
 <tr><th scope="row">∴ por lo tanto (con espacio antes y después)</th><td>6 – 16</td><td class="bc" aria-hidden="true">⠠⠡</td></tr>
 <tr><th scope="row">∵ puesto que (con espacio antes y después)</th><td>4 – 34</td><td class="bc" aria-hidden="true">⠈⠌</td></tr>
 </tbody></table>
-<p class="tnote">Los puntos 56 – 3 se leen como «o» (∨) cuando la línea tiene otros signos de lógica o letras de proposiciones (p, q, r, s, t); en otro caso, como «operado con» (⊙). Ejemplo: p ∧ q ⇒ p es p – 56 – 2 – q – 25 – 135 – p.</p>
-<p class="tnote">Fuente: Guías de la Comisión Braille Española, Signografía matemática, capítulo 6 (teoría de conjuntos y lógica).</p>
+<p class="tnote">Los puntos 56 – 3 son el operador genérico «operado con» (⊙), y 56 – 2 el producto vectorial. Los puntos 45 – 145 se leen como diferencia simétrica entre dos conjuntos (A ∆ B) y, en otro caso, como delta mayúscula. Ejemplo: p ∧ q ⇒ p es p – 456 – 26 – q – 25 – 135 – p.</p>
+        <h4>Geometría</h4>
+<table class="signs" aria-labelledby="tmG">
+<caption id="tmG">Geometría</caption>
+<thead><tr><th scope="col">Signo</th><th scope="col">Puntos</th><th scope="col"><span aria-hidden="true">Celda</span></th></tr></thead>
+<tbody>
+<tr><th scope="row">r⃡ recta (va delante de la letra)</th><td>5 – 25 – 2</td><td class="bc" aria-hidden="true">⠐⠒⠂</td></tr>
+<tr><th scope="row">z⃗ semirrecta hacia la derecha</th><td>25 – 2</td><td class="bc" aria-hidden="true">⠒⠂</td></tr>
+<tr><th scope="row">z⃖ semirrecta hacia la izquierda</th><td>5 – 25</td><td class="bc" aria-hidden="true">⠐⠒</td></tr>
+<tr><th scope="row">A̅B̅ segmento, raya encima (delante de las letras, entre paréntesis auxiliares si son varias)</th><td>4 – 14</td><td class="bc" aria-hidden="true">⠈⠉</td></tr>
+<tr><th scope="row">∠ ángulo</th><td>45 – 25</td><td class="bc" aria-hidden="true">⠘⠒</td></tr>
+<tr><th scope="row">⌒ arco</th><td>4 – 25</td><td class="bc" aria-hidden="true">⠈⠒</td></tr>
+<tr><th scope="row">∟ ángulo recto</th><td>456 – 36</td><td class="bc" aria-hidden="true">⠸⠤</td></tr>
+<tr><th scope="row">∥ es paralela a</th><td>456 – 123</td><td class="bc" aria-hidden="true">⠸⠇</td></tr>
+<tr><th scope="row">∥= es paralela e igual a</th><td>456 – 123 – 2356</td><td class="bc" aria-hidden="true">⠸⠇⠶</td></tr>
+<tr><th scope="row">∦ no es paralela a</th><td>45 – 456 – 123</td><td class="bc" aria-hidden="true">⠘⠸⠇</td></tr>
+<tr><th scope="row">⊥ es perpendicular a</th><td>3456 – 3</td><td class="bc" aria-hidden="true">⠼⠄</td></tr>
+<tr><th scope="row">⊥̸ no es perpendicular a</th><td>45 – 3456 – 3</td><td class="bc" aria-hidden="true">⠘⠼⠄</td></tr>
+<tr><th scope="row">⋔ es secante con</th><td>46 – 246</td><td class="bc" aria-hidden="true">⠨⠪</td></tr>
+<tr><th scope="row">≅ es congruente con</th><td>5 – 26 – 2356</td><td class="bc" aria-hidden="true">⠐⠢⠶</td></tr>
+<tr><th scope="row">∼ es semejante a</th><td>56 – 26 – 23</td><td class="bc" aria-hidden="true">⠰⠢⠆</td></tr>
+<tr><th scope="row">△ triángulo</th><td>6 – 23456</td><td class="bc" aria-hidden="true">⠠⠾</td></tr>
+<tr><th scope="row">⊿ triángulo rectángulo</th><td>456 – 236</td><td class="bc" aria-hidden="true">⠸⠦</td></tr>
+<tr><th scope="row">◻ cuadrado</th><td>456 – 13456</td><td class="bc" aria-hidden="true">⠸⠽</td></tr>
+<tr><th scope="row">▭ rectángulo</th><td>12346 – 13456</td><td class="bc" aria-hidden="true">⠯⠽</td></tr>
+<tr><th scope="row">⎔ polígono</th><td>12346 – 135</td><td class="bc" aria-hidden="true">⠯⠕</td></tr>
+<tr><th scope="row">○ círculo</th><td>246 – 135</td><td class="bc" aria-hidden="true">⠪⠕</td></tr>
+</tbody></table>
+<p class="tnote">La recta, la semirrecta y la raya de segmento se escriben antes de la letra; en tinta se ven encima: r⃡, z⃗, A̅B̅. Si son varias letras, van entre paréntesis auxiliares: la recta PQ es 5 – 25 – 2 – 26 – 46 – 1234 – 46 – 12345 – 35. La raya encima de una sola letra mayúscula se lee «complementario de».</p>
+        <h4>Funciones y abreviaturas</h4>
+<table class="signs" aria-labelledby="tmF">
+<caption id="tmF">Funciones y abreviaturas</caption>
+<thead><tr><th scope="col">Signo</th><th scope="col">Puntos</th><th scope="col"><span aria-hidden="true">Celda</span></th></tr></thead>
+<tbody>
+<tr><th scope="row">sen seno</th><td>234 – 15 – 1345 – 3</td><td class="bc" aria-hidden="true">⠎⠑⠝⠄</td></tr>
+<tr><th scope="row">cos coseno</th><td>14 – 135 – 234 – 3</td><td class="bc" aria-hidden="true">⠉⠕⠎⠄</td></tr>
+<tr><th scope="row">tg tangente</th><td>2345 – 1245 – 3</td><td class="bc" aria-hidden="true">⠞⠛⠄</td></tr>
+<tr><th scope="row">cotg cotangente</th><td>14 – 135 – 2345 – 1245 – 3</td><td class="bc" aria-hidden="true">⠉⠕⠞⠛⠄</td></tr>
+<tr><th scope="row">sec secante</th><td>234 – 15 – 14 – 3</td><td class="bc" aria-hidden="true">⠎⠑⠉⠄</td></tr>
+<tr><th scope="row">cosec cosecante</th><td>14 – 135 – 234 – 15 – 14 – 3</td><td class="bc" aria-hidden="true">⠉⠕⠎⠑⠉⠄</td></tr>
+<tr><th scope="row">arcsen, arccos, arctg… funciones inversas: arc delante</th><td>1 – 1235 – 14 – 3</td><td class="bc" aria-hidden="true">⠁⠗⠉⠄</td></tr>
+<tr><th scope="row">log logaritmo decimal</th><td>123 – 135 – 1245 – 3</td><td class="bc" aria-hidden="true">⠇⠕⠛⠄</td></tr>
+<tr><th scope="row">log_b logaritmo en base b (la base va entre el punto 3 y 156)</th><td>123 – 135 – 1245 – 3 – 12 – 156</td><td class="bc" aria-hidden="true">⠇⠕⠛⠄⠃⠱</td></tr>
+<tr><th scope="row">ln logaritmo natural</th><td>123 – 1345 – 3</td><td class="bc" aria-hidden="true">⠇⠝⠄</td></tr>
+<tr><th scope="row">m.c.d. máximo común divisor</th><td>134 – 14 – 145 – 3</td><td class="bc" aria-hidden="true">⠍⠉⠙⠄</td></tr>
+<tr><th scope="row">m.c.m. mínimo común múltiplo</th><td>134 – 14 – 134 – 3</td><td class="bc" aria-hidden="true">⠍⠉⠍⠄</td></tr>
+<tr><th scope="row">rad radianes</th><td>1235 – 1 – 145 – 3</td><td class="bc" aria-hidden="true">⠗⠁⠙⠄</td></tr>
+</tbody></table>
+<p class="tnote">La abreviatura termina con el punto 3; en tinta no se ve: sen 30° es 234 – 15 – 1345 – 3 – 3456 – 14 – 245 – 356.</p>
+        <h4>Proporciones, números romanos y monedas</h4>
+<table class="signs" aria-labelledby="tmX">
+<caption id="tmX">Proporciones, números romanos y monedas</caption>
+<thead><tr><th scope="col">Signo</th><th scope="col">Puntos</th><th scope="col"><span aria-hidden="true">Celda</span></th></tr></thead>
+<tbody>
+<tr><th scope="row">∶ razón, «es a»</th><td>5 – 2</td><td class="bc" aria-hidden="true">⠐⠂</td></tr>
+<tr><th scope="row">∷ proporción, «como»: 4 ∶ 3 ∷ 8 ∶ 6</th><td>56 – 23</td><td class="bc" aria-hidden="true">⠰⠆</td></tr>
+<tr><th scope="row">a₁₁ subíndice numérico pegado a la letra (cifras abajo)</th><td>1 – 2 – 2</td><td class="bc" aria-hidden="true">⠁⠂⠂</td></tr>
+<tr><th scope="row">ℤ* conjunto sin el cero</th><td>456 – 1356 – 256 – 3</td><td class="bc" aria-hidden="true">⠸⠵⠲⠄</td></tr>
+<tr><th scope="row">ℤ⁻ negativos</th><td>456 – 1356 – 36 – 3</td><td class="bc" aria-hidden="true">⠸⠵⠤⠄</td></tr>
+<tr><th scope="row">ℤ⁺ positivos</th><td>456 – 1356 – 235 – 3</td><td class="bc" aria-hidden="true">⠸⠵⠖⠄</td></tr>
+<tr><th scope="row">IV número romano: prefijo de mayúscula y letras</th><td>46 – 24 – 1236</td><td class="bc" aria-hidden="true">⠨⠊⠧</td></tr>
+<tr><th scope="row">V̅ raya encima, por mil</th><td>46 – 1236 – 25</td><td class="bc" aria-hidden="true">⠨⠧⠒</td></tr>
+<tr><th scope="row">X̿ doble raya, por un millón</th><td>46 – 1346 – 25 – 25</td><td class="bc" aria-hidden="true">⠨⠭⠒⠒</td></tr>
+<tr><th scope="row">$ peso (junto a un número)</th><td>456 – 1234</td><td class="bc" aria-hidden="true">⠸⠏</td></tr>
+<tr><th scope="row">US$ dólar (junto a un número)</th><td>456 – 234</td><td class="bc" aria-hidden="true">⠸⠎</td></tr>
+<tr><th scope="row">€ euro</th><td>456 – 15</td><td class="bc" aria-hidden="true">⠸⠑</td></tr>
+<tr><th scope="row">R$ real (junto a un número)</th><td>456 – 1235</td><td class="bc" aria-hidden="true">⠸⠗</td></tr>
+<tr><th scope="row">¢ centavo</th><td>45 – 14</td><td class="bc" aria-hidden="true">⠘⠉</td></tr>
+<tr><th scope="row">234a5 cifras con letra: tras la letra con punto 5, las a–j sin punto 5 son cifras</th><td>3456 – 12 – 14 – 145 – 5 – 1 – 15</td><td class="bc" aria-hidden="true">⠼⠃⠉⠙⠐⠁⠑</td></tr>
+</tbody></table>
+<p class="tnote">Los puntos 456 – 1234, 456 – 234 y 456 – 1235 son monedas solo junto a un número; en otro caso son los primos, «verdadero» y los reales.</p>
+<p class="tnote">Fuente: Código Matemático Unificado para Iberoamérica (Consejo Iberoamericano del Braille, 2023).</p>
       </section>
       <section>
         <h3 id="hSteno" tabindex="-1">Estenografía española</h3>
@@ -1847,6 +1927,20 @@ dialog input[type="text"]:focus-visible{outline:2px solid var(--accent);outline-
       <div class="dlg-btns"><button class="btn" value="cancel" autofocus>Cancelar</button><button class="btn danger-fill" value="ok">Borrar y empezar</button></div>
     </form>
   </dialog>
+  <dialog id="dlgClose" aria-labelledby="dlgCloseT" aria-describedby="dlgCloseD">
+    <form method="dialog">
+      <h2 id="dlgCloseT">Cerrar</h2>
+      <p id="dlgCloseD"></p>
+      <div class="dlg-btns"><button class="btn primary" value="yes" autofocus>Sí, guardar</button><button class="btn danger-fill" value="no">No</button><button class="btn" value="cancel">Cancelar</button></div>
+    </form>
+  </dialog>
+  <dialog id="dlgSteno" aria-labelledby="dlgStenoT" aria-describedby="dlgStenoD">
+    <form method="dialog">
+      <h2 id="dlgStenoT">Transcribir a estenografía</h2>
+      <p id="dlgStenoD"></p>
+      <div class="dlg-btns"><button class="btn" value="cancel">Cancelar</button><button class="btn primary" value="ok" autofocus>Transcribir</button></div>
+    </form>
+  </dialog>
 
   <div class="opts collapsed" id="opts">
     <label><input type="checkbox" id="optTr" checked> Transcripción bajo las celdas</label>
@@ -2227,6 +2321,15 @@ function translateLine(cells){
       const last = W.indexOf(C5);
       if (last>=0){ group = false; }
       put(a, literal(W)); return;
+    }
+    /* Palabra compuesta con guion (teórico-práctico): el 36 en medio de la palabra es guion (com sólo va al
+       comienzo) y cada parte se lee por separado. No se aplica a la raya (36 36) ni a las palabras sin estenografiar. */
+    if (W[0]!==C5){
+      for (let k=1; k<W.length-1; k++){
+        if (W[k]===m('36') && W[k-1]!==m('36') && W[k+1]!==m('36') && W[k+1]!==0){
+          word(cells, a, a+k, out); out[a+k] = {t:'-', say:'guion'}; word(cells, a+k+1, b, out); return;
+        }
+      }
     }
     /* --- signos de apertura --- */
     let s = 0;
@@ -2779,23 +2882,35 @@ const MX = (()=>{
     ['126-23','rel','⊆','incluido o igual a'], ['56-345','rel','⊇','incluye o es igual a'],
     ['456-245','let','∅','conjunto vacío'], ['456-136','let','𝒰','conjunto universal'],
     ['456-345','op','∪','unión'], ['456-156','op','∩','intersección'], ['123456-345','op','⋃','gran unión'], ['123456-156','op','⋂','gran intersección'],
-    ['56-256','op','∆','diferencia simétrica'], ['46-236','op','×','producto cartesiano'], ['6-1256','let','ℵ','alef'],
+    ['45-145','op','∆','diferencia simétrica'], ['46-236','op','×','producto cartesiano'], ['6-1256','let','ℵ','alef'],
     ['46-3','una','∀','para todo'], ['46-26','una','∃','existe'], ['46-23','una','∃!','existe un único'],
-    ['456-234','let','⊤','verdadero'], ['456-126','let','⊥','falso'], ['456-25','let','⊢','tautología'],
-    ['56-2','op','∧','y'], ['456-26','op','⋀','conjunción'], ['456-24','op','⋁','disyunción'], ['6-3','una','¬','no'],
-    ['25-135','rel','⇒','implica'], ['246-25','rel','⇐','es implicado por'], ['56-356','op','⊻','o excluyente'],
+    ['456-234','let','⊤','verdadero'], ['456-126','let','⊥','falso'], ['456-2356','let','⊩','tautología'],
+    ['456-26','op','∧','y'], ['456-24','op','∨','o'], ['123456-26','op','⋀','conjunción de una familia'], ['123456-24','op','⋁','disyunción de una familia'], ['6-3','una','¬','no'], ['56-2','op','∧','producto vectorial'],
+    ['25-135','rel','⇒','implica'], ['246-25','rel','⇐','es implicado por'], ['456-2346','op','⊻','o excluyente'],
     ['6-16','rel','∴','por lo tanto'], ['4-34','rel','∵','puesto que']
   ];
+  /* Geometría (CMU 2023, cap. 12). Los signos que van encima de la letra (recta, semirrecta, segmento) se escriben
+     en tinta como marcas combinadas: r⃡, z⃗, z⃖, A̅B̅ */
+  const GEO = [
+    ['5-25-2','geo','⃡','recta'], ['25-2','geo','⃗','semirrecta'], ['5-25','geo','⃖','semirrecta'],
+    ['45-25','una','∠','ángulo'], ['4-25','una','⌒','arco'],
+    ['456-36','let','∟','ángulo recto'], ['456-123-2356','rel','∥=','es paralela e igual a'],
+    ['45-456-123','rel','∦','no es paralela a'], ['45-3456-3','rel','⊥̸','no es perpendicular a'], ['3456-3','rel','⊥','es perpendicular a'],
+    ['46-246','rel','⋔','es secante con'], ['5-26-2356','rel','≅','es congruente con'], ['56-26-23','rel','∼','es semejante a'],
+    ['6-23456','let','△','triángulo'], ['456-236','let','⊿','triángulo rectángulo'], ['456-13456','let','◻','cuadrado'],
+    ['12346-13456','let','▭','rectángulo'], ['12346-135','let','⎔','polígono'], ['246-135','let','○','círculo'],
+    ['56-23','rel','∷','como'], ['45-14','post','¢','centavos']
+  ];
   const SEQ = [
-    ...SETLOG,
+    ...SETLOG, ...GEO,
     ['235-25-36','op','±','más menos'], ['36-25-235','op','∓','menos más'], ['456-356-356','op','‰','por mil'], ['456-356','op','%','por ciento'],
     ['45-246-2356','rel','≰','no menor ni igual que'], ['45-135-2356','rel','≱','no mayor ni igual que'],
     ['5-2356-3','rel','≈','casi igual a'], ['5-26-3','rel','∼','semejante a'], ['2356-2356','rel','≡','idéntico a'],
     ['246-2356','rel','≤','menor o igual que'], ['135-2356','rel','≥','mayor o igual que'], ['246-246','rel','≪','mucho menor que'], ['135-135','rel','≫','mucho mayor que'],
     ['4-2356','rel','≐','aproximadamente igual a'], ['56-2356','rel','≔','igual por definición a'], ['45-2356','rel','≠','distinto de'],
     ['45-246','rel','≮','no menor que'], ['45-135','rel','≯','no mayor que'], ['45-456','rel','∤','no divide a'], ['456-256','rel','∝','proporcional a'],
-    ['45-3','post','!','factorial'], ['56-3','op','⊙','operado con'],   // en lógica, ∨ (se decide por el contexto de la línea)
-    ['356-3','post','°','grados'], ['1256-1256-1256','post','‴','tercera'],
+    ['45-3','post','!','factorial'], ['56-3','op','⊙','operado con'],
+    ['356-3','post','°','círculo'], ['356','post','°','grados'], ['1256-1256-1256','post','‴','tercera'],
     ['1256-1256','post','″','segunda'], ['1256','post','′','prima'],
     ['56-36-23','let','＿＿','espacio para completar'], ['56','let','□','casilla para completar'],
     ['5-2','op',':','dividido entre'], ['5-123','open','{','abre llave'], ['456-2','close','}','cierra llave'], ['5-13','open','⟨','abre paréntesis angular'],
@@ -2807,6 +2922,7 @@ const MX = (()=>{
     ['456','op','|','barra vertical'], ['2','punct',',','coma'], ['3','punct','.','punto'], ['23','punct',';','punto y coma'], ['25','punct',':','dos puntos']
   ].map(([p,k,t,say,aux])=>({cells:dk(p), k, t, say, aux:!!aux})).sort((a,b)=>b.cells.length-a.cells.length);
   const BOX_SEQ = SEQ.find(x=>x.t==='□');
+  const GEO_SET = new Set(SEQ.filter(x=>GEO.some(g=>g[2]===x.t && g[3]===x.say)));
   const EOL_OPS = new Set([m('2356'), m('235'), m('236'), m('256')]);
   const OP_NAME_LOW = {[m('235')]:'más',[m('2356')]:'igual',[m('236')]:'por',[m('256')]:'entre',[m('26')]:'abre paréntesis auxiliar',[m('35')]:'cierra paréntesis auxiliar',[m('2')]:'coma',[m('23')]:'punto y coma',[m('25')]:'dos puntos',[m('356')]:'cero abajo'};
   const SUPC = {'0':'⁰','1':'¹','2':'²','3':'³','4':'⁴','5':'⁵','6':'⁶','7':'⁷','8':'⁸','9':'⁹','−':'⁻',a:'ᵃ',b:'ᵇ',c:'ᶜ',d:'ᵈ',e:'ᵉ',f:'ᶠ',g:'ᵍ',h:'ʰ',i:'ⁱ',j:'ʲ',k:'ᵏ',l:'ˡ',m:'ᵐ',n:'ⁿ',o:'ᵒ',p:'ᵖ',r:'ʳ',s:'ˢ',t:'ᵗ',u:'ᵘ',v:'ᵛ',w:'ʷ',x:'ˣ',y:'ʸ',z:'ᶻ'};
@@ -2825,7 +2941,7 @@ const MX = (()=>{
     while (j < cells.length){
       const c = cells[j];
       if (c in DIG){ const d = DIG[c]; out[j] = {t: period ? d+'̅' : d, say:d}; tk.digits += d; j++; continue; }
-      if (c===m('56')){ out[j] = {t:'□', say:'casilla para completar'}; tk.digits += '□'; j++; continue; }
+      if (c===m('56') && cells[j+1]!==m('23') && cells[j+1]!==m('36')){ out[j] = {t:'□', say:'casilla para completar'}; tk.digits += '□'; j++; continue; }
       if (!tk.digits) break;
       if (c===m('3') && cells[j+1]===m('3') && cells[j+2]===m('3')){ out[j]={t:'…',say:'puntos suspensivos'}; out[j+1]={t:''}; out[j+2]={t:''}; j+=3; continue; }
       if (c===m('3') && cells[j+1] in DIG && !tk.dec){ out[j] = {t:' ', say:'punto de miles'}; j++; continue; }
@@ -2836,6 +2952,7 @@ const MX = (()=>{
         j++; continue;
       }
       if (c===m('2') && (j+1===cells.length || cells[j+1]===0)) break;   // «4, x»: coma de puntuación, no el denominador 1
+      if (c===m('356')) break;   // ningún denominador empieza por 0: 356 tras un número es «grados» (90°, CMU 11.5)
       if (c in LOW){
         /* Dentro de paréntesis auxiliares, 35 los cierra (no es la cifra 9 abajo): z sub (n−1), (x+1⁄2)/c */
         let k = j; while (k < cells.length && cells[k] in LOW && !(auxDepth>0 && cells[k]===m('35'))) k++;
@@ -2861,17 +2978,106 @@ const MX = (()=>{
   }
 
   /* ---- Análisis de una línea ---- */
-  const LOGIC_PATS = ['56-2','6-3','25-135','246-25','46-3','46-26','46-23','456-234','456-126','456-25','56-356'].map(dk);
+  const LOGIC_PATS = ['456-26','456-24','6-3','25-135','246-25','46-3','46-26','46-23','456-234','456-126','456-2356','456-2346'].map(dk);
   const PROPS = new Set(['p','q','r','s','t']);
   function logicLine(cells){
     for (let i=0;i<cells.length;i++) for (const pt of LOGIC_PATS) if (at(cells, i, pt)) return true;
     return false;
   }
+  /* Funciones y abreviaturas: letras seguidas del punto 3 (CMU 2023, cap. 13) */
+  const FUNCS = {sen:'seno de',cos:'coseno de',tg:'tangente de',cotg:'cotangente de',sec:'secante de',cosec:'cosecante de',
+    arcsen:'arco seno de',arccos:'arco coseno de',arctg:'arco tangente de',arccotg:'arco cotangente de',arcsec:'arco secante de',arccosec:'arco cosecante de',
+    senh:'seno hiperbólico de',cosh:'coseno hiperbólico de',tgh:'tangente hiperbólica de',log:'logaritmo de',ln:'logaritmo natural de',
+    lim:'límite',exp:'exponencial de',mcd:'máximo común divisor de',mcm:'mínimo común múltiplo de',rad:'radianes'};
+  const FUNC_INK = {mcd:'m.c.d.', mcm:'m.c.m.'};
+  const ROMAN = {i:1,v:5,x:10,l:50,c:100,d:500,m:1000};
+  const ROMAN_RE = /^M{0,3}(CM|CD|D?C{0,3})(XC|XL|L?X{0,3})(IX|IV|V?I{0,3})$/;
+  /* Número romano: 46 seguido de letras I V X L C D M; 25 detrás de una letra = raya encima (×1000), 25-25 = doble raya (×1 000 000) */
+  function romanAt(cells, i){
+    if (cells[i]!==CAP) return null;
+    let j = i+1, groups = ['','',''], pend = '', letters = 0, marked = false, marks = [];
+    while (j<cells.length && LAT[cells[j]] && ROMAN[LAT[cells[j]]]){
+      pend += LAT[cells[j]].toUpperCase(); letters++; j++;
+      let lv = 0; while (cells[j]===m('25') && lv<2){ lv++; j++; }
+      if (lv){ marked = true; if (groups[lv]) return null; groups[lv] = pend; marks.push([j-lv, lv, pend.length]); pend = ''; }
+    }
+    groups[0] = pend;
+    if (!letters || (letters<2 && !marked) || (cells[j] in LAT)) return null;
+    let val = 0; const mult = [1,1000,1000000];
+    for (let g=0; g<3; g++){ const str = groups[g]; if (!str) continue; if (!ROMAN_RE.test(str)) return null;
+      let v = 0; for (let q=0;q<str.length;q++){ const a = ROMAN[str[q].toLowerCase()], b = q+1<str.length ? ROMAN[str[q+1].toLowerCase()] : 0; v += a<b ? -a : a; } val += v*mult[g]; }
+    return {end:j, val};
+  }
   function tokenize(cells, out, nextFirst){
     const T = []; let aux = 0; const logic = logicLine(cells);
+    let digitLet = false;                                       // tras 234a: las a–j sin punto 5 son cifras (CMU 2023)
     for (let i=0; i<cells.length; ){
       const c = cells[i];
-      if (c===0){ out[i] = {t:' '}; T.push({k:'sp', a:i, b:i+1}); i++; continue; }
+      if (c===0){ out[i] = {t:' '}; T.push({k:'sp', a:i, b:i+1}); i++; digitLet = false; continue; }
+      const pv0 = T[T.length-1];
+      /* Cifras escritas como a–j tras una letra con punto 5 en un número: 234a5 */
+      if (digitLet && c in DIG && pv0 && pv0.b===i){
+        let j = i, d = ''; while (j<cells.length && cells[j] in DIG){ out[j] = {t:DIG[cells[j]], say:DIG[cells[j]]}; d += DIG[cells[j]]; j++; }
+        T.push({k:'num', a:i, b:j, digits:d}); i = j; continue;
+      }
+      digitLet = false;
+      /* Perpendicular (3456-3) y su negación, antes de leer un número */
+      if (c===NUM && cells[i+1]===m('3') && !(cells[i+2] in DIG)){
+        out[i] = {t:'⊥', say:'es perpendicular a', spk:' es perpendicular a '}; out[i+1] = {t:'', say:'es perpendicular a', spk:''};
+        T.push({k:'rel', a:i, b:i+2, t:'⊥'}); i+=2; continue;
+      }
+      /* Moneda: 456 + p, s, e, r junto a un número (peso, dólar, euro, real); si no, son ℙ, ⊤, ℝ */
+      if (c===m('456') && cells[i+1] in LAT && 'pser'.includes(LAT[cells[i+1]]) && (LAT[cells[i+1]]==='e' || cells[i+2]===NUM || (pv0 && pv0.k==='num' && pv0.b===i) || (pv0 && pv0.k==='sp' && T[T.length-2] && T[T.length-2].k==='num'))){
+        const CUR = {p:['$','pesos'], s:['US$','dólares'], e:['€','euros'], r:['R$','reales']}[LAT[cells[i+1]]];
+        out[i] = {t:CUR[0], say:CUR[1], spk:CUR[1]}; out[i+1] = {t:'', say:CUR[1], spk:''};
+        T.push({k:'let', a:i, b:i+2, ch:CUR[0]}); i+=2; continue;
+      }
+      /* Número romano */
+      const rom = romanAt(cells, i);
+      if (rom){
+        out[i] = {t:'', sig:'May', say:'prefijo de mayúscula', spk:' '+rom.val+' en números romanos '};
+        let run = [];                                          // letras desde la última raya: la raya va sobre todas
+        for (let q=i+1;q<rom.end;q++){
+          if (cells[q]===m('25')){
+            const dbl = cells[q+1]===m('25');
+            run.forEach(r=>{ out[r].t = out[r].t.replace(/[̅̿]/g,'') + (dbl ? '̿' : '̅'); });
+            out[q] = {t:'', say: dbl ? 'doble raya encima' : 'raya encima', spk:''};
+            if (dbl){ out[q+1] = {t:'', say:'doble raya encima', spk:''}; q++; }
+            run = [];
+          }
+          else { out[q] = {t:LAT[cells[q]].toUpperCase(), say:LAT[cells[q]]+' mayúscula', spk:''}; run.push(q); }
+        }
+        T.push({k:'let', a:i, b:rom.end, ch:'R'}); i = rom.end; continue;
+      }
+      /* Abreviaturas de funciones: sen. cos. log. … (con base: log.b156x) */
+      if (c in LAT && !(pv0 && pv0.k==='let' && pv0.b===i && !pv0.word)){
+        let j = i, w = ''; while (j<cells.length && cells[j] in LAT){ w += LAT[cells[j]]; j++; }
+        if (FUNCS[w] && cells[j]===m('3') && !(cells[j+1]===m('3'))){
+          const ink = FUNC_INK[w] || w;
+          out[i] = {t:ink, say:FUNCS[w], spk:' '+FUNCS[w]+' '}; for (let q=i+1;q<j;q++) out[q] = {t:'', say:FUNCS[w], spk:''};
+          out[j] = {t: w==='rad' ? '' : (FUNC_INK[w] ? '' : ' '), say:'fin de abreviatura', spk:''};
+          let e = j+1;
+          if (w==='log'){                                         // base entre el punto 3 y 156
+            let q = e; while (q<cells.length && cells[q]!==m('156') && cells[q]!==0 && q-e<6) q++;
+            if (cells[q]===m('156') && q>e){
+              const sub = []; const sc = cells.slice(e, q);
+              let nm = false; for (let r=0;r<sc.length;r++){ if (sc[r]===NUM){ nm = true; continue; } const ch = nm && sc[r] in DIG ? DIG[sc[r]] : (LAT[sc[r]] ?? ''); sub.push(ch); }
+              const txt = sub.join(''); const subTxt = [...txt].every(ch=>SUBC[ch]) ? [...txt].map(ch=>SUBC[ch]).join('') : '_'+txt;
+              out[j].t = ''; for (let r=e;r<q;r++) out[r] = {t: r===e ? subTxt : '', say:'base '+txt, spk: r===e ? ' en base '+txt+' de ' : ''};
+              out[i].spk = ' logaritmo '; out[q] = {t:' ', say:'fin de la base', spk:''}; e = q+1;
+            }
+          }
+          T.push({k:w==='rad' ? 'post' : 'una', a:i, b:e, t:w, fn:true}); i = e; continue;
+        }
+      }
+      /* Subíndice numérico pegado a una letra: a₁₁, a₂₁ (cifras abajo 1 y 2) */
+      if ((c===m('2') || c===m('23')) && pv0 && pv0.k==='let' && pv0.b===i && !pv0.word && pv0.ch && pv0.ch.length===1){
+        let j = i, sub = ''; while (j<cells.length && (cells[j]===m('2') || cells[j]===m('23'))){ sub += cells[j]===m('2') ? '1' : '2'; j++; }
+        if (j===cells.length || cells[j]===0 || !(cells[j] in LOW) || [m('235'),m('2356'),m('236'),m('256'),m('26'),m('35')].includes(cells[j])){
+          for (let q=i;q<j;q++) out[q] = {t:SUBC[sub[q-i]], say:'sub '+sub[q-i]};
+          T.push({k:'post', a:i, b:j, t:'sub'}); i = j; continue;
+        }
+      }
       if (c===NUM && ordinalAt(cells, i)){                     // ordinal (5.ª serie + a, o, r): 1.º, 2.ª, 3.er
         const n = ordinalAt(cells, i), it = Translators.integral(cells.slice(i, i+n), false);
         for (let k=0;k<n;k++) out[i+k] = it[k];
@@ -2902,13 +3108,21 @@ const MX = (()=>{
       const n1 = cells[i+1];
       if (c===m('456') && n1 in LAT && SETS[LAT[n1]] && (!seq || seq.cells.length<2)){
         out[i] = {t:'', sig:'Conj', say:'prefijo de conjunto'}; out[i+1] = {t:SETS[LAT[n1]][0], say:SET_NAME[SETS[LAT[n1]][0]]};
+        const SUF = [[m('256'),'*','sin el cero'],[m('36'),'⁻','negativos'],[m('235'),'⁺','positivos']].find(x=>cells[i+2]===x[0] && cells[i+3]===m('3'));
+        if (SUF){ out[i+2] = {t:SUF[1], say:SUF[2], spk:' '+SUF[2]+' '}; out[i+3] = {t:'', say:SUF[2], spk:''}; T.push({k:'let', a:i, b:i+4, ch:SETS[LAT[n1]][0]+SUF[1]}); i+=4; continue; }
         T.push({k:'let', a:i, b:i+2, ch:SETS[LAT[n1]][0]}); i+=2; continue;
       }
       if ((c===m('5') || c===m('46')) && n1 in LAT && (!seq || seq.cells.length<2)){
         const up = c===m('46'), ch = up ? LAT[n1].toUpperCase() : LAT[n1];
         out[i] = {t:'', sig: up?'May':'min', say: up?'prefijo de mayúscula':'prefijo de minúscula'};
         out[i+1] = {t:ch, say: up ? LAT[n1]+' mayúscula' : LAT[n1]};
-        T.push({k:'let', a:i, b:i+2, ch}); i+=2; continue;
+        const pvN = T[T.length-1]; if (!up && pvN && (pvN.k==='num' || (pvN.k==='let' && pvN.numLet)) && pvN.b===i) digitLet = true;
+        T.push({k:'let', a:i, b:i+2, ch, numLet: digitLet}); i+=2; continue;
+      }
+      if (seq && seq.t==='∆'){
+        const pv = T[T.length-1];
+        const setL = pv && ((pv.k==='let' && /^[A-Z]$/.test(pv.ch||'')) || pv.k==='close');
+        if (!setL) seq = null;
       }
       if ((c===m('4') || c===m('45')) && n1 in GRK && (!seq || seq.cells.length<2)){
         const g = GRK[n1], up = c===m('45'), ch = up ? g.up : g.lo;
@@ -2926,8 +3140,6 @@ const MX = (()=>{
         i++; continue;
       }
       if (seq && seq.t==='≔'){ const pv = T[T.length-1]; if (!pv || /^(op|rel|open|sp|una|punct)$/.test(pv.k)) seq = BOX_SEQ; }
-      if (seq && seq.t==='⊙' && (logic || PROPS.has(LAT[cells[i-1]]) || PROPS.has(LAT[cells[i+1]]) || PROPS.has(LAT[cells[i+2]])))
-        seq = {cells:seq.cells, k:'op', t:'∨', say:'o', aux:false};
       if (seq){
         const L = seq.cells.length;
         out[i] = {t:seq.t, say:seq.say}; for (let q=1;q<L;q++) out[i+q] = {t:'', say:seq.say};
@@ -2935,7 +3147,8 @@ const MX = (()=>{
         if (seq.k==='rootA') out[i].sig = '√'; if (seq.k==='rootB') out[i].sig = 'fin';
         if (seq.aux) out[i].sig = seq.k==='open' ? '(aux' : 'aux)';
         if (seq.aux) aux = Math.max(0, aux + (seq.k==='open' ? 1 : -1));
-        T.push({k:seq.k, a:i, b:i+L, t:seq.t, aux:seq.aux}); i+=L; continue;
+        if (GEO_SET.has(seq) && seq.k!=='geo'){ out[i].spk = ' '+seq.say+' '; for (let q=1;q<L;q++) out[i+q].spk = ''; }
+        T.push({k:seq.k, a:i, b:i+L, t:seq.t, aux:seq.aux, say:seq.say}); i+=L; continue;
       }
       if (c in LAT){ out[i] = {t:LAT[c], say:LAT[c]}; T.push({k:'let', a:i, b:i+1, ch:LAT[c]}); i++; continue; }
       const PRE = {[m('5')]:['min','prefijo de minúscula'], [m('46')]:['May','prefijo de mayúscula'], [m('4')]:['gr','prefijo de griega'], [m('45')]:['Gr+','prefijo de griega mayúscula']};
@@ -3018,7 +3231,71 @@ const MX = (()=>{
     structure(T, out);
     bars(T, out);
     suchThat(T, out);
+    overMarks(T, out, cells);
+    /* Una sola doble barra es «paralela» (∥); dos son la norma ‖v‖. Con ∷, los dos puntos se leen «es a» */
+    const dbl = T.filter(tk=>tk.t==='‖');
+    if (dbl.length===1){ const tk = dbl[0]; out[tk.a] = Object.assign({}, out[tk.a], {t:'∥', say:'es paralela a', spk:' es paralela a '}); out[tk.a+1] = Object.assign({}, out[tk.a+1], {spk:''}); }
+    if (T.some(tk=>tk.t==='∷')) T.filter(tk=>tk.k==='op' && tk.t===':').forEach(tk=>{ out[tk.a] = Object.assign({}, out[tk.a], {say:'es a', spk:' es a '}); out[tk.a+1] = Object.assign({}, out[tk.a+1], {spk:''}); });
+    quantColon(T, out);
+    tidyInk(cells, out);
     return out;
+  }
+  /* Recta, semirrecta y raya encima: la marca se pone encima de la letra o del grupo que sigue (CMU 12) */
+  function overMarks(T, out, cells){
+    for (let k=0;k<T.length;k++){
+      const tk = T[k];
+      if (tk.k==='una' && (tk.t==='∠' || tk.t==='⌒') && T[k+1] && T[k+1].k==='open' && T[k+1].aux){
+        const cl = matchClose(T, k+1);
+        out[T[k+1].a] = Object.assign({}, out[T[k+1].a], {t:'', spk:''}); out[T[cl].a] = Object.assign({}, out[T[cl].a], {t:'', spk:''});
+        continue;
+      }
+      const over = tk.k==='geo' || (tk.k==='una' && tk.t==='∁' && cells[tk.a]===m('4'));
+      if (!over) continue;
+      const mark = tk.k==='geo' ? tk.t : '̅';
+      const nx = T[k+1]; if (!nx) continue;
+      let a = nx.a, b = nx.b, idx = [];
+      if (nx.k==='open' && nx.aux){ const cl = matchClose(T, k+1); b = T[cl].b; out[nx.a] = Object.assign({}, out[nx.a], {t:''}); out[T[cl].a] = Object.assign({}, out[T[cl].a], {t:''}); }
+      for (let q=a;q<b;q++) if (out[q] && /[A-Za-zα-ωΑ-Ω]/.test(out[q].t||'')) idx.push(q);
+      if (!idx.length) continue;
+      if (tk.k!=='geo' && idx.length===1 && !(nx.k==='open')) { /* complementario de una letra: Ā */ }
+      out[tk.a] = Object.assign({}, out[tk.a], {t:''});
+      for (let q=tk.a+1;q<tk.b;q++) out[q] = Object.assign({}, out[q], {t:''});
+      const word = idx.map(q=>out[q].t).join('');
+      const name = tk.k==='geo' ? tk.say : (idx.length>1 ? 'segmento' : 'complementario de');
+      if (mark==='̅') idx.forEach(q=>{ out[q] = Object.assign({}, out[q], {t: out[q].t+'̅'}); });
+      else { const q = idx[idx.length-1]; out[q] = Object.assign({}, out[q], {t: out[q].t+mark}); }
+      out[tk.a].spk = ' '+name+' '+word+' '; idx.forEach(q=>{ out[q].spk = ''; });
+    }
+  }
+  /* Dos puntos (5-2) tras un cuantificador: «se cumple que» tras ∀, «tal que» tras ∃ y ∄ (CMU 8) */
+  function quantColon(T, out){
+    let q = null;
+    for (const tk of T){
+      if (tk.t==='∀' || tk.t==='∃' || tk.t==='∃!' || tk.t==='∄') q = tk.t;
+      else if (q && tk.k==='op' && tk.t===':'){
+        const say = q==='∀' ? 'se cumple que' : 'tal que';
+        for (let i=tk.a;i<tk.b;i++) out[i] = Object.assign({}, out[i], {say});
+        q = null;
+      }
+    }
+  }
+  /* Vista en tinta: los cajetines en blanco que el braille exige y la tinta no lleva (CMU 3.1, 5.1, 5.4):
+     el que va delante de la coma, el punto o el punto y coma de separación (1 ,2 → 1, 2) y el semicajetín
+     después del punto de multiplicar y de las barras de valor absoluto (6· 2 → 6·2, | −8| → |−8|). */
+  function tidyInk(cells, out){
+    const SEP = {[m('2')]:', ', [m('23')]:'; ', [m('3')]:'. '};
+    for (let i=1;i<cells.length;i++){
+      if (cells[i]!==0 || !out[i] || out[i].t!==' ') continue;
+      const nx = cells[i+1], pv = out[i-1] && out[i-1].t;
+      if (nx in SEP && cells[i-1]!==0 && out[i+1] && /^[,;.]$/.test(out[i+1].t||'')){
+        out[i] = Object.assign({}, out[i], {t:''});
+        out[i+1] = Object.assign({}, out[i+1], {t: SEP[nx]});
+      } else if (nx!==undefined && nx!==NUM && /\d$/.test(pv||'') && (()=>{ let q=i-1; while (q>=0 && /^⁄?\d$/.test(out[q].t||'')){ if (out[q].t[0]==='⁄') return true; q--; } return false; })()){
+        out[i] = Object.assign({}, out[i], {t:''});                           // 2⁄3 :4⁄5 → 2⁄3:4⁄5 (el blanco tras la fracción es solo braille)
+      } else if ((pv==='·' && cells[i-1]===m('6')) || (pv==='|' && cells[i-1]===m('456'))){
+        out[i] = Object.assign({}, out[i], {t:''});
+      }
+    }
   }
   /* Dentro de llaves, la barra 6-2 (y la barra vertical 456) es «tal que»: {x / x > 2} */
   function suchThat(T, out){
@@ -3026,6 +3303,9 @@ const MX = (()=>{
     for (const tk of T){
       if (tk.k==='open' && tk.t==='{') depth++;
       else if (tk.k==='close' && tk.t==='}') depth = Math.max(0, depth-1);
+      else if (depth>0 && tk.k==='op' && tk.t===':'){
+        for (let i=tk.a;i<tk.b;i++) out[i] = Object.assign({}, out[i], {say:'tal que'});
+      }
       else if (depth>0 && tk.k==='op' && (tk.t==='/' && tk.b-tk.a===2 || tk.t==='|')){
         out[tk.a] = Object.assign({}, out[tk.a], {t:'|', say:'tal que'});
         for (let i=tk.a+1;i<tk.b;i++) out[i] = Object.assign({}, out[i], {say:'tal que'});
@@ -3061,11 +3341,13 @@ const MX = (()=>{
     '≪':'mucho menor que','≫':'mucho mayor que','≔':'igual por definición a','∼':'semejante a','≮':'no menor que','≯':'no mayor que','≰':'no menor ni igual que',
     '≱':'no mayor ni igual que','∝':'proporcional a','∤':'no divide a','<':'menor que','>':'mayor que','±':'más menos','∓':'menos más','‰':'por mil',
     '·':'por','⊙':'operado con','‖':'doble barra','|':'barra','…':'puntos suspensivos','⟨':'abre paréntesis angular','⟩':'cierra paréntesis angular',
-    '[':'abre corchete',']':'cierra corchete','{':'abre llave','}':'cierra llave','′':'prima','″':'segunda','‴':'tercera','°':'grados'};
+    '[':'abre corchete',']':'cierra corchete','{':'abre llave','}':'cierra llave','′':'prima','″':'segunda','‴':'tercera','°':'grados',
+    '∠':'ángulo','⌒':'arco','∟':'ángulo recto','∥':'es paralela a','∦':'no es paralela a','⋔':'es secante con','≅':'es congruente con',
+    '△':'triángulo','⊿':'triángulo rectángulo','◻':'cuadrado','▭':'rectángulo','⎔':'polígono','○':'círculo','∷':'como','¢':'centavos','€':'euros'};
   const SETLOG_NAME = {'∈':'pertenece a','∉':'no pertenece a','∋':'contiene al elemento','∌':'no contiene al elemento','⊂':'incluido en','⊃':'incluye a',
     '⊆':'incluido o igual a','⊇':'incluye o es igual a','⊄':'no incluido en','⊅':'no incluye a','⊈':'no incluido ni igual a','⊉':'no incluye ni es igual a',
     '∪':'unión','∩':'intersección','⋃':'gran unión','⋂':'gran intersección','∅':'conjunto vacío','𝒰':'conjunto universal','∖':'menos','∆':'diferencia simétrica',
-    '∁':'complementario de','≃':'coordinable con','ℵ':'alef','∞':'infinito','∀':'para todo','∃':'existe','∄':'no existe','⊤':'verdadero','⊥':'falso','⊢':'tautología',
+    '∁':'complementario de','≃':'coordinable con','ℵ':'alef','∞':'infinito','∀':'para todo','∃':'existe','∄':'no existe','⊤':'verdadero','⊥':'falso','⊢':'tautología','⊩':'tautología',
     '∧':'y','∨':'o','⊻':'o excluyente','⋀':'conjunción','⋁':'disyunción','¬':'no','⇒':'implica','⇐':'es implicado por','⇔':'si y solo si','∴':'por lo tanto','∵':'puesto que'};
   const SETLOG_RE = new RegExp('['+Object.keys(SETLOG_NAME).join('').replace(/[\]\\^-]/g,'\\$&')+']','gu');
   function speak(text){
@@ -3085,6 +3367,8 @@ const MX = (()=>{
     s = s.replace(/\^\(/g,' elevado a, abre paréntesis ').replace(/\^/g,' elevado a ').replace(/_\(/g,' sub, abre paréntesis ');
     /* Raya de fracción (∕): los paréntesis auxiliares no se nombran, se marcan con una pausa */
     s = s.replace(/\(([^()]*)\)\s*∕\s*\(([^()]*)\)/g,' $1, sobre, $2 ').replace(/\(([^()]*)\)\s*∕/g,' $1, sobre ').replace(/∕\s*\(([^()]*)\)/g,' sobre, $1 ').replace(/∕/g,' sobre ');
+    s = s.replace(/\{([a-zA-Zα-ω][^{}:]{0,80}):/g,'{$1 tal que ');
+    s = s.replace(/ : /g,' dividido entre ');   // conjunto por comprensión: {x : …} → «tal que»
     s = s.replace(/(\S)\/(\S)/g,'$1 entre $2').replace(/(\S):(\S)/g,'$1 dividido entre $2');
     s = s.replace(/\(/g,' abre paréntesis ').replace(/\)/g,' cierra paréntesis ');
     s = s.replace(/[αβγδεζηθικλμνξοπρστυφχψωΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡΣΤΥΦΧΨΩ]/g, g=>' '+GRK_NAME[g]+' ');
@@ -3582,6 +3866,8 @@ window.addEventListener('keydown', e=>{
     if (e.shiftKey && e.code==='KeyV'){ e.preventDefault(); closeMenus(); toggleVoice(); return; }
     if (e.code==='KeyG'){ e.preventDefault(); closeMenus(); if (!e.repeat) saveWork(e.shiftKey); return; }
     if (e.code==='KeyO' && !e.shiftKey){ e.preventDefault(); closeMenus(); if (!e.repeat) openWork(); return; }
+    if (e.code==='KeyR' && !e.shiftKey){ e.preventDefault(); closeMenus(); if (!e.repeat) closeWork(); return; }   // como en Word en español (Cerrar)
+    if (e.code==='KeyU' && !e.shiftKey){ e.preventDefault(); closeMenus(); if (!e.repeat) openDialog($('dlgNew')); return; }   // como en Word en español
   }
   if ((e.ctrlKey || e.metaKey) && e.shiftKey && !e.altKey && GRADE_KEYS[e.code]){ e.preventDefault(); closeMenus(); setGrade(GRADE_KEYS[e.code]); return; }
   if (e.target && e.target.closest && e.target.closest('#menubar')) return;        // la barra de menús maneja sus teclas
@@ -3850,6 +4136,7 @@ function charRange(li, k){
   return [a, b];
 }
 function afterEdit(){
+  if (!stenoBusy && stenoUndo){ stenoUndo = null; const it = document.getElementById('undoStenoItem'); if (it) it.hidden = true; }
   syncField();
   if (readPos){ readPos.col = colFromCell(readPos.line, readPos.cell);
     if (readPos.line===doc.lines.length-1 && readPos.cell>=cur().length) readPos = null; }
@@ -4783,9 +5070,35 @@ document.addEventListener('keydown', e=>{
     e.preventDefault(); btns[(j + (e.key==='ArrowRight' ? 1 : -1) + btns.length) % btns.length].focus();
   }
 }, true);
+$('dlgSteno').addEventListener('close', ()=>{
+  const v = $('dlgSteno').returnValue; $('dlgSteno').returnValue = '';
+  if (v==='ok') doSteno(); else say('Cancelado');
+  backToSheet();
+});
+function blankSheet(){
+  isExample=false; doc.lines=[[]]; lgSet(doc.lines[0], grade); doc.fileName=''; doc.savedSig=''; doc.discarded=false; fileHandle=null; readPos=null;
+  stenoUndo=null; const u=document.getElementById('undoStenoItem'); if (u) u.hidden=true;
+  setDocTitle(); clearSel(); $('sLast').textContent='—'; render(); save();
+}
+/* Archivo › Cerrar: cierra el trabajo y deja una hoja en blanco, como Word. Si hay cambios sin guardar, pregunta. */
+let closeAfterSave = false;
+function closeWork(){
+  if (isDirty()){
+    const name = doc.fileName ? '«'+doc.fileName+'»' : 'la hoja';
+    $('dlgCloseD').textContent = '¿Deseas guardar los cambios de '+name+' antes de cerrarla? Si no los guardas, se perderán. Después se abrirá una hoja en blanco.';
+    openDialog($('dlgClose')); return;
+  }
+  const had = doc.fileName; blankSheet(); flashMsg('Hoja cerrada'); say((had ? 'Cerrado '+had+'. ' : 'Hoja cerrada. ')+'Hoja nueva. Línea 1'); backToSheet();
+}
+$('dlgClose').addEventListener('close', ()=>{
+  const v = $('dlgClose').returnValue; $('dlgClose').returnValue='';
+  if (v==='no'){ blankSheet(); flashMsg('Hoja cerrada'); say('Cerrado sin guardar. Hoja nueva. Línea 1'); backToSheet(); }
+  else if (v==='yes'){ closeAfterSave = true; saveWork(false); }
+  else { say('Cancelado'); backToSheet(); }
+});
 $('dlgNew').addEventListener('close', ()=>{
   if ($('dlgNew').returnValue==='ok'){
-    isExample=false; doc.lines=[[]]; lgSet(doc.lines[0], grade); doc.fileName=''; doc.savedSig=''; fileHandle=null; setDocTitle(); clearSel(); $('sLast').textContent='—'; render(); save(); flashMsg('Hoja nueva'); say('Hoja nueva. Línea 1');
+    blankSheet(); flashMsg('Hoja nueva'); say('Hoja nueva. Línea 1');
   } else say('Cancelado');
   $('dlgNew').returnValue=''; backToSheet();
 });
@@ -4937,7 +5250,8 @@ function insertCells(lines){
 /* ---------- Portapapeles ----------
    Copiar pone el texto en tinta en el portapapeles (para Word, correo…) y guarda las celdas exactas
    para pegarlas dentro de la app. Al pegar desde otro programa: braille Unicode se pega tal cual;
-   el texto común se convierte a braille integral. */
+   el texto común se convierte a braille integral, o con el Código Matemático Unificado si el cursor está en un
+   bloque de Matemáticas (inkToMath, más abajo). */
 let clip = null;                                   // {text, cells}
 function doCopy(){
   if (!hasSel()){ say('No hay nada seleccionado. Selecciona con Mayúsculas y las flechas, o todo con Control más A'); flashMsg('Nada seleccionado'); return null; }
@@ -4981,20 +5295,327 @@ function textToCells(str){
   }
   return {cells: out, skipped};
 }
+/* ---------- Pegar tinta en un bloque de Matemáticas: transcripción con el Código Matemático Unificado ----------
+   Usa los mismos signos que el lector de matemáticas (MX.SEQ) para que lo pegado se lea igual que lo tecleado.
+   Reglas: signo de número en cada número; prefijo 5 para las letras a–j pegadas a un número; mayúsculas con 46,
+   griegas con 4 y 45; conjuntos numéricos con 456. Potencias (x², x^2, x^(a+b)), subíndices (a₁, a_1) y raíces
+   (√, ∛, ∜, √(…)) con paréntesis auxiliares cuando el exponente o el radicando tiene más de un término.
+   La raya de fracción (∕, U+2215) pasa los paréntesis de al lado a auxiliares; la fracción con barra de fracción
+   (3⁄4, U+2044) lleva el denominador abajo y un espacio detrás. Los espacios junto a signos de operación o de
+   relación se quitan, como en el braille matemático. */
+const inkToMath = (()=>{
+  const dk = s => s.split('-').map(m);
+  const DIGC = 'jabcdefghi'.split('').map(c=>m(LETTERS[c]));
+  const LATC = {}; 'abcdefghijklmnopqrstuvwxyz'.split('').forEach(c=>{ LATC[c] = m(LETTERS[c]); });
+  const GRK_INK = {}; for (const k in MX.GRK){ GRK_INK[MX.GRK[k].lo] = [m('4'), +k]; GRK_INK[MX.GRK[k].up] = [m('45'), +k]; }
+  const SETS_INK = {'ℕ':'n','ℤ':'z','ℚ':'q','ℝ':'r','ℂ':'c','ℍ':'h','𝕆':'o','ℙ':'p'};
+  /* Signos de tinta → celdas: los del lector, y las variantes de teclado (Excel, Word) */
+  const SYM = {};
+  for (const s of MX.SEQ) if (s.t && !s.aux && !(s.t in SYM)) SYM[s.t] = s;
+  const fix = (t, p, k) => { SYM[t] = {cells:dk(p), k, t}; };
+  fix('(','126','open'); fix(')','345','close'); fix('/','256','op'); fix('∕','256','op'); fix('÷','5-2','op');
+  fix('×','236','op'); fix('*','236','op'); fix('-','36','op'); fix('‐','36','op'); fix('–','36','op');
+  fix('∁','56-14','una'); fix('∨','456-24','op'); fix('∧','456-26','op'); fix('°','356','post'); fix('⊢','456-2356','let'); fix('|','456','op'); fix(':','5-2','op');
+  fix('...','3-3-3','op'); fix('__','56-36-23','let'); fix(':=','56-2356','rel'); fix("'",'1256','post');
+  fix('<=','246-2356','rel'); fix('>=','135-2356','rel'); fix('<>','45-2356','rel'); fix('!=','45-2356','rel');
+  fix('>','135','rel');                          // 135 es «mayor que» o la letra o; el lector lo distingue
+  fix('Δ','45-145','let');                       // delta mayúscula griega (no la diferencia simétrica ∆)
+  fix('𝒰','456-136','let');
+  const KEYS = Object.keys(SYM).sort((a,b)=>[...b].length-[...a].length);
+  /* Signos junto a los que se quitan los espacios (operación y relación), salvo ∴ y ∵, % y ‰, que van separados */
+  const KEEP_SP = new Set(['∴','∵','%','‰',':','!','′','″','‴','°']);
+  const tight = t => t && SYM[t] && (SYM[t].k==='op' || SYM[t].k==='rel') && !KEEP_SP.has(t);
+  const SPACE = /[ \t    ]/;
+  const isD = ch => ch>='0' && ch<='9';
+  const SUPR = {'⁰':'0','¹':'1','²':'2','³':'3','⁴':'4','⁵':'5','⁶':'6','⁷':'7','⁸':'8','⁹':'9','⁻':'−','⁺':'+','⁽':'(','⁾':')',
+    'ᵃ':'a','ᵇ':'b','ᶜ':'c','ᵈ':'d','ᵉ':'e','ᶠ':'f','ᵍ':'g','ʰ':'h','ⁱ':'i','ʲ':'j','ᵏ':'k','ˡ':'l','ᵐ':'m','ⁿ':'n','ᵒ':'o','ᵖ':'p','ʳ':'r','ˢ':'s','ᵗ':'t','ᵘ':'u','ᵛ':'v','ʷ':'w','ˣ':'x','ʸ':'y','ᶻ':'z'};
+  const SUBR = {'₀':'0','₁':'1','₂':'2','₃':'3','₄':'4','₅':'5','₆':'6','₇':'7','₈':'8','₉':'9','₋':'−','₊':'+','₍':'(','₎':')',
+    'ₐ':'a','ₑ':'e','ₕ':'h','ᵢ':'i','ⱼ':'j','ₖ':'k','ₗ':'l','ₘ':'m','ₙ':'n','ₒ':'o','ₚ':'p','ᵣ':'r','ₛ':'s','ₜ':'t','ᵤ':'u','ᵥ':'v','ₓ':'x'};
+  const ROOTS = {'√':null,'∛':'3','∜':'4'};
+  const single = s => /^[−-]?(\d+([.,]\d+)?|[A-Za-zα-ωΑ-Ω])$/u.test(s);
+
+  /* Paréntesis que pasan a auxiliares: después de ^, _ o una raíz, y los que tocan la raya de fracción ∕ */
+  function auxParens(ch){
+    const aux = new Set(), stack = [], pair = {};
+    ch.forEach((c,i)=>{ if (c==='(') stack.push(i); else if (c===')' && stack.length){ const o = stack.pop(); pair[o] = i; pair[i] = o; } });
+    ch.forEach((c,i)=>{
+      if (c!=='(' || !(i in pair)) return;
+      const cl = pair[i], before = ch[i-1], after = ch[cl+1];
+      if (before==='^' || before==='_' || before in ROOTS || before==='∕' || after==='∕'){ aux.add(i); aux.add(cl); }
+    });
+    return aux;
+  }
+
+  function line(str){
+    const ch = [...str.normalize('NFC')], out = [], aux = auxParens(ch);
+    let skipped = 0, num = false, numDec = false, numPer = false, braces = 0, quant = false, i = 0, numLet = false;
+    const lastSig = () => { for (let q=i-1;q>=0;q--) if (!SPACE.test(ch[q])) return ch[q]; return ''; };
+    const symAt = k => { for (const key of KEYS){ const kk = [...key]; let ok = true; for (let q=0;q<kk.length;q++) if (ch[k+q]!==kk[q]){ ok = false; break; } if (ok) return key; } return null; };
+    const nextSig = k => { while (k<ch.length && SPACE.test(ch[k])) k++; return k; };
+    const endNum = () => { num = false; numDec = false; numPer = false; };
+    const push = (...c) => { out.push(...c); };
+    /* Exponente o subíndice: un solo término va directo; varios, entre paréntesis auxiliares */
+    const script = (mark, inner) => {
+      const r = line(inner); skipped += r.skipped;
+      if (single(inner)){ push(mark, ...r.cells); if (r.endNum) num = true; else endNum(); }
+      else { push(mark, m('26'), ...r.cells, m('35')); endNum(); }
+    };
+    while (i < ch.length){
+      const c = ch[i], nx = ch[i+1] || '';
+      const wasNumLet = numLet; numLet = false;                              // letras que siguen a un número: 4ac
+      /* Espacios: uno solo; se quitan junto a signos de operación y de relación; dentro de un número son
+         separador de miles (12 500) o separan la parte entera de un número mixto (2 1⁄2) */
+      if (SPACE.test(c)){
+        let j = i; while (j<ch.length && SPACE.test(ch[j])) j++;
+        if (num && !numDec && isD(ch[j])){
+          let e = j; while (isD(ch[e])) e++;
+          if (ch[e]==='⁄'){ i = j; endNum(); continue; }                       // número mixto
+          if (e-j===3 && !(ch[e]==='⁄')){ push(m('3')); i = j; continue; }      // miles
+        }
+        const prev = lastSig(), k = nextSig(j), nk = symAt(k);
+        if (j>=ch.length || !out.length || tight(prev) || tight(nk) || out[out.length-1]===0 || prev===',' || prev===';'){ i = j; endNum(); continue; }   // tras la coma de separación no va espacio (ya lo lleva delante)
+        push(0); endNum(); i = j; continue;
+      }
+      if (isD(c)){
+        if (!num){ push(NUM); num = true; numDec = false; numPer = false; }
+        if (nx==='̅' && !numPer){ push(m('2')); numPer = true; }          // periodo: 0,3̅
+        push(DIGC[+c]); i += nx==='̅' ? 2 : 1; continue;
+      }
+      if (num && (c===',' || c==='.') && isD(nx)){
+        let e = i+1; while (isD(ch[e])) e++;
+        if (c==='.' && !numDec && e-i-1===3 && ch[e]!=='.' && ch[e]!==','){ push(m('3')); i++; continue; }   // 12.500
+        if (c===',' && (braces>0)){ if (out[out.length-1]!==0) push(0); push(m('2')); endNum(); i++; continue; }  // {1,2,3}: coma que separa, con blanco delante (CMU 5.1)
+        push(m('2')); numDec = true; i++; continue;
+      }
+      if (c==='⁄' && num){                                                    // fracción 3⁄4: denominador abajo
+        let j = i+1; while (isD(ch[j])){ push(DIGC[+ch[j]]<<1); j++; }
+        let k = j; while (k<ch.length && SPACE.test(ch[k])) k++;
+        if (k<ch.length && !(ch[k]===')' && aux.has(k))) push(0);
+        i = k; endNum(); continue;
+      }
+      if (c in SUPR){ let j = i, s = ''; while (ch[j] in SUPR){ s += SUPR[ch[j]]; j++; } script(POW, s); i = j; continue; }
+      if (c in SUBR){ let j = i, s = ''; while (ch[j] in SUBR){ s += SUBR[ch[j]]; j++; } script(m('34'), s); i = j; continue; }
+      if ((c==='^' || c==='_') && nx && nx!=='('){                            // x^2, a_1, x^-2
+        let j = i+1, s = '';
+        if (ch[j]==='-' || ch[j]==='−'){ s += '−'; j++; }
+        if (isD(ch[j])) while (isD(ch[j])) s += ch[j++]; else if (/[A-Za-z]/.test(ch[j]||'')) s += ch[j++];
+        script(c==='^' ? POW : m('34'), s); i = j; continue;
+      }
+      if (c==='^' || c==='_'){ push(c==='^' ? POW : m('34')); endNum(); i++; continue; }
+      if (c in ROOTS){
+        let idx = ROOTS[c];
+        push(m('1246'));
+        if (idx){ push(NUM, DIGC[+idx]); }
+        push(m('156')); endNum(); i++; continue;
+      }
+      if (c==='(' && aux.has(i)){ push(m('26')); endNum(); i++; continue; }
+      if (c===')' && aux.has(i)){ push(m('35')); endNum(); i++; continue; }
+      if (c==='#'){ push(NUM, m('13')); endNum(); i++; continue; }                 // cardinal
+      if (c==='∞'){ push(NUM, m('1256')); endNum(); i++; continue; }
+      if (SETS_INK[c]){ push(m('456'), LATC[SETS_INK[c]]); endNum(); i++; continue; }
+      const low = c.toLowerCase();
+      if (LATC[low]!==undefined && /[a-zA-Z]/.test(c)){
+        if (c!==low) push(m('46'));
+        else if ((num || wasNumLet) && 'abcdefghij'.includes(low)) push(INT);      // 2a, 4ac: punto 5 ante cada letra a–j (CMU 2023)
+        numLet = c===low && (num || wasNumLet);
+        push(LATC[low]); endNum(); i++; continue;
+      }
+      if (GRK_INK[c]){ push(...GRK_INK[c]); endNum(); i++; continue; }
+      const key = symAt(i);
+      if (key){
+        let cells = SYM[key].cells;
+        if (key==='∀' || key==='∃' || key==='∃!' || key==='∄' || key==='¬∀') quant = true;
+        if (key==='{') braces++;
+        if (key==='}') braces = Math.max(0, braces-1);
+        if (key===':'){
+          const k = nextSig(i+1);
+          if (quant || braces>0) quant = false;                              // ∀x∈ℕ: …, {x : …}: 5-2 (CMU 8)
+          else if (k>=ch.length || k>i+1) cells = [m('25')];               // dos puntos de texto: «Datos: …»
+        }
+        if (key==='|' && braces>0) cells = dk('6-2');                         // {x∈ℕ|x<4}: tal que
+        if ((key==='×' || key==='*')){
+          const p = lastSig(), q = ch[nextSig(i+1)] || '';
+          const setLike = x => x==='}' || /[A-Z]/.test(x) || !!SETS_INK[x];
+          if (setLike(p) && (q==='{' || /[A-Z]/.test(q) || SETS_INK[q])) cells = dk('46-236');   // producto cartesiano
+        }
+        if (key===',' || key===';'){ endNum(); if (out.length && out[out.length-1]!==0) push(0); }   // coma y punto y coma de separación: blanco delante (CMU 5.1)
+        push(...cells); endNum(); i += [...key].length;
+        if ((key==='·' || (key==='|' && braces===0)) && nextSig(i)<ch.length && !')]},;.'.includes(ch[nextSig(i)])) push(0);   // semicajetín tras el punto de multiplicar y la barra (CMU 3.1, 5.4)
+        continue;
+      }
+      skipped++; i++;
+    }
+    while (out.length && out[out.length-1]===0) out.pop();
+    return {cells: out, skipped, endNum: num};
+  }
+  return text => line(text);
+})();
+window.__inkToMath = inkToMath;
+/* ---------- Transcribir un bloque de braille integral a estenografía (Documento técnico B 16-1) ----------
+   Se lee el bloque en tinta, se juntan las líneas de cada párrafo (y las palabras partidas al final de línea) y se
+   escribe cada palabra con el escritor de estenografía (STENO.encode: listado, principios, terminaciones, secuencias
+   y contracciones). Cada palabra se comprueba con el lector de estenografía; si el lector no la devolvería igual,
+   se escribe sin abreviar, con punto 5 delante. Mayúsculas con 46; siglas (dos o más mayúsculas) y números como en
+   braille integral; palabras con k o w, con punto 5 y sin abreviar. Signos de apertura y de cierre: los que se
+   confundirían con una contracción llevan punto 5 delante, como pide el lector. */
+const inkToSteno = (()=>{
+  const S = STENO, dk = S.dk, C5 = m('5');
+  const OPEN = {'¿':'26','¡':'235','“':'236','«':'236','"':'236','(':'126','[':'12356'};
+  const CLOSE = {'.':'3',',':'2',';':'23',':':'25','?':'26','!':'235','”':'236','»':'236','"':'236',')':'345',']':'23456'};
+  const LIT = w => textToCells(w).cells;
+  const sameWord = (cells, word) => {
+    const o = S.translateLine(cells), t = o.map(x=>x.t).join('');
+    return t===word;
+  };
+  /* Núcleo de la palabra (sin signos de puntuación) */
+  function core(w){
+    if (!w) return {cells:[], lit:false};
+    if (/\d/.test(w)) return {cells: LIT(w), lit:false};                         // números: como en integral
+    const letters = [...w].filter(ch=>/\p{L}/u.test(ch));
+    const caps = letters.filter(ch=>ch!==ch.toLowerCase()).length;
+    if (caps>1 || (caps===1 && w[0]===w[0].toLowerCase())) return {cells: LIT(w), lit:false};   // siglas: como en integral
+    const low = w.toLowerCase();
+    const plain = /^[a-záéíóúüñ]+$/.test(low) && !/[kw]/.test(low);
+    if (plain){
+      const enc = S.encode(low), cells = caps ? [CAP, ...enc] : enc;
+      if (sameWord(cells, w)) return {cells, lit:false};
+    }
+    /* sin abreviar: punto 5 y la palabra en integral (con k o w, o si el lector la leería de otra manera) */
+    const lit = LIT(w);
+    return {cells: [C5, ...lit], lit:true};
+  }
+  /* Palabra con sus signos: guiones de palabras compuestas, apertura y cierre */
+  function word(tok){
+    const ch = [...tok]; let a = 0, b = ch.length;
+    while (a<b && (OPEN[ch[a]] || ch[a]==='—')) a++;
+    while (b>a && CLOSE[ch[b-1]]) b--;
+    let ell = false; if (b>a+3 && ch.slice(b-3,b).join('')==='...'){ ell = true; b -= 3; } else if (b>a && ch[b-1]==='…'){ ell = true; b--; }
+    while (b>a && CLOSE[ch[b-1]]) b--;
+    const pre = ch.slice(0,a), body = ch.slice(a,b).join(''), post = ch.slice(b).filter(x=>x!=='.'||true);
+    /* palabras compuestas con guion: cada parte por separado */
+    const parts = body.split('-'), cs = []; let lit = 0;
+    parts.forEach((p,k)=>{ if (k) cs.push(m('36')); const r = core(p); cs.push(...r.cells); if (r.lit) lit++; });
+    /* apertura: sin punto 5 sólo ante mayúscula, número o punto 5 */
+    const first = cs[0], bare = first===CAP || first===NUM || first===C5;
+    const open = [];
+    for (const p of pre){
+      if (p==='—'){ open.push(m('36'), m('36')); continue; }
+      const c = m(OPEN[p]);
+      open.push(...(bare ? [c] : [C5, c]));
+    }
+    /* cierre: . , : ! ) y el guion van solos; los demás con punto 5 */
+    const close = [];
+    const tail = ch.slice(b).join('').replace(/\.\.\.|…/g,'…');
+    for (const p of [...tail]){
+      if (p==='…'){ close.push(m('3'), m('3'), m('3')); continue; }
+      const c = m(CLOSE[p]);
+      close.push(...('.,:!)'.includes(p) ? [c] : [C5, c]));
+    }
+    if (ell && !tail.includes('…')){ close.unshift(m('3'), m('3'), m('3')); }
+    let cells = open.concat(cs, close);
+    /* comprobación: si un cierre «solo» se lee como parte de la palabra, se pone con punto 5 */
+    const want = tok.replace(/\.\.\./g,'…').replace(/[«»"]/g, x=> x==='»' ? '”' : '“');
+    if (!sameWord(cells, want) && close.length){
+      const close5 = []; for (const p of [...tail]){ if (p==='…'){ close5.push(m('3'),m('3'),m('3')); continue; } if (p==='.'){ close5.push(m('3')); continue; } close5.push(C5, m(CLOSE[p])); }
+      const alt = open.concat(cs, close5); if (sameWord(alt, want)) cells = alt;
+    }
+    return {cells, lit};
+  }
+  /* Una línea de tinta: los espacios se conservan tal cual */
+  function line(text){
+    const out = []; let lit = 0, words = 0;
+    const toks = text.split(/( +)/);
+    for (const t of toks){
+      if (!t) continue;
+      if (/^ +$/.test(t)){ for (let k=0;k<t.length;k++) out.push(0); continue; }
+      const r = word(t); out.push(...r.cells); lit += r.lit; words++;
+    }
+    return {cells: out, lit, words};
+  }
+  return line;
+})();
+window.__inkToSteno = inkToSteno;
+/* Edición › Transcribir a estenografía: todos los bloques de braille integral de la hoja pasan a estenografía.
+   Los párrafos (dos celdas en blanco al comienzo) se vuelven a repartir en las líneas, porque la estenografía es
+   más corta; las líneas con cuatro o más celdas en blanco delante (títulos) quedan solas. Se guarda una copia de la
+   hoja para «Deshacer la transcripción», que vale hasta la siguiente modificación. */
+let stenoUndo = null, stenoBusy = false;
+function integralBlocks(){
+  const R = []; const L = doc.lines;
+  for (let i=0;i<L.length;i++){
+    if (!L[i].length) continue;
+    const s = i; let e = i; while (e+1<L.length && L[e+1].length) e++;
+    if (blockGrade(s)==='integral') R.push([s,e]);
+    i = e;
+  }
+  return R;
+}
+function stenoParagraphs(lines){
+  const P = [];
+  for (const cells of lines){
+    let lead = 0; while (lead<cells.length && cells[lead]===0) lead++;
+    const body = Translators.integral(cells).map(x=>x.t||'').join('').replace(/^\s+/,'').replace(/\s+$/,'');
+    const cur = P[P.length-1];
+    if (!cur || lead>=2 || cur.lead>=4){ P.push({lead, text:body}); continue; }
+    if (/\p{L}-$/u.test(cur.text) && /^\p{Ll}/u.test(body)) cur.text = cur.text.slice(0,-1) + body;   // palabra partida
+    else if (/-$/.test(cur.text) && body.startsWith('-')) cur.text += body.slice(1);                   // compuesta: el guion se repite
+    else cur.text += ' ' + body;
+  }
+  return P;
+}
+function openSteno(){
+  const B = integralBlocks();
+  if (!B.length){ say('No hay texto en braille integral en la hoja para transcribir'); flashMsg('Nada que transcribir'); return; }
+  const n = B.reduce((a,[s,e])=>a+e-s+1,0);
+  $('dlgStenoD').textContent = (n===1 ? 'Se transcribirá a estenografía la única línea' : 'Se transcribirán a estenografía las '+n+' líneas')+' en braille integral de la hoja. Los párrafos se vuelven a repartir en las líneas. Los bloques de matemáticas y los que ya están en estenografía no cambian. Las palabras que no se pueden abreviar se escriben sin abreviar, con punto 5 delante. Después puedes volver al texto original con Edición › Deshacer la transcripción.';
+  openDialog($('dlgSteno'));
+}
+function doSteno(){
+  const B = integralBlocks(); if (!B.length) return;
+  stenoBusy = true;
+  const snap = {lines: doc.lines.map(l=>l.slice()), grades: doc.lines.map((l,i)=>LG.get(l) || null)};
+  let words = 0, lit = 0, lines = 0;
+  for (let k=B.length-1; k>=0; k--){
+    const [s,e] = B[k], out = [];
+    for (const p of stenoParagraphs(doc.lines.slice(s,e+1))){
+      const r = inkToSteno(p.text); words += r.words; lit += r.lit;
+      const cells = Array(p.lead).fill(0).concat(r.cells);
+      wrapLine(cells).forEach(l=>{ while (l.length && l[l.length-1]===0) l.pop(); lgSet(l, 'steno'); out.push(l); });
+    }
+    lines += out.length;
+    doc.lines.splice(s, e-s+1, ...out);
+  }
+  const last = doc.lines[doc.lines.length-1];
+  if (last.length) lgSet(last, blockGrade(doc.lines.length-1));
+  stenoUndo = snap; $('undoStenoItem').hidden = false;
+  readPos = null; clearSel(); afterEdit(); syncCaretGrade(); stenoBusy = false;
+  const msg = 'Transcripción a estenografía terminada: '+words+(words===1?' palabra':' palabras')+' en '+lines+(lines===1?' línea':' líneas')+
+    (lit ? '. '+(lit===1 ? 'Una palabra quedó' : lit+' palabras quedaron')+' sin abreviar, con punto 5' : '')+'. Para volver al original: Edición, Deshacer la transcripción';
+  say(msg); flashMsg('Transcrito a estenografía');
+}
+function undoSteno(){
+  if (!stenoUndo){ say('No hay ninguna transcripción que deshacer'); return; }
+  const sn = stenoUndo; stenoUndo = null; stenoBusy = true;
+  doc.lines = sn.lines; doc.lines.forEach((l,i)=>{ if (sn.grades[i]) lgSet(l, sn.grades[i]); });
+  readPos = null; clearSel(); afterEdit(); syncCaretGrade(); stenoBusy = false;
+  $('undoStenoItem').hidden = true;
+  say('Transcripción deshecha: la hoja vuelve a estar como antes'); flashMsg('Transcripción deshecha');
+}
 function pasteText(text){
   if (text==null) return;
   text = String(text).replace(/\r\n?/g,'\n').replace(/\f/g,'');
   if (!text){ say('El portapapeles está vacío'); return; }
-  let lines, skipped = 0;
+  let lines, skipped = 0, asMath = false;
   if (clip && text===clip.text) lines = clip.cells;
   else if (/^[⠀-⣿ \n]*$/.test(text) && /[⠀-⣿]/.test(text))
     lines = text.split('\n').map(l=>[...l].map(ch=> ch===' ' ? 0 : (ch.charCodeAt(0)-0x2800) & 63));
+  else if (caretGrade()==='math'){ asMath = true; lines = text.split('\n').map(l=>{ const r = inkToMath(l); skipped += r.skipped; return r.cells; }); }
   else lines = text.split('\n').map(l=>{ const r = textToCells(l); skipped += r.skipped; return r.cells; });
   const n = lines.reduce((a,l)=>a+l.length,0);
   if (!n && lines.length<2){ say('No hay nada que pegar'); return; }
   insertCells(lines);
   const shown = text.replace(/\n/g,' ').trim();
-  say('Pegado: '+(shown.length<=80 ? shown : n+' celdas')+(skipped ? (skipped===1 ? '. Se omitió 1 signo que no existe' : '. Se omitieron '+skipped+' signos que no existen')+' en braille integral' : ''));
+  say((asMath ? 'Pegado en matemáticas: ' : 'Pegado: ')+(shown.length<=80 ? shown : n+' celdas')+(skipped ? (skipped===1 ? '. Se omitió 1 signo que no existe' : '. Se omitieron '+skipped+' signos que no existen')+(asMath ? ' en el Código Matemático' : ' en braille integral') : ''));
 }
 const sheetActive = () => { const a = document.activeElement; return !a || a===document.body || a===$('sheet') || a===$('brField'); };
 document.addEventListener('copy', e=>{ if (!sheetActive()) return; e.preventDefault(); const t = doCopy(); if (t==null) return;
@@ -5043,10 +5664,11 @@ const COMMANDS = {
   open: openWork, save: ()=>saveWork(false), saveAs: ()=>saveWork(true),
   chkNext: ()=>gotoProblem(1), chkPrev: ()=>gotoProblem(-1), warnErr: toggleWarn, seqKeys: ()=>setSeqKeys(!seqKeys), vibe: ()=>{ vibe = !vibe; syncVibe(); save(); say(vibe ? 'Vibración activada' : 'Vibración desactivada'); if (vibe) buzz('release'); },
   expDocx: openWord, expBrf: exportBRF, expUni: exportUni, expBan: exportBAN, expBra: exportBRA,
+  toSteno: openSteno, undoSteno: undoSteno,
   cut: ()=>menuCopy(true), copy: ()=>menuCopy(false), paste: menuPaste, selAll: selectAll, copyBr: copyBraille,
   viewInk: ()=>setView('ink'), viewBr: ()=>setView('braille'),
   size: openSize, orientV: ()=>setOrient('v'), orientH: ()=>setOrient('h'),
-  exit: exitApp,
+  exit: exitApp, close: closeWork,
   contrast: ()=>toggleContrast(), voice: ()=>toggleVoice(), brRead: ()=>toggleBrailleMode(), zoomIn: ()=>setZoom(+1), zoomOut: ()=>setZoom(-1), zoomReset: ()=>setZoom(0),
   gIntegral: ()=>setGrade('integral'), gSteno: ()=>setGrade('steno'), gMath: ()=>setGrade('math'),
   helpUse: ()=>openHelp('hUse'), helpSR: ()=>openHelp('hSR'), helpKeys: ()=>openHelp('hKeys'), helpSigns: ()=>openHelp('hSigns'), helpMath: ()=>openHelp('hMath'), helpSteno: ()=>openHelp('hSteno'), helpAbout: ()=>openHelp('hAbout')
@@ -5164,6 +5786,7 @@ $('dlgExit').addEventListener('close', ()=>{
 });
 /* Después de «Sí, guardar»: si se guardó, sale; si se canceló o falló, vuelve a la hoja */
 function afterExitSave(ok){
+  if (closeAfterSave){ closeAfterSave = false; if (ok) setTimeout(()=>{ const had = doc.fileName; blankSheet(); flashMsg('Hoja cerrada'); say('Guardado y cerrado '+had+'. Hoja nueva. Línea 1'); backToSheet(); }, 600); return; }
   if (!exitAfterSave) return; exitAfterSave = false;
   if (ok) setTimeout(leaveApp, 600);
 }
