@@ -5503,14 +5503,17 @@ const inkToSteno = (()=>{
       const c = m(OPEN[p]);
       open.push(...(bare ? [c] : [C5, c]));
     }
-    /* cierre: . , : ! ) y el guion van solos; los demás con punto 5 */
+    /* cierre: . , ; : ! ) y el guion van solos; los demás con punto 5.
+       Punto y coma tras una palabra que acaba en -bre y coma tras una que acaba en ab: con punto 5 (B 16-1) */
     const close = [];
     const tail = ch.slice(b).join('').replace(/\.\.\.|…/g,'…');
-    for (const p of [...tail]){
-      if (p==='…'){ close.push(m('3'), m('3'), m('3')); continue; }
+    const lastPart = (parts[parts.length-1]||'').toLowerCase();
+    [...tail].forEach((p,k)=>{
+      if (p==='…'){ close.push(m('3'), m('3'), m('3')); return; }
       const c = m(CLOSE[p]);
-      close.push(...('.,:!)'.includes(p) ? [c] : [C5, c]));
-    }
+      const confuse = k===0 && ((p===';' && /bre$/.test(lastPart)) || (p===',' && /ab$/.test(lastPart)));
+      close.push(...('.,;:!)'.includes(p) && !confuse ? [c] : [C5, c]));
+    });
     if (ell && !tail.includes('…')){ close.unshift(m('3'), m('3'), m('3')); }
     let cells = open.concat(cs, close);
     /* comprobación: si un cierre «solo» se lee como parte de la palabra, se pone con punto 5 */
