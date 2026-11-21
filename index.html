@@ -6218,7 +6218,9 @@ if (!doc.paper) doc.paper = (doc.width===40 && LINES_PER_PAGE===25) ? 'perkins' 
 syncOrientMenu();
 $('optTr').checked=showTr; $('optEmpty').checked=showEmpty; $('optSound').checked=sound; $('optVoice').checked=voice; syncVoiceUI();
 syncViewMenu();
-if (prefs.grade && Translators[prefs.grade]) grade = prefs.grade;
+/* La aplicación siempre empieza en braille integral, el modo que conoce la mayoría; los trabajos abiertos o recuperados
+   conservan la signografía de cada bloque. */
+grade = 'integral';
 /* Signografía de cada línea guardada; los documentos anteriores toman la signografía que estaba activa */
 if (isExample) doc.lines.forEach(l=>lgSet(l,'integral'));
 else if (Array.isArray(doc.lg) && doc.lg.length===doc.lines.length) doc.lines.forEach((l,i)=>lgSet(l, Translators[doc.lg[i]] ? doc.lg[i] : 'integral'));
