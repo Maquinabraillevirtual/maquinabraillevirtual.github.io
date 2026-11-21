@@ -237,6 +237,8 @@ dialog.help[open]{display:flex;flex-direction:column}
 .grade-ind b{color:var(--accent)}
 .menu [aria-disabled="true"]{color:var(--muted)}
 dialog input[type="text"]{font:inherit;font-size:15px;padding:7px 9px;border:1px solid var(--key-edge);border-radius:6px;background:var(--paper);color:var(--ink);flex:1;min-width:0}
+dialog .hint{font-size:13px;color:var(--muted);margin:-4px 0 6px}
+#findText.cells{font-size:22px;letter-spacing:.08em}
 dialog input[type="text"]:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
 .btn.danger-fill{background:var(--bell);color:#fff;border-color:var(--bell);font-weight:700}
 /* Lectura de la hoja en la línea braille */
@@ -292,6 +294,11 @@ dialog input[type="text"]:focus-visible{outline:2px solid var(--accent);outline-
           <li role="none"><button role="menuitem" tabindex="-1" data-cmd="paste" aria-keyshortcuts="Control+V"><span class="chk"></span>Pegar<span class="sc">Ctrl+V</span></button></li>
           <li role="separator"></li>
           <li role="none"><button role="menuitem" tabindex="-1" data-cmd="selAll" aria-keyshortcuts="Control+A"><span class="chk"></span>Seleccionar todo<span class="sc">Ctrl+A</span></button></li>
+          <li role="separator"></li>
+          <li role="none"><button role="menuitem" tabindex="-1" data-cmd="find" aria-keyshortcuts="Control+B"><span class="chk"></span>Buscar…<span class="sc">Ctrl+B</span></button></li>
+          <li role="none"><button role="menuitem" tabindex="-1" data-cmd="findNext" aria-keyshortcuts="F9"><span class="chk"></span>Buscar siguiente<span class="sc">F9</span></button></li>
+          <li role="none"><button role="menuitem" tabindex="-1" data-cmd="findPrev" aria-keyshortcuts="Shift+F9"><span class="chk"></span>Buscar anterior<span class="sc">Mayús+F9</span></button></li>
+          <li role="none"><button role="menuitem" tabindex="-1" data-cmd="goPage" aria-keyshortcuts="Control+I"><span class="chk"></span>Ir a la hoja…<span class="sc">Ctrl+I</span></button></li>
           <li role="separator"></li>
           <li role="none"><button role="menuitem" tabindex="-1" data-cmd="copyBr"><span class="chk"></span>Copiar como braille Unicode</button></li>
           <li role="separator"></li>
@@ -379,6 +386,18 @@ dialog input[type="text"]:focus-visible{outline:2px solid var(--accent);outline-
           <li><b>Control + Fin</b> vuelve al punto de escritura, al final de la hoja.</li>
           <li><b>F3</b> dice la palabra donde está el cursor y los puntos de cada celda, agrupados por lo que representan. En estenografía, por ejemplo: «lección. 3 celdas: l, puntos 1 2 3; ección, puntos 1 5, 3 4 5 6». Si no hay cursor de lectura, dice la última palabra escrita.</li>
           <li><b>F4</b> lee la línea donde está el cursor y <b>F8</b> lee toda la hoja; con la voz de la aplicación, <b>F8</b> otra vez o <b>Escape</b> detienen la lectura (con el lector de pantalla, se detiene con su propia tecla, Control en NVDA y JAWS).</li>
+        </ul>
+        <h4>Buscar e ir a una hoja</h4>
+        <ul>
+          <li><b>Control + B</b> (Edición › Buscar…) abre el cuadro de búsqueda. Elige dónde buscar:
+            <ul>
+              <li><b>Texto en tinta:</b> escribe con el teclado común lo que quieres encontrar, tal como lo lee la máquina. Sirve en braille integral, estenografía, matemáticas y química. En estenografía escribe la palabra completa (lección), sin preocuparte de cómo se abrevió. No distingue mayúsculas ni tildes, pero sí la ñ. Una palabra partida con guion al final de la línea se encuentra entera.</li>
+              <li><b>Celdas braille:</b> escribe las celdas con F, D, S, J, K y L, como en la hoja (la barra espaciadora pone una celda en blanco). Se buscan esas celdas exactas, en cualquier signografía. Sirve, por ejemplo, para encontrar un signo de matemáticas o una celda escrita por error.</li>
+            </ul>
+          </li>
+          <li>Enter o el botón <b>Buscar siguiente</b> lleva a la siguiente coincidencia desde el cursor; el botón <b>Buscar anterior</b>, a la anterior. Se lee cuántas hay (por ejemplo «2 de 5»), la hoja, la línea y su texto, y lo encontrado queda resaltado.</li>
+          <li><b>F9</b> busca otra vez lo mismo hacia adelante y <b>Mayúsculas + F9</b> hacia atrás. Al llegar al final, se sigue desde el principio, y se avisa.</li>
+          <li><b>Control + I</b> (Edición › Ir a la hoja…) lleva a una hoja: escribe su número y, si quieres, la línea dentro de esa hoja (Tab para pasar al campo Línea). Se lee la hoja, la línea y su texto. Las hojas son las del tamaño de hoja elegido en Formato, las mismas de la exportación.</li>
         </ul>
         <h4>Revisar la escritura</h4>
         <ul>
@@ -491,6 +510,7 @@ dialog input[type="text"]:focus-visible{outline:2px solid var(--accent);outline-
           <li><b>Control + Mayúsculas + 1, 2, 3 o 4:</b> braille integral, estenografía, matemáticas o química</li>
           <li><b>Control + Más / Menos / 0:</b> aumentar, reducir o restablecer el zoom · <b>Control + Mayúsculas + C:</b> fondo oscuro · <b>Control + Mayúsculas + V:</b> voz de la aplicación · <b>Alt + L:</b> modo línea braille · <b>Alt + Mayúsculas + L:</b> celdas exactas sí o no</li>
           <li><b>F7:</b> siguiente problema de escritura · <b>Mayúsculas + F7:</b> problema anterior</li>
+          <li><b>Control + B:</b> buscar · <b>F9:</b> buscar siguiente · <b>Mayúsculas + F9:</b> buscar anterior · <b>Control + I:</b> ir a la hoja</li>
           <li><b>Control + U:</b> nueva hoja (pregunta antes de borrar) · <b>Control + R:</b> cerrar el trabajo · <b>Control + G:</b> guardar · <b>Control + Mayúsculas + G:</b> guardar como · <b>Control + O:</b> abrir</li>
           <li><b>F1:</b> ayuda · <b>F2:</b> cambiar vista · <b>F3:</b> puntos de la palabra · <b>F4:</b> leer línea · <b>F8:</b> leer hoja</li>
           <li><b>Alt + A:</b> Archivo · <b>Alt + E:</b> Edición · <b>Alt + V:</b> Ver · <b>Alt + O:</b> Formato · <b>Alt + S:</b> Signografía · <b>Alt + Y:</b> Ayuda · <b>F10:</b> barra de menús</li>
@@ -2011,6 +2031,26 @@ dialog input[type="text"]:focus-visible{outline:2px solid var(--accent);outline-
       <h2 id="dlgCloseT">Cerrar</h2>
       <p id="dlgCloseD"></p>
       <div class="dlg-btns"><button class="btn primary" value="yes" autofocus>Sí, guardar</button><button class="btn danger-fill" value="no">No</button><button class="btn" value="cancel">Cancelar</button></div>
+    </form>
+  </dialog>
+  <dialog id="dlgFind" aria-labelledby="dlgFindT">
+    <form method="dialog">
+      <h2 id="dlgFindT">Buscar</h2>
+      <label class="field">Buscar en
+        <select id="findMode"><option value="text">Texto en tinta</option><option value="cells">Celdas braille</option></select>
+      </label>
+      <label class="field"><span id="findLbl">Texto</span> <input id="findText" type="text" autocomplete="off" spellcheck="false" aria-describedby="findHint"></label>
+      <p id="findHint" class="hint"></p>
+      <div class="dlg-btns"><button class="btn" value="cancel">Cancelar</button><button class="btn" value="prev">Buscar anterior</button><button class="btn primary" value="next">Buscar siguiente</button></div>
+    </form>
+  </dialog>
+  <dialog id="dlgGo" aria-labelledby="dlgGoT" aria-describedby="dlgGoD">
+    <form method="dialog">
+      <h2 id="dlgGoT">Ir a la hoja</h2>
+      <p id="dlgGoD"></p>
+      <label class="field">Hoja <input id="goPage" type="text" inputmode="numeric" autocomplete="off" maxlength="4"></label>
+      <label class="field">Línea <input id="goLine" type="text" inputmode="numeric" autocomplete="off" maxlength="3"></label>
+      <div class="dlg-btns"><button class="btn" value="cancel">Cancelar</button><button class="btn primary" value="ok">Ir</button></div>
     </form>
   </dialog>
   <dialog id="dlgSteno" aria-labelledby="dlgStenoT" aria-describedby="dlgStenoD">
@@ -4188,7 +4228,10 @@ window.addEventListener('keydown', e=>{
     if (e.code==='KeyO' && !e.shiftKey){ e.preventDefault(); closeMenus(); if (!e.repeat) openWork(); return; }
     if (e.code==='KeyR' && !e.shiftKey){ e.preventDefault(); closeMenus(); if (!e.repeat) closeWork(); return; }   // como en Word en español (Cerrar)
     if (e.code==='KeyU' && !e.shiftKey){ e.preventDefault(); closeMenus(); if (!e.repeat) openDialog($('dlgNew')); return; }   // como en Word en español
+    if (e.code==='KeyB' && !e.shiftKey){ e.preventDefault(); closeMenus(); if (!e.repeat) openFind(); return; }    // como en Word en español (Buscar)
+    if (e.code==='KeyI' && !e.shiftKey){ e.preventDefault(); closeMenus(); if (!e.repeat) openGo(); return; }      // como en Word en español (Ir a)
   }
+  if (e.key==='F9' && !e.ctrlKey && !e.altKey && !e.metaKey){ e.preventDefault(); closeMenus(); if (!e.repeat) findAgain(e.shiftKey ? -1 : 1); return; }
   if ((e.ctrlKey || e.metaKey) && e.shiftKey && !e.altKey && GRADE_KEYS[e.code]){ e.preventDefault(); closeMenus(); setGrade(GRADE_KEYS[e.code]); return; }
   if (e.target && e.target.closest && e.target.closest('#menubar')) return;        // la barra de menús maneja sus teclas
   if (e.target && (e.target.tagName==='SELECT' || e.target.tagName==='INPUT')) return;
@@ -5366,6 +5409,154 @@ function gotoProblem(dir){
   flashMsg((nE ? nE+(nE===1?' error':' errores') : '') + (nE && nS ? ', ' : '') + (nS ? nS+(nS===1?' sugerencia':' sugerencias') : ''));
   sayRaw((p.level==='error'?'Error':'Sugerencia')+' '+(k+1)+' de '+P.length+'. Línea '+(p.line+1)+', celda '+(p.a+1)+'. '+p.msg);
 }
+/* ---------- Buscar e ir a la hoja ----------
+   Buscar texto: busca en lo que la máquina lee (la tinta de cada línea), en cualquier signografía; en estenografía se
+   escribe la palabra completa («lección») y no hace falta saber cómo se abrevió. Sin distinguir mayúsculas ni tildes
+   (la ñ sí se distingue). Las palabras partidas con guion al final de la línea se encuentran enteras.
+   Buscar celdas braille: busca las celdas exactas, escritas en el cuadro con F D S J K L (o pegadas en braille Unicode).
+   F9 busca el siguiente y Mayúsculas + F9 el anterior; al llegar al final se sigue desde el principio. */
+let findQ = null;                 // {mode:'text'|'cells', text, cells}
+const pageOf = li => Math.floor(li / LINES_PER_PAGE) + 1, lineInPage = li => li % LINES_PER_PAGE + 1;
+function foldText(t){
+  const out = [], idx = [];
+  [...t].forEach((ch, i)=>{ let f = ch.toLowerCase();
+    if (f!=='ñ') f = f.normalize('NFD').replace(/[̀-ͯ]/g,'');
+    for (const c of f){ out.push(c); idx.push(i); } });
+  return {s: out.join(''), idx};
+}
+function sheetIsEmpty(){ return isExample || doc.lines.every(l=>!l.length); }
+function findMatches(q){
+  syncField();
+  const res = [];
+  if (q.mode==='cells'){
+    const n = q.cells.length; if (!n) return res;
+    doc.lines.forEach((l, li)=>{ for (let i=0; i+n<=l.length; i++){ let ok = true; for (let k=0;k<n;k++) if (l[i+k]!==q.cells[k]){ ok = false; break; } if (ok) res.push({line:li, a:i, b:i+n-1}); } });
+    return res;
+  }
+  const Q = foldText(q.text.trim().replace(/\s+/g,' ')).s; if (!Q) return res;
+  inkTexts.forEach((t, li)=>{
+    const map = charMaps[li]||[], line = doc.lines[li], items = translate(line);
+    const chars = [...t], F = foldText(t);
+    /* columnas de la tinta en unidades de inkTexts (cada carácter puede ocupar más de una unidad) */
+    const unit = []; { let u = 0; chars.forEach(c=>{ unit.push(u); u += c.length; }); }
+    for (let k = F.s.indexOf(Q); k>=0; k = F.s.indexOf(Q, k+1)){
+      const c0 = unit[F.idx[k]], c1 = unit[F.idx[k+Q.length-1]];
+      let a = map[c0], b = map[c1]; if (a===undefined || b===undefined) continue;
+      while (a>0 && line[a-1]!==0 && items[a-1] && items[a-1].t==='') a--;            // signos de mayúscula o número delante
+      res.push({line:li, a, b});
+    }
+    /* palabra partida al final de esta línea: se busca entera */
+    const sp = lineSplit(li);
+    if (sp && sp.kind==='word' && foldText(sp.word).s.includes(Q)){
+      const [ca, cb] = sp.cellsA, [, eb] = sp.cellsB;
+      const already = res.some(r=>(r.line===li && r.a>=ca && r.a<=cb) || (r.line===li+1 && r.a<eb));
+      if (!already) res.push({line:li, a:ca, b:cb, split:true});
+    }
+  });
+  res.sort((x,y)=>x.line-y.line || x.a-y.a);
+  return res;
+}
+function landOn(m, li){
+  clearSel();
+  readPos = {line:m.line, cell:m.a}; syncField(); readPos.col = colFromCell(m.line, m.a);
+  computeSel(); readSel = {line:m.line, a:m.a, b:m.b}; renderSheet();
+}
+function where(li){ return 'Hoja '+pageOf(li)+', línea '+lineInPage(li); }
+function findAgain(dir){
+  if (!findQ){ openFind(); return; }
+  if (sheetIsEmpty()){ say('La hoja está vacía'); flashMsg('La hoja está vacía'); return; }
+  const M = findMatches(findQ), label = findQ.mode==='cells' ? 'esas celdas' : '«'+findQ.text.trim()+'»';
+  if (!M.length){ sayRaw('No se encontró '+label+'.'); flashMsg('No se encontró'); return; }
+  const here = ordOf(caretPos()), ords = M.map(m=>ordOf({line:m.line, cell:m.a}));
+  let k, wrapped = false;
+  if (dir>0){
+    if (!readPos) k = 0;                                // desde el punto de escritura (al final): se empieza por el principio
+    else { k = ords.findIndex(o=>o>here); if (k<0){ k = 0; wrapped = true; } }
+  } else { k = -1; for (let i=0;i<ords.length;i++) if (ords[i]<here) k = i; if (k<0){ k = M.length-1; wrapped = true; } }
+  const m = M[k];
+  landOn(m);
+  const g = blockGrade(m.line), tx = lineText(doc.lines[m.line]);
+  flashMsg((k+1)+' de '+M.length);
+  sayRaw(speakFor((wrapped ? (dir>0 ? 'Se continuó desde el principio. ' : 'Se continuó desde el final. ') : '') +
+    (k+1)+' de '+M.length+'. '+where(m.line)+(m.split ? ', palabra partida' : '')+': '+tx, g).replace(/\s+,/g,','), true);
+}
+/* Cuadro Buscar */
+function syncFindMode(){
+  const cells = $('findMode').value==='cells', f = $('findText');
+  f.classList.toggle('cells', cells);
+  $('findLbl').textContent = cells ? 'Celdas' : 'Texto';
+  $('findHint').textContent = cells
+    ? 'Escribe las celdas con las teclas F, D, S, J, K y L, como en la hoja; la barra espaciadora pone una celda en blanco. Se buscan esas celdas exactas, en cualquier signografía.'
+    : 'Escribe con el teclado común lo que quieres encontrar, tal como lo lee la máquina. En estenografía, escribe la palabra completa. No distingue mayúsculas ni tildes.';
+}
+function openFind(){
+  if (findQ){ $('findMode').value = findQ.mode; $('findText').value = findQ.mode==='cells' ? findQ.cells.map(c=>String.fromCharCode(0x2800+c)).join('') : findQ.text; }
+  syncFindMode(); openDialog($('dlgFind'));
+  setTimeout(()=>{ $('findText').focus(); $('findText').select(); }, 0);
+}
+$('findMode').addEventListener('change', ()=>{ $('findText').value = ''; syncFindMode(); });
+/* En modo celdas: las teclas F D S J K L forman la celda (como en la hoja) y se escribe al soltarlas todas */
+let fChord = 0; const fDown = new Set();
+const FIND_BITS = {KeyF:1, KeyD:2, KeyS:4, KeyJ:8, KeyK:16, KeyL:32};
+function putFindCell(c){
+  const f = $('findText'), a = f.selectionStart ?? f.value.length, b = f.selectionEnd ?? a;
+  f.value = f.value.slice(0,a) + String.fromCharCode(0x2800+c) + f.value.slice(b); f.selectionStart = f.selectionEnd = a+1;
+  say(c ? 'puntos '+dotsOf(c).join(' ') : 'celda en blanco');
+}
+$('findText').addEventListener('keydown', e=>{
+  if (e.key==='Enter'){ e.preventDefault(); $('dlgFind').close('next'); return; }
+  if ($('findMode').value!=='cells' || e.ctrlKey || e.altKey || e.metaKey) return;
+  if (FIND_BITS[e.code]){ e.preventDefault(); if (!e.repeat){ fDown.add(e.code); fChord |= FIND_BITS[e.code]; } return; }
+  if (e.code==='Space'){ e.preventDefault(); if (!e.repeat && !fChord) putFindCell(0); return; }
+  if (e.key.length===1 && !brailleCell(e.key) && brailleCell(e.key)!==0) e.preventDefault();   // otras letras no se escriben
+});
+$('findText').addEventListener('keyup', e=>{
+  if (!FIND_BITS[e.code] || $('findMode').value!=='cells') return;
+  fDown.delete(e.code); if (!fDown.size && fChord){ const c = fChord; fChord = 0; putFindCell(c); }
+});
+$('findText').addEventListener('input', ()=>{          // en modo celdas sólo quedan signos braille (p. ej. pegados o desde una línea braille)
+  if ($('findMode').value!=='cells') return;
+  const f = $('findText'), v = f.value.replace(/ /g,'⠀').replace(/[^⠀-⣿]/g,''); if (v!==f.value) f.value = v;
+});
+$('dlgFind').addEventListener('close', ()=>{
+  const v = $('dlgFind').returnValue; $('dlgFind').returnValue = ''; fChord = 0; fDown.clear();
+  backToSheet();
+  if (v!=='next' && v!=='prev') return;
+  const mode = $('findMode').value, raw = $('findText').value;
+  if (mode==='cells'){ const cells = [...raw].map(ch=>brailleCell(ch)).filter(c=>c!==null);
+    if (!cells.length){ setTimeout(()=>say('No escribiste ninguna celda para buscar'), 60); return; }
+    findQ = {mode, cells}; }
+  else { if (!raw.trim()){ setTimeout(()=>say('No escribiste nada para buscar'), 60); return; } findQ = {mode, text: raw}; }
+  setTimeout(()=>findAgain(v==='prev' ? -1 : 1), 60);
+});
+/* Cuadro Ir a la hoja */
+function openGo(){
+  if (sheetIsEmpty()){ say('La hoja está vacía'); flashMsg('La hoja está vacía'); return; }
+  const n = Math.ceil(doc.lines.length / LINES_PER_PAGE), li = readPos ? readPos.line : doc.lines.length-1;
+  $('dlgGoD').textContent = 'El texto tiene '+n+(n===1?' hoja':' hojas')+' de '+LINES_PER_PAGE+' líneas. Estás en la hoja '+pageOf(li)+', línea '+lineInPage(li)+'. Si dejas la línea vacía, vas a la primera línea de la hoja.';
+  $('goPage').value = ''; $('goLine').value = '';
+  openDialog($('dlgGo')); setTimeout(()=>$('goPage').focus(), 0);
+}
+['goPage','goLine'].forEach(id=>$(id).addEventListener('keydown', e=>{ if (e.key==='Enter'){ e.preventDefault(); $('dlgGo').close('ok'); } }));
+$('dlgGo').addEventListener('close', ()=>{
+  const v = $('dlgGo').returnValue; $('dlgGo').returnValue = '';
+  backToSheet(); if (v!=='ok') return;
+  const n = Math.ceil(doc.lines.length / LINES_PER_PAGE);
+  const P = parseInt($('goPage').value, 10), Lraw = $('goLine').value.trim(), L = Lraw ? parseInt(Lraw, 10) : 1;
+  setTimeout(()=>{
+    if (!(P>=1)){ say('Escribe el número de la hoja'); return; }
+    if (P>n){ sayRaw('El texto tiene '+n+(n===1?' hoja.':' hojas.')); flashMsg(n+(n===1?' hoja':' hojas')); return; }
+    if (!(L>=1 && L<=LINES_PER_PAGE)){ sayRaw('La línea debe ser de 1 a '+LINES_PER_PAGE+'.'); return; }
+    let li = (P-1)*LINES_PER_PAGE + (L-1), note = '';
+    if (li>doc.lines.length-1){ li = doc.lines.length-1; note = 'El texto termina en la línea '+lineInPage(li)+' de la hoja '+P+'. '; }
+    clearSel();
+    if (li===doc.lines.length-1 && !doc.lines[li].length) readPos = null;
+    else { readPos = {line:li, cell:0}; syncField(); readPos.col = 0; }
+    computeSel(); renderSheet();
+    flashMsg(where(li));
+    sayRaw(speakFor(note+where(li)+': '+lineText(doc.lines[li]), blockGrade(li)).replace(/\s+,/g,','), true);
+  }, 60);
+});
 /* Al pasar de línea: aviso breve si la línea terminada tiene errores (no se cuentan los paréntesis que siguen abiertos) */
 function lineWarning(li){
   if (!warnErrors) return '';
@@ -6008,7 +6199,7 @@ const COMMANDS = {
   centerTitles: ()=>{ centerTitles = !centerTitles; syncCenterTitles(); save(); say(centerTitles ? 'Los títulos se centrarán al exportar' : 'Los títulos se exportarán tal como están en la hoja'); },
   expDocx: openWord, expBrf: exportBRF, expUni: exportUni, expBan: exportBAN, expBra: exportBRA,
   toSteno: openSteno, undoSteno: undoSteno,
-  cut: ()=>menuCopy(true), copy: ()=>menuCopy(false), paste: menuPaste, selAll: selectAll, copyBr: copyBraille,
+  cut: ()=>menuCopy(true), copy: ()=>menuCopy(false), paste: menuPaste, selAll: selectAll, copyBr: copyBraille, find: openFind, findNext: ()=>findAgain(1), findPrev: ()=>findAgain(-1), goPage: openGo,
   viewInk: ()=>setView('ink'), viewBr: ()=>setView('braille'),
   size: openSize, orientV: ()=>setOrient('v'), orientH: ()=>setOrient('h'),
   exit: exitApp, close: closeWork,
