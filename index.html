@@ -280,7 +280,6 @@ dialog input[type="text"]:focus-visible{outline:2px solid var(--accent);outline-
           <li role="none"><button role="menuitem" tabindex="-1" data-cmd="expUni"><span class="chk"></span>Exportar a braille Unicode</button></li>
           <li role="none"><button role="menuitem" tabindex="-1" data-cmd="expBra"><span class="chk"></span>Exportar a braille ASCII español (.bra)</button></li>
           <li role="none"><button role="menuitem" tabindex="-1" data-cmd="expBan"><span class="chk"></span>Exportar a braille ANSI español (.ban)</button></li>
-          <li role="none"><button role="menuitemcheckbox" tabindex="-1" data-cmd="centerTitles" aria-checked="true" id="centerTitlesItem"><span class="chk" aria-hidden="true">✓</span>Centrar los títulos al exportar</button></li>
           <li role="separator"></li>
           <li role="none"><button role="menuitem" tabindex="-1" data-cmd="close" aria-keyshortcuts="Control+R"><span class="chk"></span>Cerrar<span class="sc">Ctrl+R</span></button></li>
           <li role="none"><button role="menuitem" tabindex="-1" data-cmd="exit"><span class="chk"></span>Salir</button></li>
@@ -298,6 +297,8 @@ dialog input[type="text"]:focus-visible{outline:2px solid var(--accent);outline-
           <li role="separator"></li>
           <li role="none"><button role="menuitem" tabindex="-1" data-cmd="toSteno"><span class="chk"></span>Transcribir a estenografía…</button></li>
           <li role="none" id="undoStenoItem" hidden><button role="menuitem" tabindex="-1" data-cmd="undoSteno"><span class="chk"></span>Deshacer la transcripción</button></li>
+          <li role="separator"></li>
+          <li role="none"><button role="menuitemcheckbox" tabindex="-1" data-cmd="centerTitles" aria-checked="true" id="centerTitlesItem"><span class="chk" aria-hidden="true">✓</span>Centrar los títulos al exportar</button></li>
           <li role="separator"></li>
           <li role="none"><button role="menuitem" tabindex="-1" data-cmd="chkNext" aria-keyshortcuts="F7"><span class="chk"></span>Revisar: problema siguiente<span class="sc">F7</span></button></li>
           <li role="none"><button role="menuitem" tabindex="-1" data-cmd="chkPrev" aria-keyshortcuts="Shift+F7"><span class="chk"></span>Revisar: problema anterior<span class="sc">Mayús+F7</span></button></li>
@@ -427,7 +428,7 @@ dialog input[type="text"]:focus-visible{outline:2px solid var(--accent);outline-
           <li><b>Archivo › Exportar a Word, en tinta (.docx)</b> crea un documento de Word en escritura común para entregar al profesor. Los bloques de Matemáticas salen como <b>ecuaciones de Word</b>: fracciones apiladas, potencias, subíndices, raíces y periodos con su raya; los paréntesis auxiliares no aparecen, porque solo sirven en braille. Los bloques de braille integral y estenografía salen como texto, con la cursiva de los resaltes. Los <b>párrafos</b> se reconocen como en braille: un párrafo empieza con <b>dos celdas en blanco</b> al comienzo de la línea; las líneas que siguen sin sangría se juntan en Word en un texto corrido, y las palabras partidas con guion salen enteras. Una línea con cuatro o más celdas en blanco delante (un título centrado) sale sola y centrada. Arriba puedes poner un título, el nombre del estudiante y la fecha. El botón <b>Escuchar el trabajo</b> lee todo antes de exportar, para comprobarlo. El profesor puede corregirlo en Word y guardarlo como PDF.</li>
           <li><b>Archivo › Exportar a BRF</b> crea un archivo para imprimir en una impresora braille. <b>Exportar a braille Unicode</b> crea un texto con los signos braille.</li>
           <li><b>Exportar a braille ASCII español (.bra)</b> crea un archivo en el formato habitual de la ONCE y <b>Exportar a braille ANSI español (.ban)</b> uno con la tabla ANSI española de la Comisión Braille Española (documento técnico V 1). Ambos se abren y se imprimen con el Visualizador Braille de la ONCE.</li>
-          <li><b>Títulos centrados:</b> al exportar a BRF, braille Unicode, .bra y .ban, toda línea que empieza con <b>cuatro o más celdas en blanco</b> se considera un título y sale centrada en el ancho de la hoja (por ejemplo, 40 celdas en la hoja Perkins o 30 en A4). Basta con escribir el título con cuatro espacios o más delante, sin contar cuántos. La hoja no cambia: sólo el archivo exportado. Si un título ocupa varias líneas, cada una se centra. Para los párrafos deja dos celdas en blanco al comienzo, como siempre; esas líneas no se centran. Si no quieres este comportamiento (por ejemplo, en un poema o una cita con sangría grande), desmarca <b>Archivo › Centrar los títulos al exportar</b>.</li>
+          <li><b>Títulos centrados:</b> al exportar a BRF, braille Unicode, .bra y .ban, toda línea que empieza con <b>cuatro o más celdas en blanco</b> se considera un título y sale centrada en el ancho de la hoja (por ejemplo, 40 celdas en la hoja Perkins o 30 en A4). Basta con escribir el título con cuatro espacios o más delante, sin contar cuántos. La hoja no cambia: sólo el archivo exportado. Si un título ocupa varias líneas, cada una se centra. Para los párrafos deja dos celdas en blanco al comienzo, como siempre; esas líneas no se centran. Si no quieres este comportamiento (por ejemplo, en un poema o una cita con sangría grande), desmarca <b>Edición › Centrar los títulos al exportar</b>.</li>
           <li>BRF, .bra y .ban guardan los puntos de cada celda, no el texto: conservan tal cual lo escrito en braille integral, estenografía o matemáticas. Al volver a abrirlos se pierde qué signografía tenía cada bloque; para seguir un trabajo, usa Guardar (.pks).</li>
           <li><b>Formato › Tamaño de hoja</b> elige el papel (hoja braille de la máquina Perkins, A4 o carta), la orientación y las celdas por línea y líneas por hoja. Al elegir un papel se ponen las medidas que caben en él, y puedes ajustarlas a mano para tu impresora braille (el papel pasa a «Personalizado»).</li>
           <li><b>Formato › Orientación vertical</b> (la habitual, por defecto) u <b>Orientación horizontal</b> giran la hoja, como en las opciones de impresión de las impresoras braille: en horizontal las líneas son más largas y caben menos por hoja. Por ejemplo, en A4 vertical caben 30 celdas y 27 líneas, y en horizontal 44 celdas y 18 líneas. La hoja de la Perkins es casi cuadrada y al girarla cambia muy poco (40 × 25 en vertical, 40 × 24 en horizontal).</li>
@@ -4613,7 +4614,7 @@ function copy(text, label){
 const BRF_ASCII = " A1B'K2L@CIF/MSP\"E3H9O6R^DJG>NTQ,*5<-U8V.%[$+X!&;:4\\0Z7(_?W]#Y)=";
 /* Títulos centrados al exportar a BRF, Unicode, .bra y .ban: una línea con cuatro o más celdas en blanco delante
    (la misma regla que usan la transcripción a estenografía y la exportación a Word) se centra en el ancho de la hoja.
-   La hoja no cambia; sólo el archivo exportado. Se puede desactivar en Archivo › Centrar los títulos al exportar. */
+   La hoja no cambia; sólo el archivo exportado. Se puede desactivar en Edición › Centrar los títulos al exportar. */
 let centerTitles = true;
 function exportLines(){
   if (!centerTitles) return doc.lines;
@@ -5987,7 +5988,8 @@ function copyBraille(){
    Alt+A/E/V/O o F10 la abren; flechas para recorrer, Intro para elegir, Escape vuelve a la hoja. */
 const TOPS = [...document.querySelectorAll('#menubar .mb')];
 const menuOf = top => $(top.getAttribute('aria-controls'));
-const itemsOf = menu => [...menu.querySelectorAll('[role^="menuitem"]')];
+/* Opciones visibles del menú: las ocultas (como «Deshacer la transcripción» sin nada que deshacer) se saltan */
+const itemsOf = menu => [...menu.querySelectorAll('[role^="menuitem"]')].filter(b=>!b.closest('[hidden]:not(.menu)'));
 function focusTop(top){ TOPS.forEach(t=>t.tabIndex = t===top ? 0 : -1); top.focus(); }
 function closeMenus(){ TOPS.forEach(t=>{ t.setAttribute('aria-expanded','false'); menuOf(t).hidden = true; }); }
 function openMenu(top, which){
