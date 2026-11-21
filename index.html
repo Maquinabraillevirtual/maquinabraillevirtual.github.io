@@ -311,6 +311,7 @@ dialog input[type="text"]:focus-visible{outline:2px solid var(--accent);outline-
           <li role="none"><button role="menuitemcheckbox" tabindex="-1" data-cmd="contrast" aria-checked="false" aria-keyshortcuts="Control+Shift+C"><span class="chk" aria-hidden="true"></span>Fondo oscuro y letras blancas<span class="sc">Ctrl+Mayús+C</span></button></li>
           <li role="none"><button role="menuitemcheckbox" tabindex="-1" data-cmd="voice" aria-checked="false" aria-keyshortcuts="Control+Shift+V"><span class="chk" aria-hidden="true"></span>Voz de la aplicación<span class="sc">Ctrl+Mayús+V</span></button></li>
           <li role="none"><button role="menuitemcheckbox" tabindex="-1" data-cmd="brRead" aria-checked="false" aria-keyshortcuts="Alt+L"><span class="chk" aria-hidden="true"></span>Modo línea braille<span class="sc">Alt+L</span></button></li>
+          <li role="none"><button role="menuitemcheckbox" tabindex="-1" data-cmd="brCells" aria-checked="false" aria-keyshortcuts="Alt+Shift+L"><span class="chk" aria-hidden="true"></span>Celdas exactas en la línea braille<span class="sc">Alt+Mayús+L</span></button></li>
           <li role="none"><button role="menuitemcheckbox" tabindex="-1" data-cmd="seqKeys" aria-checked="false"><span class="chk" aria-hidden="true"></span>Teclas en pantalla punto por punto</button></li>
           <li role="none" id="vibeItem" hidden><button role="menuitemcheckbox" tabindex="-1" data-cmd="vibe" aria-checked="true"><span class="chk" aria-hidden="true">✓</span>Vibración al escribir</button></li>
           <li role="separator"></li>
@@ -453,7 +454,7 @@ dialog input[type="text"]:focus-visible{outline:2px solid var(--accent);outline-
           <li>Para escribir con el teclado braille de la línea (por ejemplo, una Edge 40), elige en el lector de pantalla la tabla de entrada <b>Unicode braille</b>. En NVDA: menú de NVDA › Preferencias › Opciones › Braille › Tabla de entrada. Así cada pulsación llega como su celda braille y se escribe tal cual, en braille integral, estenografía o matemáticas.</li>
           <li>Con otra tabla de entrada (por ejemplo, español grado 1) la línea envía letras y no celdas, y la aplicación no las escribe.</li>
           <li>Para <b>ver en la línea braille lo que escribes</b>, activa el <b>modo línea braille</b> con <b>Alt + L</b> (o Ver › Modo línea braille). La hoja se muestra en un campo de texto: la línea braille enseña la línea actual con su cursor y se actualiza con cada celda que escribes; puedes recorrer la hoja con las flechas o con las teclas de la línea. Se escribe igual que siempre. <b>Alt + L</b> o <b>Escape</b> salen del modo.</li>
-          <li>En el panel del modo hay dos botones. <b>Texto</b> (por defecto) muestra la tinta, que el lector pasa a braille con su tabla de salida habitual. <b>Celdas exactas</b> muestra las celdas tal como se escribieron (también las abreviaturas de estenografía y los signos matemáticos); para leerlas así, la tabla de salida del lector debe ser <b>español computarizado de 8 puntos</b>.</li>
+          <li>En el panel del modo hay dos botones. <b>Texto</b> (por defecto) muestra la tinta, que el lector pasa a braille con su tabla de salida habitual. <b>Celdas exactas</b> muestra las celdas tal como se escribieron (también las abreviaturas de estenografía y los signos matemáticos); para leerlas así, la tabla de salida del lector debe ser <b>español computarizado de 8 puntos</b>. <b>Alt + Mayúsculas + L</b> (o Ver › Celdas exactas en la línea braille) las activa o desactiva y dice cómo quedaron; al activar el modo con Alt + L también se dice cuál está en uso. Con celdas exactas, si NVDA lee el campo con la voz, nombra los caracteres de esa tabla («interrogación» por la celda 26, «número» por la 3456): para oír la palabra, usa F3 o F4.</li>
           <li>En este modo los anuncios de la aplicación (cada letra, la palabra, la lectura con las flechas) no se envían al lector de pantalla, para que no tapen la línea del texto en la línea braille. Si quieres oírlos, activa la voz de la aplicación con <b>Control + Mayúsculas + V</b>. F4 y F8 sí se envían.</li>
           <li>En este modo NVDA puede repetir las teclas F, D, S, J, K, L si escribes con el teclado de la computadora, porque la hoja se comporta como un campo de texto; escribiendo desde la línea braille no ocurre.</li>
           <li>Lo que anuncia la aplicación (cada letra, la palabra al pulsar la barra espaciadora, la lectura con las flechas, F4 y F8) aparece en la línea como mensaje. Para que no desaparezca enseguida, en NVDA: Opciones › Braille › Mostrar mensajes: «Indefinidamente», o aumenta la duración de los mensajes.</li>
@@ -483,7 +484,7 @@ dialog input[type="text"]:focus-visible{outline:2px solid var(--accent);outline-
           <li><b>Mayúsculas + flechas:</b> seleccionar · <b>Control + A:</b> seleccionar todo</li>
           <li><b>Control + X / C / V:</b> cortar, copiar y pegar · <b>Escape:</b> cancelar la selección</li>
           <li><b>Control + Mayúsculas + 1, 2 o 3:</b> braille integral, estenografía o matemáticas</li>
-          <li><b>Control + Más / Menos / 0:</b> aumentar, reducir o restablecer el zoom · <b>Control + Mayúsculas + C:</b> fondo oscuro · <b>Control + Mayúsculas + V:</b> voz de la aplicación · <b>Alt + L:</b> modo línea braille</li>
+          <li><b>Control + Más / Menos / 0:</b> aumentar, reducir o restablecer el zoom · <b>Control + Mayúsculas + C:</b> fondo oscuro · <b>Control + Mayúsculas + V:</b> voz de la aplicación · <b>Alt + L:</b> modo línea braille · <b>Alt + Mayúsculas + L:</b> celdas exactas sí o no</li>
           <li><b>F7:</b> siguiente problema de escritura · <b>Mayúsculas + F7:</b> problema anterior</li>
           <li><b>Control + U:</b> nueva hoja (pregunta antes de borrar) · <b>Control + R:</b> cerrar el trabajo · <b>Control + G:</b> guardar · <b>Control + Mayúsculas + G:</b> guardar como · <b>Control + O:</b> abrir</li>
           <li><b>F1:</b> ayuda · <b>F2:</b> cambiar vista · <b>F3:</b> puntos de la palabra · <b>F4:</b> leer línea · <b>F8:</b> leer hoja</li>
@@ -3881,6 +3882,7 @@ window.addEventListener('keydown', e=>{
   if (e.key==='Escape' && readingAll){ e.preventDefault(); stopReading(); return; }
   const brKey = (e.altKey && !e.ctrlKey && !e.metaKey && !e.shiftKey && e.code==='KeyL') || ((e.ctrlKey||e.metaKey) && e.shiftKey && !e.altKey && e.code==='KeyL');
   if (brKey){ e.preventDefault(); closeMenus(); toggleBrailleMode(); return; }
+  if (e.altKey && e.shiftKey && !e.ctrlKey && !e.metaKey && e.code==='KeyL'){ e.preventDefault(); closeMenus(); toggleBrCells(); return; }
   if (e.target && e.target.closest && e.target.closest('#brReader')){
     if (e.key==='Escape' && !hasSel()){ e.preventDefault(); toggleBrailleMode(false); return; }
     if (e.target.id!=='brField') return;                                        // botones del panel: teclado normal
@@ -5704,7 +5706,7 @@ const COMMANDS = {
   viewInk: ()=>setView('ink'), viewBr: ()=>setView('braille'),
   size: openSize, orientV: ()=>setOrient('v'), orientH: ()=>setOrient('h'),
   exit: exitApp, close: closeWork,
-  contrast: ()=>toggleContrast(), voice: ()=>toggleVoice(), brRead: ()=>toggleBrailleMode(), zoomIn: ()=>setZoom(+1), zoomOut: ()=>setZoom(-1), zoomReset: ()=>setZoom(0),
+  contrast: ()=>toggleContrast(), voice: ()=>toggleVoice(), brRead: ()=>toggleBrailleMode(), brCells: ()=>toggleBrCells(), zoomIn: ()=>setZoom(+1), zoomOut: ()=>setZoom(-1), zoomReset: ()=>setZoom(0),
   gIntegral: ()=>setGrade('integral'), gSteno: ()=>setGrade('steno'), gMath: ()=>setGrade('math'),
   helpUse: ()=>openHelp('hUse'), helpSR: ()=>openHelp('hSR'), helpKeys: ()=>openHelp('hKeys'), helpSigns: ()=>openHelp('hSigns'), helpMath: ()=>openHelp('hMath'), helpSteno: ()=>openHelp('hSteno'), helpAbout: ()=>openHelp('hAbout')
 };
@@ -5792,7 +5794,7 @@ function toggleBrailleMode(on){
   $('brReader').hidden = !on;
   const mi = document.querySelector('[data-cmd="brRead"]');
   if (mi){ mi.setAttribute('aria-checked', on); mi.querySelector('.chk').textContent = on ? '✓' : ''; }
-  if (on){ syncBrField(); $('brField').focus({preventScroll:true}); syncBrField(); say('Modo línea braille activado', true); }
+  if (on){ syncBrField(); $('brField').focus({preventScroll:true}); syncBrField(); say('Modo línea braille activado, '+(brMode==='cells' ? 'con celdas exactas' : 'con texto en tinta'), true); }
   else { $('sheet').focus({preventScroll:true}); say('Modo línea braille desactivado', true); }
 }
 /* Mientras el modo está activo, todo lo que daría el foco a la hoja lo da al campo */
@@ -5800,12 +5802,25 @@ $('sheet').addEventListener('focus', ()=>{ if (brLive) setTimeout(()=>{ $('brFie
 $('brField').addEventListener('focus', ()=>{ $('focusHint').hidden = true; });
 function setBrMode(m){
   brMode = m; try{ localStorage.setItem(STORE+'-brmode', m); }catch(e){}
-  syncBrField();
-  announce(m==='text' ? 'Texto' : 'Celdas exactas. Requiere la tabla de salida español computarizado de 8 puntos', true);
+  syncBrField(); syncBrCellsUI();
+  announce(m==='text' ? 'Celdas exactas desactivadas: texto en tinta' : 'Celdas exactas activadas. Requiere la tabla de salida español computarizado de 8 puntos', true);
+}
+/* Alt + Mayúsculas + L: celdas exactas sí o no, con aviso */
+function toggleBrCells(){
+  brMode = brMode==='cells' ? 'text' : 'cells'; try{ localStorage.setItem(STORE+'-brmode', brMode); }catch(e){}
+  syncBrField(); syncBrCellsUI();
+  const extra = brLive ? '' : '. Se aplica en el modo línea braille, Alt + L';
+  say(brMode==='cells' ? 'Celdas exactas activadas: la línea braille muestra las celdas tal como se escribieron. Requiere la tabla de salida español computarizado de 8 puntos'+extra
+                       : 'Celdas exactas desactivadas: la línea braille muestra el texto en tinta'+extra, true);
+}
+function syncBrCellsUI(){
+  const mi = document.querySelector('[data-cmd="brCells"]');
+  if (mi){ mi.setAttribute('aria-checked', brMode==='cells'); mi.querySelector('.chk').textContent = brMode==='cells' ? '✓' : ''; }
 }
 $('brModeText').addEventListener('click', ()=>{ setBrMode('text'); $('brField').focus(); syncBrField(); });
 $('brModeCells').addEventListener('click', ()=>{ setBrMode('cells'); $('brField').focus(); syncBrField(); });
 $('brBack').addEventListener('click', ()=>toggleBrailleMode(false));
+syncBrCellsUI();
 /* Salir: el navegador sólo deja cerrar pestañas abiertas por un script; si no se cierra, se muestra la pantalla de salida */
 let exitAfterSave = false, leaving = false;
 window.addEventListener('beforeunload', e=>{ if (!leaving && isDirty()){ e.preventDefault(); e.returnValue = ''; } });
