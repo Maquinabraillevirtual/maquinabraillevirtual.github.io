@@ -454,7 +454,7 @@ dialog input[type="text"]:focus-visible{outline:2px solid var(--accent);outline-
           <li>Para escribir con el teclado braille de la línea (por ejemplo, una Edge 40), elige en el lector de pantalla la tabla de entrada <b>Unicode braille</b>. En NVDA: menú de NVDA › Preferencias › Opciones › Braille › Tabla de entrada. Así cada pulsación llega como su celda braille y se escribe tal cual, en braille integral, estenografía o matemáticas.</li>
           <li>Con otra tabla de entrada (por ejemplo, español grado 1) la línea envía letras y no celdas, y la aplicación no las escribe.</li>
           <li>Para <b>ver en la línea braille lo que escribes</b>, activa el <b>modo línea braille</b> con <b>Alt + L</b> (o Ver › Modo línea braille). La hoja se muestra en un campo de texto: la línea braille enseña la línea actual con su cursor y se actualiza con cada celda que escribes; puedes recorrer la hoja con las flechas o con las teclas de la línea. Se escribe igual que siempre. <b>Alt + L</b> o <b>Escape</b> salen del modo.</li>
-          <li>En el panel del modo hay dos botones. <b>Texto</b> (por defecto) muestra la tinta, que el lector pasa a braille con su tabla de salida habitual. <b>Celdas exactas</b> muestra las celdas tal como se escribieron (también las abreviaturas de estenografía y los signos matemáticos); para leerlas así, la tabla de salida del lector debe ser <b>español computarizado de 8 puntos</b>. <b>Alt + Mayúsculas + L</b> (o Ver › Celdas exactas en la línea braille) las activa o desactiva y dice cómo quedaron; al activar el modo con Alt + L también se dice cuál está en uso. Con celdas exactas, si NVDA lee el campo con la voz, nombra los caracteres de esa tabla («interrogación» por la celda 26, «número» por la 3456): para oír la palabra, usa F3 o F4.</li>
+          <li>En el panel del modo hay dos botones. <b>Texto</b> (por defecto) muestra la tinta, que el lector pasa a braille con su tabla de salida habitual. <b>Celdas exactas</b> muestra las celdas tal como se escribieron (también las abreviaturas de estenografía y los signos matemáticos); para leerlas así, la tabla de salida del lector debe ser <b>español computarizado de 8 puntos</b>. <b>Alt + Mayúsculas + L</b> (o Ver › Celdas exactas en la línea braille) las activa o desactiva y dice cómo quedaron; al activar el modo con Alt + L también se dice cuál está en uso. Cada vez que se abre la aplicación empieza con Texto. Con celdas exactas, si NVDA lee el campo con la voz, nombra los caracteres de esa tabla («interrogación» por la celda 26, «número» por la 3456): para oír la palabra, usa F3 o F4.</li>
           <li>En este modo los anuncios de la aplicación (cada letra, la palabra, la lectura con las flechas) no se envían al lector de pantalla, para que no tapen la línea del texto en la línea braille. Si quieres oírlos, activa la voz de la aplicación con <b>Control + Mayúsculas + V</b>. F4 y F8 sí se envían.</li>
           <li>En este modo NVDA puede repetir las teclas F, D, S, J, K, L si escribes con el teclado de la computadora, porque la hoja se comporta como un campo de texto; escribiendo desde la línea braille no ocurre.</li>
           <li>Lo que anuncia la aplicación (cada letra, la palabra al pulsar la barra espaciadora, la lectura con las flechas, F4 y F8) aparece en la línea como mensaje. Para que no desaparezca enseguida, en NVDA: Opciones › Braille › Mostrar mensajes: «Indefinidamente», o aumenta la duración de los mensajes.</li>
@@ -5773,7 +5773,7 @@ function setGrade(g){
    - Celdas exactas: cada celda con su carácter de la tabla ANSI española (la de los archivos .ban). Con la tabla de salida
      «español computarizado de 8 puntos» la línea braille muestra exactamente las celdas escritas. */
 var brLive = false, brMode = 'text';
-try{ if (localStorage.getItem(STORE+'-brmode')==='cells') brMode = 'cells'; }catch(e){}
+try{ localStorage.removeItem(STORE+'-brmode'); }catch(e){}   // al abrir, siempre texto en tinta: las celdas exactas se activan cada vez
 const brPlain = s => s.replace(/[⁄∕]/g,'/').replace(/−/g,'-').replace(/\u00a0/g,' ');
 function syncBrField(){
   if (!brLive) return;
@@ -5801,13 +5801,13 @@ function toggleBrailleMode(on){
 $('sheet').addEventListener('focus', ()=>{ if (brLive) setTimeout(()=>{ $('brField').focus({preventScroll:true}); syncBrField(); }, 0); });
 $('brField').addEventListener('focus', ()=>{ $('focusHint').hidden = true; });
 function setBrMode(m){
-  brMode = m; try{ localStorage.setItem(STORE+'-brmode', m); }catch(e){}
+  brMode = m;
   syncBrField(); syncBrCellsUI();
   announce(m==='text' ? 'Celdas exactas desactivadas: texto en tinta' : 'Celdas exactas activadas. Requiere la tabla de salida español computarizado de 8 puntos', true);
 }
 /* Alt + Mayúsculas + L: celdas exactas sí o no, con aviso */
 function toggleBrCells(){
-  brMode = brMode==='cells' ? 'text' : 'cells'; try{ localStorage.setItem(STORE+'-brmode', brMode); }catch(e){}
+  brMode = brMode==='cells' ? 'text' : 'cells';
   syncBrField(); syncBrCellsUI();
   const extra = brLive ? '' : '. Se aplica en el modo línea braille, Alt + L';
   say(brMode==='cells' ? 'Celdas exactas activadas: la línea braille muestra las celdas tal como se escribieron. Requiere la tabla de salida español computarizado de 8 puntos'+extra
