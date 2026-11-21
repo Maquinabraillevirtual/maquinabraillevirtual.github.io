@@ -280,6 +280,7 @@ dialog input[type="text"]:focus-visible{outline:2px solid var(--accent);outline-
           <li role="none"><button role="menuitem" tabindex="-1" data-cmd="expUni"><span class="chk"></span>Exportar a braille Unicode</button></li>
           <li role="none"><button role="menuitem" tabindex="-1" data-cmd="expBra"><span class="chk"></span>Exportar a braille ASCII español (.bra)</button></li>
           <li role="none"><button role="menuitem" tabindex="-1" data-cmd="expBan"><span class="chk"></span>Exportar a braille ANSI español (.ban)</button></li>
+          <li role="none"><button role="menuitemcheckbox" tabindex="-1" data-cmd="centerTitles" aria-checked="true" id="centerTitlesItem"><span class="chk" aria-hidden="true">✓</span>Centrar los títulos al exportar</button></li>
           <li role="separator"></li>
           <li role="none"><button role="menuitem" tabindex="-1" data-cmd="close" aria-keyshortcuts="Control+R"><span class="chk"></span>Cerrar<span class="sc">Ctrl+R</span></button></li>
           <li role="none"><button role="menuitem" tabindex="-1" data-cmd="exit"><span class="chk"></span>Salir</button></li>
@@ -426,6 +427,7 @@ dialog input[type="text"]:focus-visible{outline:2px solid var(--accent);outline-
           <li><b>Archivo › Exportar a Word, en tinta (.docx)</b> crea un documento de Word en escritura común para entregar al profesor. Los bloques de Matemáticas salen como <b>ecuaciones de Word</b>: fracciones apiladas, potencias, subíndices, raíces y periodos con su raya; los paréntesis auxiliares no aparecen, porque solo sirven en braille. Los bloques de braille integral y estenografía salen como texto, con la cursiva de los resaltes. Los <b>párrafos</b> se reconocen como en braille: un párrafo empieza con <b>dos celdas en blanco</b> al comienzo de la línea; las líneas que siguen sin sangría se juntan en Word en un texto corrido, y las palabras partidas con guion salen enteras. Una línea con cuatro o más celdas en blanco delante (un título centrado) sale sola y centrada. Arriba puedes poner un título, el nombre del estudiante y la fecha. El botón <b>Escuchar el trabajo</b> lee todo antes de exportar, para comprobarlo. El profesor puede corregirlo en Word y guardarlo como PDF.</li>
           <li><b>Archivo › Exportar a BRF</b> crea un archivo para imprimir en una impresora braille. <b>Exportar a braille Unicode</b> crea un texto con los signos braille.</li>
           <li><b>Exportar a braille ASCII español (.bra)</b> crea un archivo en el formato habitual de la ONCE y <b>Exportar a braille ANSI español (.ban)</b> uno con la tabla ANSI española de la Comisión Braille Española (documento técnico V 1). Ambos se abren y se imprimen con el Visualizador Braille de la ONCE.</li>
+          <li><b>Títulos centrados:</b> al exportar a BRF, braille Unicode, .bra y .ban, toda línea que empieza con <b>cuatro o más celdas en blanco</b> se considera un título y sale centrada en el ancho de la hoja (por ejemplo, 40 celdas en la hoja Perkins o 30 en A4). Basta con escribir el título con cuatro espacios o más delante, sin contar cuántos. La hoja no cambia: sólo el archivo exportado. Si un título ocupa varias líneas, cada una se centra. Para los párrafos deja dos celdas en blanco al comienzo, como siempre; esas líneas no se centran. Si no quieres este comportamiento (por ejemplo, en un poema o una cita con sangría grande), desmarca <b>Archivo › Centrar los títulos al exportar</b>.</li>
           <li>BRF, .bra y .ban guardan los puntos de cada celda, no el texto: conservan tal cual lo escrito en braille integral, estenografía o matemáticas. Al volver a abrirlos se pierde qué signografía tenía cada bloque; para seguir un trabajo, usa Guardar (.pks).</li>
           <li><b>Formato › Tamaño de hoja</b> elige el papel (hoja braille de la máquina Perkins, A4 o carta), la orientación y las celdas por línea y líneas por hoja. Al elegir un papel se ponen las medidas que caben en él, y puedes ajustarlas a mano para tu impresora braille (el papel pasa a «Personalizado»).</li>
           <li><b>Formato › Orientación vertical</b> (la habitual, por defecto) u <b>Orientación horizontal</b> giran la hoja, como en las opciones de impresión de las impresoras braille: en horizontal las líneas son más largas y caben menos por hoja. Por ejemplo, en A4 vertical caben 30 celdas y 27 líneas, y en horizontal 44 celdas y 18 líneas. La hoja de la Perkins es casi cuadrada y al girarla cambia muy poco (40 × 25 en vertical, 40 × 24 en horizontal).</li>
@@ -3829,7 +3831,7 @@ const prefs = {};
 let recoverable = null;
 function save(){
   /* Las preferencias se guardan siempre, aunque la hoja tenga todavía el texto de ejemplo */
-  try{ localStorage.setItem(STORE+'-prefs', JSON.stringify({view,showTr,showEmpty,sound,voice,cellSize,volume,grade,contrast,zoom,warnErrors,seqKeys,vibe,student:prefs.student||''})); }catch(e){}
+  try{ localStorage.setItem(STORE+'-prefs', JSON.stringify({view,showTr,showEmpty,sound,voice,cellSize,volume,grade,contrast,zoom,warnErrors,seqKeys,vibe,centerTitles,student:prefs.student||''})); }catch(e){}
   if (isExample) return;
   try{ localStorage.setItem(STORE, JSON.stringify({lines:doc.lines,lg:doc.lines.map((l,i)=>effGrade(i)),width:doc.width,pageLines:LINES_PER_PAGE,orient:curOrient(),paper:curPaper(),fileName:doc.fileName||'',savedSig:doc.savedSig||'',discarded:!!doc.discarded,prefs:{view,showTr,showEmpty,sound,voice,cellSize,volume,grade,contrast,zoom}})); }catch(e){}
 }
@@ -4609,9 +4611,25 @@ function copy(text, label){
    líneas con CRLF y salto de página (form feed) cada 25 líneas, como la hoja de la Perkins.
    El visor no permite descargar archivos .brf, así que va dentro de un .zip. */
 const BRF_ASCII = " A1B'K2L@CIF/MSP\"E3H9O6R^DJG>NTQ,*5<-U8V.%[$+X!&;:4\\0Z7(_?W]#Y)=";
+/* Títulos centrados al exportar a BRF, Unicode, .bra y .ban: una línea con cuatro o más celdas en blanco delante
+   (la misma regla que usan la transcripción a estenografía y la exportación a Word) se centra en el ancho de la hoja.
+   La hoja no cambia; sólo el archivo exportado. Se puede desactivar en Archivo › Centrar los títulos al exportar. */
+let centerTitles = true;
+function exportLines(){
+  if (!centerTitles) return doc.lines;
+  return doc.lines.map(l=>{
+    let lead = 0; while (lead<l.length && l[lead]===0) lead++;
+    if (lead<4 || lead===l.length) return l;
+    let end = l.length; while (end>lead && l[end-1]===0) end--;
+    const body = l.slice(lead, end), pad = Math.max(0, Math.floor((doc.width - body.length)/2));
+    return new Array(pad).fill(0).concat(body);
+  });
+}
+function syncCenterTitles(){ const b = document.getElementById('centerTitlesItem'); if (!b) return;
+  b.setAttribute('aria-checked', centerTitles); b.querySelector('.chk').textContent = centerTitles ? '✓' : ''; }
 function pages(cellToChar, nl, ff){
   let out = '';
-  doc.lines.forEach((l,i)=>{
+  exportLines().forEach((l,i)=>{
     if (i>0) out += (i % LINES_PER_PAGE === 0) ? nl + ff : nl;
     out += l.map(cellToChar).join('').replace(/[ ⠀]+$/,'');
   });
@@ -4946,7 +4964,7 @@ const BAN_IN = [208,194,195,201,217,226,203,219,211,212,218,197,199,205,221,230,
    como en los archivos de la ONCE, las hojas se separan completando cada una con líneas en blanco. */
 function spanishBraille(cellToByte){
   const out = [];
-  doc.lines.forEach((l,i)=>{
+  exportLines().forEach((l,i)=>{
     if (i>0) out.push(13,10);
     let cells = l.slice(); while (cells.length && cells[cells.length-1]===0) cells.pop();
     cells.forEach(c=>out.push(cellToByte(c & 63)));
@@ -5985,6 +6003,7 @@ const COMMANDS = {
   new: ()=>openDialog($('dlgNew')),
   open: openWork, save: ()=>saveWork(false), saveAs: ()=>saveWork(true),
   chkNext: ()=>gotoProblem(1), chkPrev: ()=>gotoProblem(-1), warnErr: toggleWarn, seqKeys: ()=>setSeqKeys(!seqKeys), vibe: ()=>{ vibe = !vibe; syncVibe(); save(); say(vibe ? 'Vibración activada' : 'Vibración desactivada'); if (vibe) buzz('release'); },
+  centerTitles: ()=>{ centerTitles = !centerTitles; syncCenterTitles(); save(); say(centerTitles ? 'Los títulos se centrarán al exportar' : 'Los títulos se exportarán tal como están en la hoja'); },
   expDocx: openWord, expBrf: exportBRF, expUni: exportUni, expBan: exportBAN, expBra: exportBRA,
   toSteno: openSteno, undoSteno: undoSteno,
   cut: ()=>menuCopy(true), copy: ()=>menuCopy(false), paste: menuPaste, selAll: selectAll, copyBr: copyBraille,
@@ -6206,7 +6225,7 @@ else if (Array.isArray(doc.lg) && doc.lg.length===doc.lines.length) doc.lines.fo
 else doc.lines.forEach(l=>lgSet(l, grade));
 delete doc.lg;
 syncGradeUI();
-contrast = !!prefs.contrast; if ('warnErrors' in prefs) warnErrors = !!prefs.warnErrors; syncWarnMenu(); if (prefs.seqKeys) setSeqKeys(true, true); if ('vibe' in prefs) vibe = !!prefs.vibe; syncVibe(); if (prefs.zoom>=1 && prefs.zoom<=2) zoom = prefs.zoom;
+contrast = !!prefs.contrast; if ('warnErrors' in prefs) warnErrors = !!prefs.warnErrors; syncWarnMenu(); if (prefs.seqKeys) setSeqKeys(true, true); if ('vibe' in prefs) vibe = !!prefs.vibe; syncVibe(); if ('centerTitles' in prefs) centerTitles = !!prefs.centerTitles; syncCenterTitles(); if (prefs.zoom>=1 && prefs.zoom<=2) zoom = prefs.zoom;
 applyContrast(); applyZoom();
 render();
 setDocTitle();
