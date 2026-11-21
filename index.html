@@ -333,6 +333,7 @@ dialog input[type="text"]:focus-visible{outline:2px solid var(--accent);outline-
           <li role="none"><button role="menuitemradio" tabindex="-1" data-cmd="gIntegral" data-grade="integral" aria-checked="true" aria-keyshortcuts="Control+Shift+1"><span class="chk" aria-hidden="true">●</span>Braille integral<span class="sc">Ctrl+Mayús+1</span></button></li>
           <li role="none"><button role="menuitemradio" tabindex="-1" data-cmd="gSteno" data-grade="steno" aria-checked="false" aria-keyshortcuts="Control+Shift+2"><span class="chk" aria-hidden="true"></span>Estenografía (B 16-1)<span class="sc">Ctrl+Mayús+2</span></button></li>
           <li role="none"><button role="menuitemradio" tabindex="-1" data-cmd="gMath" data-grade="math" aria-checked="false" aria-keyshortcuts="Control+Shift+3"><span class="chk" aria-hidden="true"></span>Matemáticas (Código Matemático Unificado)<span class="sc">Ctrl+Mayús+3</span></button></li>
+          <li role="none"><button role="menuitemradio" tabindex="-1" data-cmd="gChem" data-grade="chem" aria-checked="false" aria-keyshortcuts="Control+Shift+4"><span class="chk" aria-hidden="true"></span>Química lineal (B 6-1)<span class="sc">Ctrl+Mayús+4</span></button></li>
         </ul>
       </li>
       <li role="none"><button class="mb" role="menuitem" id="mbHelp" aria-haspopup="menu" aria-expanded="false" aria-controls="mHelp" aria-keyshortcuts="Alt+Y" tabindex="-1"><span>A<u>y</u>uda</span></button>
@@ -342,6 +343,7 @@ dialog input[type="text"]:focus-visible{outline:2px solid var(--accent);outline-
           <li role="none"><button role="menuitem" tabindex="-1" data-cmd="helpSigns"><span class="chk"></span>Tabla de signos de braille integral</button></li>
           <li role="none"><button role="menuitem" tabindex="-1" data-cmd="helpSteno"><span class="chk"></span>Estenografía: signos y listado de palabras</button></li>
           <li role="none"><button role="menuitem" tabindex="-1" data-cmd="helpMath"><span class="chk"></span>Matemáticas: signos del Código Matemático Unificado</button></li>
+          <li role="none"><button role="menuitem" tabindex="-1" data-cmd="helpChem"><span class="chk"></span>Química lineal: signos del B 6-1</button></li>
           <li role="none"><button role="menuitem" tabindex="-1" data-cmd="helpKeys"><span class="chk"></span>Atajos de teclado</button></li>
           <li role="separator"></li>
           <li role="none"><button role="menuitem" tabindex="-1" data-cmd="helpAbout"><span class="chk"></span>Acerca de la Máquina Braille Virtual</button></li>
@@ -405,7 +407,7 @@ dialog input[type="text"]:focus-visible{outline:2px solid var(--accent);outline-
         </ul>
         <h4>Signografía</h4>
         <ul>
-          <li>Arriba a la derecha se indica la signografía del lugar donde está el cursor. Se cambia en el menú <b>Signografía</b> (Alt + S) o con <b>Control + Mayúsculas + 1, 2 o 3</b>.</li>
+          <li>Arriba a la derecha se indica la signografía del lugar donde está el cursor. Se cambia en el menú <b>Signografía</b> (Alt + S) o con <b>Control + Mayúsculas + 1, 2, 3 o 4</b>.</li>
           <li>Un documento puede mezclar signografías por <b>bloques</b>: un bloque es un grupo de líneas seguidas, y entre bloques de distinta signografía hay siempre una línea en blanco, como en los textos escolares. Cada bloque se lee, se revisa y se guarda con su propia signografía.</li>
           <li>Si cambias de signografía en el punto de escritura, la aplicación deja la línea en blanco y empieza un bloque nuevo. Lo escrito antes conserva su signografía.</li>
           <li>Si pones el cursor dentro de un bloque ya escrito (con las flechas) y cambias de signografía, ese bloque pasa a la nueva. Sirve para corregir un bloque escrito con la signografía equivocada.</li>
@@ -483,7 +485,7 @@ dialog input[type="text"]:focus-visible{outline:2px solid var(--accent);outline-
           <li><b>Flechas:</b> leer · <b>Control + flechas:</b> palabra por palabra · <b>Control + Fin:</b> punto de escritura</li>
           <li><b>Mayúsculas + flechas:</b> seleccionar · <b>Control + A:</b> seleccionar todo</li>
           <li><b>Control + X / C / V:</b> cortar, copiar y pegar · <b>Escape:</b> cancelar la selección</li>
-          <li><b>Control + Mayúsculas + 1, 2 o 3:</b> braille integral, estenografía o matemáticas</li>
+          <li><b>Control + Mayúsculas + 1, 2, 3 o 4:</b> braille integral, estenografía, matemáticas o química</li>
           <li><b>Control + Más / Menos / 0:</b> aumentar, reducir o restablecer el zoom · <b>Control + Mayúsculas + C:</b> fondo oscuro · <b>Control + Mayúsculas + V:</b> voz de la aplicación · <b>Alt + L:</b> modo línea braille · <b>Alt + Mayúsculas + L:</b> celdas exactas sí o no</li>
           <li><b>F7:</b> siguiente problema de escritura · <b>Mayúsculas + F7:</b> problema anterior</li>
           <li><b>Control + U:</b> nueva hoja (pregunta antes de borrar) · <b>Control + R:</b> cerrar el trabajo · <b>Control + G:</b> guardar · <b>Control + Mayúsculas + G:</b> guardar como · <b>Control + O:</b> abrir</li>
@@ -913,6 +915,78 @@ dialog input[type="text"]:focus-visible{outline:2px solid var(--accent);outline-
 </tbody></table>
 <p class="tnote">Los puntos 456 – 1234, 456 – 234 y 456 – 1235 son monedas solo junto a un número; en otro caso son los primos, «verdadero» y los reales.</p>
 <p class="tnote">Fuente: Código Matemático Unificado para Iberoamérica (Consejo Iberoamericano del Braille, 2023).</p>
+      </section>
+      <section>
+        <h3 id="hChem" tabindex="-1">Química lineal: documento técnico B 6-1</h3>
+        <p>Con <b>Signografía › Química lineal</b> (Control + Mayúsculas + 4) la hoja se lee según el documento técnico B 6-1 de la Comisión Braille Española, <i>Signografía braille para química lineal</i> (versión 1, 2014). Funciona por bloques, como Matemáticas: el bloque donde está el cursor se lee como química. Lo que se pega desde Word en un bloque de química se transcribe con esta signografía: H2SO4, H₂SO₄, Na⁺, SO4^2-, 2H2 + O2 → 2H2O, CuSO4·5H2O, O2(g).</p>
+        <ul>
+          <li>Cada símbolo lleva <b>46</b> delante: Na es 46 – 1345 – 1; NaCl, 46 – 1345 – 1 – 46 – 14 – 123.</li>
+          <li>Los <b>subíndices numéricos</b> van en posición baja, sin signo de número, pegados al símbolo o al paréntesis que cierra el grupo. Los <b>coeficientes</b> llevan signo de número.</li>
+          <li>Las <b>flechas</b> y los <b>operadores</b> (+, =) van entre espacios. El <b>estado físico</b> y las flechas de gas y de precipitado van pegados a la fórmula.</li>
+          <li>Se lee cada fórmula por sus símbolos y números («H 2 S O 4»), las cargas («carga 2 menos»), los estados («gas», «acuoso») y las flechas («produce», «en equilibrio con»). F3 da los puntos de cada parte.</li>
+          <li>Es una primera etapa, con química lineal. La química bidimensional (B 6-2) no está incluida.</li>
+        </ul>
+<h4>Fórmulas, subíndices y coeficientes</h4>
+<table class="signs" aria-labelledby="tqF">
+<caption id="tqF">Fórmulas, subíndices y coeficientes</caption>
+<thead><tr><th scope="col">Signo</th><th scope="col">Puntos</th><th scope="col"><span aria-hidden="true">Celda</span></th></tr></thead>
+<tbody>
+<tr><th scope="row">H₂O (agua)</th><td>46 – 125 – 23 – 46 – 135</td><td class="bc" aria-hidden="true">⠨⠓⠆⠨⠕</td></tr>
+<tr><th scope="row">H₂SO₄ (ácido sulfúrico)</th><td>46 – 125 – 23 – 46 – 234 – 46 – 135 – 256</td><td class="bc" aria-hidden="true">⠨⠓⠆⠨⠎⠨⠕⠲</td></tr>
+<tr><th scope="row">2H₂O (coeficiente con signo de número)</th><td>3456 – 12 – 46 – 125 – 23 – 46 – 135</td><td class="bc" aria-hidden="true">⠼⠃⠨⠓⠆⠨⠕</td></tr>
+<tr><th scope="row">(NH₄)₂SO₄ (grupo con subíndice)</th><td>126 – 46 – 1345 – 46 – 125 – 256 – 345 – 23 – 46 – 234 – 46 – 135 – 256</td><td class="bc" aria-hidden="true">⠣⠨⠝⠨⠓⠲⠜⠆⠨⠎⠨⠕⠲</td></tr>
+<tr><th scope="row">Cₙ (subíndice alfanumérico, 34)</th><td>46 – 14 – 34 – 1345</td><td class="bc" aria-hidden="true">⠨⠉⠌⠝</td></tr>
+<tr><th scope="row">C₂ₙ (más de un carácter: 34 y paréntesis auxiliares)</th><td>46 – 14 – 34 – 26 – 3456 – 12 – 1345 – 35</td><td class="bc" aria-hidden="true">⠨⠉⠌⠢⠼⠃⠝⠔</td></tr>
+<tr><th scope="row">CuSO₄·5H₂O (hidratación, punto 3)</th><td>46 – 14 – 136 – 46 – 234 – 46 – 135 – 256 – 3 – 3456 – 15 – 46 – 125 – 23 – 46 – 135</td><td class="bc" aria-hidden="true">⠨⠉⠥⠨⠎⠨⠕⠲⠄⠼⠑⠨⠓⠆⠨⠕</td></tr>
+<tr><th scope="row">βH₂O (coeficiente griego)</th><td>4 – 12 – 46 – 125 – 23 – 46 – 135</td><td class="bc" aria-hidden="true">⠈⠃⠨⠓⠆⠨⠕</td></tr>
+</tbody></table>
+<h4>Cargas, números de oxidación, isótopos y estados</h4>
+<table class="signs" aria-labelledby="tqQ">
+<caption id="tqQ">Cargas, números de oxidación, isótopos y estados</caption>
+<thead><tr><th scope="col">Signo</th><th scope="col">Puntos</th><th scope="col"><span aria-hidden="true">Celda</span></th></tr></thead>
+<tbody>
+<tr><th scope="row">K⁺ (superíndice 16 y carga)</th><td>46 – 13 – 16 – 235</td><td class="bc" aria-hidden="true">⠨⠅⠡⠖</td></tr>
+<tr><th scope="row">Al³⁺</th><td>46 – 1 – 123 – 16 – 3456 – 14 – 235</td><td class="bc" aria-hidden="true">⠨⠁⠇⠡⠼⠉⠖</td></tr>
+<tr><th scope="row">SO₄²⁻</th><td>46 – 234 – 46 – 135 – 256 – 16 – 3456 – 12 – 36</td><td class="bc" aria-hidden="true">⠨⠎⠨⠕⠲⠡⠼⠃⠤</td></tr>
+<tr><th scope="row">Fe(II) (número de oxidación, romanos en minúscula)</th><td>46 – 124 – 15 – 16 – 24 – 24</td><td class="bc" aria-hidden="true">⠨⠋⠑⠡⠊⠊</td></tr>
+<tr><th scope="row">¹⁴₆C (tras el símbolo: 6 – 34 número atómico, 4 – 16 número másico)</th><td>46 – 14 – 6 – 34 – 3456 – 124 – 4 – 16 – 3456 – 1 – 145</td><td class="bc" aria-hidden="true">⠨⠉⠠⠌⠼⠋⠈⠡⠼⠁⠙</td></tr>
+<tr><th scope="row">(ac) acuoso</th><td>6 – 1 – 14</td><td class="bc" aria-hidden="true">⠠⠁⠉</td></tr>
+<tr><th scope="row">(g) gas</th><td>6 – 1245</td><td class="bc" aria-hidden="true">⠠⠛</td></tr>
+<tr><th scope="row">(l) líquido</th><td>6 – 123</td><td class="bc" aria-hidden="true">⠠⠇</td></tr>
+<tr><th scope="row">(s) sólido</th><td>6 – 234</td><td class="bc" aria-hidden="true">⠠⠎</td></tr>
+</tbody></table>
+<h4>Enlaces</h4>
+<table class="signs" aria-labelledby="tqE">
+<caption id="tqE">Enlaces</caption>
+<thead><tr><th scope="col">Signo</th><th scope="col">Puntos</th><th scope="col"><span aria-hidden="true">Celda</span></th></tr></thead>
+<tbody>
+<tr><th scope="row">– enlace simple</th><td>5 – 2</td><td class="bc" aria-hidden="true">⠐⠂</td></tr>
+<tr><th scope="row">= enlace doble</th><td>23 – 23</td><td class="bc" aria-hidden="true">⠆⠆</td></tr>
+<tr><th scope="row">≡ enlace triple</th><td>456 – 123</td><td class="bc" aria-hidden="true">⠸⠇</td></tr>
+<tr><th scope="row">≣ enlace cuádruple</th><td>3456 – 1236</td><td class="bc" aria-hidden="true">⠼⠧</td></tr>
+<tr><th scope="row">← enlace dativo</th><td>6 – 23</td><td class="bc" aria-hidden="true">⠠⠆</td></tr>
+<tr><th scope="row">→ enlace dativo</th><td>56 – 3</td><td class="bc" aria-hidden="true">⠰⠄</td></tr>
+<tr><th scope="row">⋯ puente de hidrógeno</th><td>5 – 5</td><td class="bc" aria-hidden="true">⠐⠐</td></tr>
+<tr><th scope="row">∼ enlace de alta energía</th><td>5 – 26 – 3</td><td class="bc" aria-hidden="true">⠐⠢⠄</td></tr>
+<tr><th scope="row">• radical libre (5 – 2 sin nada detrás)</th><td>5 – 2</td><td class="bc" aria-hidden="true">⠐⠂</td></tr>
+</tbody></table>
+<h4>Flechas y operadores</h4>
+<table class="signs" aria-labelledby="tqA">
+<caption id="tqA">Flechas y operadores</caption>
+<thead><tr><th scope="col">Signo</th><th scope="col">Puntos</th><th scope="col"><span aria-hidden="true">Celda</span></th></tr></thead>
+<tbody>
+<tr><th scope="row">→ produce</th><td>25 – 1235</td><td class="bc" aria-hidden="true">⠒⠗</td></tr>
+<tr><th scope="row">← se obtiene de</th><td>2456 – 25</td><td class="bc" aria-hidden="true">⠺⠒</td></tr>
+<tr><th scope="row">⇌ equilibrio</th><td>2456 – 25 – 1235</td><td class="bc" aria-hidden="true">⠺⠒⠗</td></tr>
+<tr><th scope="row">⥂ equilibrio desplazado a la derecha</th><td>256 – 25 – 1235</td><td class="bc" aria-hidden="true">⠲⠒⠗</td></tr>
+<tr><th scope="row">⥄ equilibrio desplazado a la izquierda</th><td>2456 – 25 – 235</td><td class="bc" aria-hidden="true">⠺⠒⠖</td></tr>
+<tr><th scope="row">↑ desprende gas (al final de la fórmula)</th><td>456 – 1</td><td class="bc" aria-hidden="true">⠸⠁</td></tr>
+<tr><th scope="row">↓ precipita (al final de la fórmula)</th><td>456 – 3</td><td class="bc" aria-hidden="true">⠸⠄</td></tr>
+<tr><th scope="row">+ más</th><td>235</td><td class="bc" aria-hidden="true">⠖</td></tr>
+<tr><th scope="row">= igual</th><td>2356</td><td class="bc" aria-hidden="true">⠶</td></tr>
+<tr><th scope="row">‐ guion químico (partición)</th><td>123456</td><td class="bc" aria-hidden="true">⠿</td></tr>
+</tbody></table>
+<p class="tnote">Fuente: Comisión Braille Española (ONCE), Documento técnico B 6-1, <i>Signografía braille para química lineal</i>, versión 1, 2014.</p>
       </section>
       <section>
         <h3 id="hSteno" tabindex="-1">Estenografía española</h3>
@@ -3456,6 +3530,208 @@ Translators.math = MX.translate;
     return mathCore(cells);
   }; }
 window.__perkinsMath = MX;
+/* ---------- Química lineal (Documento técnico B 6-1 de la Comisión Braille Española, 2014) ----------
+   CH.translate(celdas) → [{t: tinta, say, spk: lo que se lee}], como los demás traductores.
+   Símbolos con 46 delante de cada elemento; subíndices numéricos en posición baja pegados al símbolo
+   (H₂O = 46 125 · 23 · 46 135); subíndice alfanumérico con 34 (y paréntesis auxiliares 26…35 si es más de un
+   carácter); superíndice con 16 (cargas y números de oxidación); coeficientes con signo de número; estado físico
+   con punto 6 (ac, g, l, s); enlaces, flechas y operadores. */
+const CH = (()=>{
+  const LAT = {}; 'abcdefghijklmnopqrstuvwxyz'.split('').forEach(c=>{ LAT[m(LETTERS[c])] = c; });
+  const DIG = {}; 'jabcdefghi'.split('').forEach((c,d)=>{ DIG[m(LETTERS[c])] = String(d); });
+  const LOW = {}; for (const k in DIG) LOW[(+k)<<1] = DIG[k];
+  const SUB = {'0':'₀','1':'₁','2':'₂','3':'₃','4':'₄','5':'₅','6':'₆','7':'₇','8':'₈','9':'₉',a:'ₐ',e:'ₑ',h:'ₕ',i:'ᵢ',j:'ⱼ',k:'ₖ',l:'ₗ',m:'ₘ',n:'ₙ',o:'ₒ',p:'ₚ',r:'ᵣ',s:'ₛ',t:'ₜ',u:'ᵤ',v:'ᵥ',x:'ₓ','+':'₊','−':'₋'};
+  const SUP = {'0':'⁰','1':'¹','2':'²','3':'³','4':'⁴','5':'⁵','6':'⁶','7':'⁷','8':'⁸','9':'⁹','+':'⁺','−':'⁻',n:'ⁿ',x:'ˣ',i:'ⁱ'};
+  const GRK = {'1':['α','alfa'],'12':['β','beta'],'1245':['γ','gamma'],'145':['δ','delta'],'15':['ε','épsilon'],'1234':['π','pi'],'234':['σ','sigma'],
+    '123':['λ','lambda'],'134':['μ','mi'],'1345':['ν','ni'],'2345':['τ','tau'],'124':['φ','fi'],'2456':['ω','omega'],'1456':['θ','zeta']};
+  const GRKC = {}; for (const k in GRK) GRKC[m(k)] = GRK[k];
+  const sub = s => [...s].map(c=>SUB[c]||c).join(''), sup = s => [...s].map(c=>SUP[c]||c).join('');
+  /* Signos de varias celdas: [puntos, tinta, lectura]. Las flechas y los operadores van entre espacios. */
+  const ARROWS = [['2456-25-1235','⇌','en equilibrio con'],['256-25-1235','⥂','en equilibrio desplazado a la derecha con'],['2456-25-235','⥄','en equilibrio desplazado a la izquierda con'],
+    ['25-1235','→','produce'],['2456-25','←','se obtiene de']].map(([d,t,s])=>({c:d.split('-').map(m),t,s}));
+  const BONDS = [['5-26-3','∼','enlace de alta energía'],['456-123','≡','enlace triple'],['3456-1236','≣','enlace cuádruple'],['23-23','=','enlace doble'],
+    ['6-23','←','enlace dativo'],['56-3','→','enlace dativo'],['5-5','⋯','puente de hidrógeno'],['5-2','–','enlace simple']].map(([d,t,s])=>({c:d.split('-').map(m),t,s}));
+  const OPS = {[m('235')]:['+','más'],[m('2356')]:['=','igual a'],[m('36')]:['−','menos']};
+  const STATES = {ac:['(ac)','acuoso'],g:['(g)','gas'],l:['(l)','líquido'],s:['(s)','sólido']};
+  const ROM = {i:1,v:5,x:10};
+  const romVal = s => { let v=0; for (let q=0;q<s.length;q++){ const a=ROM[s[q]], b=ROM[s[q+1]]||0; v += a<b ? -a : a; } return v; };
+  const at = (cells,i,seq)=> seq.every((c,k)=>cells[i+k]===c);
+  function translate(cells){
+    const out = cells.map(()=>({t:''}));
+    const put = (a,b,t,say,spk)=>{ out[a] = {t, say, spk: spk===undefined ? ' '+say+' ' : spk}; for (let k=a+1;k<b;k++) out[k] = {t:'', say, spk:''}; };
+    let prev = null;                                   // lo anterior pegado: 'el' (elemento o cierre), 'num', null
+    let lastEl = -1;                                   // celda del último símbolo (para los índices a la izquierda)
+    for (let i=0;i<cells.length;){
+      const c = cells[i], start = i===0 || cells[i-1]===0, end = k => k>=cells.length || cells[k]===0;
+      if (c===0){ out[i] = {t:' '}; prev = null; i++; continue; }
+      /* flechas y operadores: solos, entre espacios */
+      if (start){
+        const A = ARROWS.find(A=>at(cells,i,A.c) && end(i+A.c.length));
+        if (A){ put(i, i+A.c.length, A.t, A.s); i += A.c.length; prev = null; continue; }
+        /* flecha con calificador: 25 … 25 1235 (lo de dentro, separado por 25 o 5) */
+        if (c===m('25')){
+          let j = i+1; while (j<cells.length && cells[j]!==0 && !(cells[j]===m('25') && cells[j+1]===m('1235') && end(j+2))) j++;
+          if (j<cells.length && cells[j]===m('25') && j>i+1){
+            let a = i+1, b = j; while (b>a && cells[b-1]===m('5')) b--;
+            const q = translate(cells.slice(a,b)), qt = q.map(x=>x.t||'').join('').trim(), qs = q.map(x=>'spk' in x ? x.spk : (x.say||x.t||'')).join('').replace(/ +/g,' ').trim();
+            put(i, j+2, '→['+qt+']', 'produce, con '+qs); out[i].spk = ' produce, con '+qs+', '; i = j+2; prev = null; continue;
+          }
+        }
+        if (OPS[c] && end(i+1)){ put(i, i+1, OPS[c][0], OPS[c][1]); i++; prev = null; continue; }
+        /* enlace o flecha de gas/precipitado escritos solos (en una tabla o una explicación) */
+        { const B = BONDS.find(B=>at(cells,i,B.c) && end(i+B.c.length)); if (B){ put(i, i+B.c.length, B.t, B.s); i += B.c.length; prev = null; continue; } }
+        if (c===m('456') && (cells[i+1]===m('1') || cells[i+1]===m('3')) && end(i+2)){ put(i, i+2, cells[i+1]===m('1') ? '↑' : '↓', cells[i+1]===m('1') ? 'desprende gas' : 'precipita'); i += 2; prev = null; continue; }
+        if ((c===m('3') || c===m('2') || c===m('23') || c===m('25')) && end(i+1)){ put(i,i+1, {[m('3')]:'.',[m('2')]:',',[m('23')]:';',[m('25')]:':'}[c], 'puntuación', ''); i++; continue; }
+      }
+      /* desprendimiento de gas y precipitado: al final de la fórmula */
+      if (c===m('456') && (cells[i+1]===m('1') || cells[i+1]===m('3')) && end(i+2) && prev){
+        put(i, i+2, cells[i+1]===m('1') ? '↑' : '↓', cells[i+1]===m('1') ? 'desprende gas' : 'precipita'); i += 2; prev = null; continue;
+      }
+      /* símbolo de elemento: 46 + letra + minúsculas (hasta dos) */
+      if (c===CAP && LAT[cells[i+1]]){
+        let j = i+2, sym = LAT[cells[i+1]].toUpperCase();
+        while (j<cells.length && LAT[cells[j]] && sym.length<3 && !(prev===null && false)) { sym += LAT[cells[j]]; j++; }
+        out[i] = {t:'', sig:'May', say:'mayúscula', spk:''}; out[i+1] = {t:sym, say:sym, spk:' '+[...sym].join(' ')+' '};
+        for (let k=i+2;k<j;k++) out[k] = {t:'', say:sym, spk:''};
+        lastEl = i+1; i = j; prev = 'el'; continue;
+      }
+      /* subíndice numérico en posición baja, pegado al símbolo o al cierre del grupo */
+      if (prev==='el' && LOW[c]!==undefined){
+        if (c===m('23') && cells[i+1]===m('23') && (cells[i+2]===CAP || end(i+2))){ /* doble enlace, no «22» */ }
+        else {
+          let j = i, d = ''; while (j<cells.length && LOW[cells[j]]!==undefined && !(cells[j]===m('23') && cells[j+1]===m('23') && cells[j+2]===CAP)){ d += LOW[cells[j]]; j++; }
+          put(i, j, sub(d), 'sub '+d, ' '+d+' '); i = j; prev = 'el'; continue;
+        }
+      }
+      /* subíndice alfanumérico: 34 + un carácter, o 34 26 … 35 */
+      if (c===m('34') && prev==='el'){
+        let a = i+1, b, txt = '';
+        if (cells[a]===m('26')){ b = a+1; while (b<cells.length && cells[b]!==m('35')) b++; txt = plain(cells.slice(a+1,b)); b++; }
+        else { b = a+1; if (cells[a]===NUM){ b = a+1; while (DIG[cells[b]]!==undefined) b++; } txt = plain(cells.slice(a,b)); }
+        put(i, b, sub(txt), 'sub '+txt, ' sub '+txt+' '); i = b; prev = 'el'; continue;
+      }
+      /* superíndice: 16 + número y signos (carga) o romanos (número de oxidación) */
+      if (c===m('16') && prev==='el'){
+        let j = i+1, n = '', s = '';
+        if (cells[j]===NUM){ j++; while (DIG[cells[j]]!==undefined){ n += DIG[cells[j]]; j++; } }
+        let rom = ''; if (!n) while (cells[j]!==undefined && ['i','v','x'].includes(LAT[cells[j]])){ rom += LAT[cells[j]]; j++; }
+        while (cells[j]===m('235') || cells[j]===m('36')){ s += cells[j]===m('235') ? '+' : '−'; j++; }
+        if (rom){ put(i, j, '('+rom.toUpperCase()+')', 'número de oxidación '+romVal(rom)); i = j; prev = 'el'; continue; }
+        if (n || s){
+          const word = s ? (n||(s.length>1 ? '' : '')) + ' ' + [...s].map(x=>x==='+'?'más':'menos').join(' ') : n;
+          put(i, j, sup(n+s), 'carga '+word.trim()); i = j; prev = 'el'; continue;
+        }
+      }
+      /* índices a la izquierda tras el símbolo: 6 34 (número atómico) y 4 16 (número másico) */
+      if (((c===m('6') && cells[i+1]===m('34')) || (c===m('4') && cells[i+1]===m('16'))) && lastEl>=0 && prev==='el'){
+        let j = i+2, d = ''; if (cells[j]===NUM) j++;
+        while (j<cells.length && (DIG[cells[j]]!==undefined || LOW[cells[j]]!==undefined)){ d += DIG[cells[j]] ?? LOW[cells[j]]; j++; }
+        const isSub = c===m('6');
+        out[lastEl] = Object.assign({}, out[lastEl], {t:(isSub ? sub(d) : sup(d)) + out[lastEl].t});
+        put(i, j, '', isSub ? 'número atómico '+d : 'número másico '+d); out[i].t = ''; i = j; continue;
+      }
+      /* estado físico: 6 + ac, g, l, s */
+      if (c===m('6') && LAT[cells[i+1]]){
+        const two = (LAT[cells[i+1]]||'')+(LAT[cells[i+2]]||'');
+        const key = STATES[two] && end(i+3) ? two : (STATES[LAT[cells[i+1]]] && (end(i+2) || !LAT[cells[i+2]]) ? LAT[cells[i+1]] : null);
+        if (key){ put(i, i+1+key.length, STATES[key][0], STATES[key][1]); i += 1+key.length; prev = null; continue; }
+      }
+      /* enlaces entre átomos; 5 2 sin nada detrás: radical libre */
+      if (c===m('5') && cells[i+1]===m('2') && end(i+2) && prev){ put(i, i+2, '•', 'radical'); i += 2; prev = null; continue; }
+      if (prev){
+        const B = BONDS.find(B=>at(cells,i,B.c) && (cells[i+B.c.length]===CAP || cells[i+B.c.length]===m('126') || cells[i+B.c.length]===m('12356') || cells[i+B.c.length]===NUM));
+        if (B){ put(i, i+B.c.length, B.t, B.s); i += B.c.length; prev = null; continue; }
+        /* hidratación o adición: punto 3 entre fórmulas (CuSO₄·5H₂O) */
+        if (c===m('3') && !end(i+1)){ put(i, i+1, '·', 'con'); i++; prev = null; continue; }
+      }
+      /* coeficiente: número (y fracción con denominador abajo) */
+      if (c===NUM){
+        let j = i+1, d = ''; while (DIG[cells[j]]!==undefined){ d += DIG[cells[j]]; j++; }
+        if (cells[j]===m('2') && DIG[cells[j+1]]!==undefined){ d += ','; j++; while (DIG[cells[j]]!==undefined){ d += DIG[cells[j]]; j++; } }
+        let den = ''; while (LOW[cells[j]]!==undefined && !end(j) && cells[j+1]!==undefined && false) {}
+        { let k = j; while (LOW[cells[k]]!==undefined) { den += LOW[cells[k]]; k++; } if (den && (end(k) || cells[k]===CAP)) j = k; else den = ''; }
+        put(i, j, den ? d+'⁄'+den : d, den ? d+' '+(den==='2'?'medios':'sobre '+den) : d); i = j; prev = 'num'; continue;
+      }
+      /* coeficiente griego */
+      if (c===m('4') && GRKC[cells[i+1]]){ put(i, i+2, GRKC[cells[i+1]][0], GRKC[cells[i+1]][1]); i += 2; prev = 'num'; continue; }
+      if (c===m('45') && GRKC[cells[i+1]]){ const g = GRKC[cells[i+1]]; put(i, i+2, g[0].toUpperCase(), g[1]+' mayúscula'); i += 2; prev = 'num'; continue; }
+      /* agrupaciones */
+      const GR = {[m('126')]:['(','abre paréntesis',0],[m('345')]:[')','cierra paréntesis',1],[m('12356')]:['[','abre corchete',0],[m('23456')]:[']','cierra corchete',1]};
+      if (GR[c]){ put(i, i+1, GR[c][0], GR[c][1]); i++; prev = GR[c][2] ? 'el' : null; continue; }
+      if (c===m('5') && cells[i+1]===m('123')){ put(i, i+2, '{', 'abre llave'); i += 2; prev = null; continue; }
+      if (c===m('456') && cells[i+1]===m('2')){ put(i, i+2, '}', 'cierra llave'); i += 2; prev = 'el'; continue; }
+      /* guion químico (partición) */
+      if (c===m('123456')){ put(i, i+1, '‐', 'continúa', ' '); i++; continue; }
+      /* letras sueltas (minúsculas) */
+      if (LAT[c]){ put(i, i+1, LAT[c], LAT[c]); i++; prev = 'el'; continue; }
+      if (c===CAP){ out[i] = {t:'', sig:'May', say:'mayúscula', spk:''}; i++; continue; }      // aún sin la letra
+      if (c===NUM){ out[i] = {t:'', sig:'Núm', say:'signo de número', spk:''}; i++; continue; }
+      out[i] = {t:'', unk:true}; i++; prev = null;
+    }
+    return out;
+  }
+  /* texto simple de un subíndice alfanumérico */
+  function plain(cs){ let s = '', num = false; for (const c of cs){ if (c===NUM){ num = true; continue; } if (OPS[c]) { s += OPS[c][0]; num = false; continue; } s += num && DIG[c]!==undefined ? DIG[c] : (LAT[c] || ''); } return s; }
+
+  /* Pegar desde tinta: H2SO4, H₂SO₄, Na⁺, SO4^2-, 2H2 + O2 → 2H2O, CuSO4·5H2O, O2(g) */
+  const LC = {}; for (const k in LAT) LC[LAT[k]] = +k;
+  const DC = {}; for (const k in DIG) DC[DIG[k]] = +k;
+  const LOWC = {}; for (const k in LOW) LOWC[LOW[k]] = +k;
+  const SUBD = {'₀':'0','₁':'1','₂':'2','₃':'3','₄':'4','₅':'5','₆':'6','₇':'7','₈':'8','₉':'9'}, SUPD = {'⁰':'0','¹':'1','²':'2','³':'3','⁴':'4','⁵':'5','⁶':'6','⁷':'7','⁸':'8','⁹':'9','⁺':'+','⁻':'-'};
+  function fromInk(text){
+    let t = text.replace(/<=>|<->|⇄|⇆/g,'⇌').replace(/->|⟶|=>/g,'→').replace(/<-|⟵/g,'←').replace(/[−–]/g,'-');
+    t = t.replace(/\s*(⇌|⥂|⥄|→|←)\s*/g,' $1 ').replace(/\s+\+\s+/g,' + ').replace(/\s+=\s+/g,' = ');
+    const out = []; let skipped = 0, prev = null; const ch = [...t];
+    const push = (...c)=>out.push(...c);
+    for (let i=0;i<ch.length;){
+      const c = ch[i];
+      if (c===' '){ if (out.length && out[out.length-1]!==0) push(0); prev = null; i++; continue; }
+      const AR = {'⇌':'2456-25-1235','⥂':'256-25-1235','⥄':'2456-25-235','→':'25-1235','←':'2456-25'};
+      if (AR[c]){ push(...AR[c].split('-').map(m)); prev = null; i++; continue; }
+      if (c==='↑'){ push(m('456'),m('1')); i++; continue; }
+      if (c==='↓'){ push(m('456'),m('3')); i++; continue; }
+      if (/[A-Z]/.test(c)){
+        push(CAP, LC[c.toLowerCase()]); i++;
+        let n = 0; while (i<ch.length && /[a-z]/.test(ch[i]) && n<2 && !(ch[i]==='a' && ch[i+1]==='c' && ch[i-1]==='(')){ push(LC[ch[i]]); i++; n++; }
+        prev = 'el'; continue;
+      }
+      if (/[0-9]/.test(c) || SUBD[c]){
+        let d = ''; const isSub = !!SUBD[c] || prev==='el';
+        while (i<ch.length && (isSub ? (/[0-9]/.test(ch[i]) || SUBD[ch[i]]) : /[0-9]/.test(ch[i]))){ d += SUBD[ch[i]] || ch[i]; i++; }
+        if (isSub) push(...[...d].map(x=>LOWC[x])); else { push(NUM, ...[...d].map(x=>DC[x])); prev = 'num'; continue; }
+        prev = 'el'; continue;
+      }
+      if (SUPD[c] || (c==='^')){
+        if (c==='^') i++;
+        let n = '', s = '';
+        while (i<ch.length && (SUPD[ch[i]] || /[0-9+\-]/.test(ch[i]))){ const v = SUPD[ch[i]] || ch[i]; if (/[0-9]/.test(v)) n += v; else s += v; i++; }
+        push(m('16')); if (n) push(NUM, ...[...n].map(x=>DC[x])); for (const x of s) push(x==='+'?m('235'):m('36'));
+        prev = 'el'; continue;
+      }
+      const st = t.slice(ch.slice(0,i).join('').length).match(/^\((ac|aq|g|l|s)\)/);
+      if (st && prev){ const k = st[1]==='aq' ? 'ac' : st[1]; push(m('6'), ...[...k].map(x=>LC[x])); i += st[0].length; prev = null; continue; }
+      if (c==='(' ){ push(m('126')); i++; prev = null; continue; }
+      if (c===')'){ push(m('345')); i++; prev = 'el'; continue; }
+      if (c==='['){ push(m('12356')); i++; prev = null; continue; }
+      if (c===']'){ push(m('23456')); i++; prev = 'el'; continue; }
+      if (c==='·' || c==='•' || (c==='*' && prev)){ push(m('3')); i++; prev = null; continue; }
+      if (c==='+'){ push(m('235')); i++; continue; }
+      if (c==='='){ push(prev ? m('23') : m('2356')); if (prev) push(m('23')); i++; prev = null; continue; }
+      if (c==='≡'){ push(m('456'), m('123')); i++; prev = null; continue; }
+      if (c==='-' && prev && /[A-Z(\[]/.test(ch[i+1]||'')){ push(m('5'), m('2')); i++; prev = null; continue; }
+      if (c==='-'){ push(m('36')); i++; continue; }
+      if (c==='.'){ push(m('3')); i++; continue; }
+      if (c===','){ push(m('2')); i++; continue; }
+      if (/[a-z]/.test(c)){ push(LC[c]); i++; continue; }
+      skipped++; i++;
+    }
+    while (out.length && out[out.length-1]===0) out.pop();
+    return {cells: out, skipped};
+  }
+  return {translate, fromInk};
+})();
+Translators.chem = CH.translate;
+window.__perkinsChem = CH;
 /* ---------- Estenografía (Documento técnico B 16-1 de la CBE) ---------- */
 STENO.setWords(STENO_DATA.lista); STENO.setOverrides(STENO_DATA.overrides); STENO.setBre(STENO_DATA.bre);
 STENO.setIntegral(cells => Translators.integral(cells));
@@ -3487,7 +3763,7 @@ window.__perkinsSteno = STENO;
 window.__perkinsSpeak = t => speakable(t);
 
 let grade = 'integral';      // Signografía activa; 'steno' (estenografía) y 'math' se añadirán a Translators
-const GRADES = {integral:'braille integral', steno:'estenografía', math:'matemáticas'};
+const GRADES = {integral:'braille integral', steno:'estenografía', math:'matemáticas', chem:'química'};
 /* ---------- Signografía por bloques ----------
    Un bloque es un grupo de líneas seguidas sin línea en blanco entre ellas. Cada bloque conserva su signografía
    (braille integral, matemáticas y, más adelante, estenografía); entre bloques de distinta signografía hay siempre
@@ -3750,6 +4026,7 @@ function readWordDots(){
     const it = items[k]||{}, d = dotsOf(line[k]).join(' ');
     let piece;
     if (g==='steno') piece = it.sig==='May' ? 'mayúscula' : noPieces ? (STENO.LETTER[line[k]] || STENO.CONTR_BY_CELL[line[k]] || '?') : (it.t||'');
+    else if (g==='chem') piece = it.t==='' && !it.sig ? '' : (it.say||it.t||'');
     else piece = it.sig ? (it.say||it.sig) : (it.t||'');
     if (groups.length && piece==='') groups[groups.length-1].d.push(d);
     else groups.push({p:piece, d:[d]});
@@ -3876,7 +4153,7 @@ function navMove(e){
   else if (e.key==='End') moveRead(e.ctrlKey?'bottom':'end');
 }
 const ACCEL = {KeyA:'mbFile', KeyE:'mbEdit', KeyV:'mbView', KeyO:'mbFormat', KeyS:'mbSign', KeyY:'mbHelp'};
-const GRADE_KEYS = {Digit1:'integral', Digit2:'steno', Digit3:'math', Numpad1:'integral', Numpad2:'steno', Numpad3:'math'};
+const GRADE_KEYS = {Digit1:'integral', Digit2:'steno', Digit3:'math', Digit4:'chem', Numpad1:'integral', Numpad2:'steno', Numpad3:'math', Numpad4:'chem'};
 window.addEventListener('keydown', e=>{
   if (!$('exitScreen').hidden) return;                                          // pantalla de salida: teclado normal
   if (e.key==='Escape' && readingAll){ e.preventDefault(); stopReading(); return; }
@@ -5019,7 +5296,7 @@ function checkDoc(){
   doc.lines.forEach((cells, li)=>{
     st.line = li;
     const g = blockGrade(li);
-    const P = g==='math' ? MX.check(cells, st) : g==='steno' ? checkSteno(cells, st) : checkIntegral(cells, st);
+    const P = g==='chem' ? [] : g==='math' ? MX.check(cells, st) : g==='steno' ? checkSteno(cells, st) : checkIntegral(cells, st);
     const sp = lineSplit(li), spPrev = li>0 ? lineSplit(li-1) : null;
     P.forEach(p=>{
       /* fragmentos de una palabra partida: no se sugiere abreviar (B 16-1, 1.5) */
@@ -5647,12 +5924,13 @@ function pasteText(text){
   else if (/^[⠀-⣿ \n]*$/.test(text) && /[⠀-⣿]/.test(text))
     lines = text.split('\n').map(l=>[...l].map(ch=> ch===' ' ? 0 : (ch.charCodeAt(0)-0x2800) & 63));
   else if (caretGrade()==='math'){ asMath = true; lines = text.split('\n').map(l=>{ const r = inkToMath(l); skipped += r.skipped; return r.cells; }); }
+  else if (caretGrade()==='chem'){ asMath = 'chem'; lines = text.split('\n').map(l=>{ const r = CH.fromInk(l); skipped += r.skipped; return r.cells; }); }
   else lines = text.split('\n').map(l=>{ const r = textToCells(l); skipped += r.skipped; return r.cells; });
   const n = lines.reduce((a,l)=>a+l.length,0);
   if (!n && lines.length<2){ say('No hay nada que pegar'); return; }
   insertCells(lines);
   const shown = text.replace(/\n/g,' ').trim();
-  say((asMath ? 'Pegado en matemáticas: ' : 'Pegado: ')+(shown.length<=80 ? shown : n+' celdas')+(skipped ? (skipped===1 ? '. Se omitió 1 signo que no existe' : '. Se omitieron '+skipped+' signos que no existen')+(asMath ? ' en el Código Matemático' : ' en braille integral') : ''));
+  say((asMath==='chem' ? 'Pegado en química: ' : asMath ? 'Pegado en matemáticas: ' : 'Pegado: ')+(shown.length<=80 ? shown : n+' celdas')+(skipped ? (skipped===1 ? '. Se omitió 1 signo que no existe' : '. Se omitieron '+skipped+' signos que no existen')+(asMath ? ' en el Código Matemático' : ' en braille integral') : ''));
 }
 const sheetActive = () => { const a = document.activeElement; return !a || a===document.body || a===$('sheet') || a===$('brField'); };
 document.addEventListener('copy', e=>{ if (!sheetActive()) return; e.preventDefault(); const t = doCopy(); if (t==null) return;
@@ -5707,8 +5985,8 @@ const COMMANDS = {
   size: openSize, orientV: ()=>setOrient('v'), orientH: ()=>setOrient('h'),
   exit: exitApp, close: closeWork,
   contrast: ()=>toggleContrast(), voice: ()=>toggleVoice(), brRead: ()=>toggleBrailleMode(), brCells: ()=>toggleBrCells(), zoomIn: ()=>setZoom(+1), zoomOut: ()=>setZoom(-1), zoomReset: ()=>setZoom(0),
-  gIntegral: ()=>setGrade('integral'), gSteno: ()=>setGrade('steno'), gMath: ()=>setGrade('math'),
-  helpUse: ()=>openHelp('hUse'), helpSR: ()=>openHelp('hSR'), helpKeys: ()=>openHelp('hKeys'), helpSigns: ()=>openHelp('hSigns'), helpMath: ()=>openHelp('hMath'), helpSteno: ()=>openHelp('hSteno'), helpAbout: ()=>openHelp('hAbout')
+  gIntegral: ()=>setGrade('integral'), gSteno: ()=>setGrade('steno'), gMath: ()=>setGrade('math'), gChem: ()=>setGrade('chem'),
+  helpUse: ()=>openHelp('hUse'), helpSR: ()=>openHelp('hSR'), helpKeys: ()=>openHelp('hKeys'), helpSigns: ()=>openHelp('hSigns'), helpMath: ()=>openHelp('hMath'), helpChem: ()=>openHelp('hChem'), helpSteno: ()=>openHelp('hSteno'), helpAbout: ()=>openHelp('hAbout')
 };
 /* Ver › Fondo oscuro y Zoom (100 % a 200 %, de 10 en 10). El zoom agranda toda la aplicación, no sólo las celdas. */
 let contrast = false, zoom = 1;
