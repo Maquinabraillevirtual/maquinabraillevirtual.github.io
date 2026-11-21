@@ -372,6 +372,7 @@ dialog input[type="text"]:focus-visible{outline:2px solid var(--accent);outline-
           <li><b>Flechas arriba y abajo:</b> leer línea por línea. <b>Inicio</b> y <b>Fin</b> van al principio o al final de la línea.</li>
           <li>Lo que escribas se inserta donde está el cursor. <b>Retroceso</b> borra el signo anterior y <b>Suprimir</b> el signo sobre el cursor.</li>
           <li><b>Control + Fin</b> vuelve al punto de escritura, al final de la hoja.</li>
+          <li><b>F3</b> dice la palabra donde está el cursor y los puntos de cada celda, agrupados por lo que representan. En estenografía, por ejemplo: «lección. 3 celdas: l, puntos 1 2 3; ección, puntos 1 5, 3 4 5 6». Si no hay cursor de lectura, dice la última palabra escrita.</li>
           <li><b>F4</b> lee la línea donde está el cursor y <b>F8</b> lee toda la hoja; con la voz de la aplicación, <b>F8</b> otra vez o <b>Escape</b> detienen la lectura (con el lector de pantalla, se detiene con su propia tecla, Control en NVDA y JAWS).</li>
         </ul>
         <h4>Revisar la escritura</h4>
@@ -485,7 +486,7 @@ dialog input[type="text"]:focus-visible{outline:2px solid var(--accent);outline-
           <li><b>Control + Más / Menos / 0:</b> aumentar, reducir o restablecer el zoom · <b>Control + Mayúsculas + C:</b> fondo oscuro · <b>Control + Mayúsculas + V:</b> voz de la aplicación · <b>Alt + L:</b> modo línea braille</li>
           <li><b>F7:</b> siguiente problema de escritura · <b>Mayúsculas + F7:</b> problema anterior</li>
           <li><b>Control + U:</b> nueva hoja (pregunta antes de borrar) · <b>Control + R:</b> cerrar el trabajo · <b>Control + G:</b> guardar · <b>Control + Mayúsculas + G:</b> guardar como · <b>Control + O:</b> abrir</li>
-          <li><b>F1:</b> ayuda · <b>F2:</b> cambiar vista · <b>F4:</b> leer línea · <b>F8:</b> leer hoja</li>
+          <li><b>F1:</b> ayuda · <b>F2:</b> cambiar vista · <b>F3:</b> puntos de la palabra · <b>F4:</b> leer línea · <b>F8:</b> leer hoja</li>
           <li><b>Alt + A:</b> Archivo · <b>Alt + E:</b> Edición · <b>Alt + V:</b> Ver · <b>Alt + O:</b> Formato · <b>Alt + S:</b> Signografía · <b>Alt + Y:</b> Ayuda · <b>F10:</b> barra de menús</li>
         </ul>
       </section>
@@ -2407,6 +2408,10 @@ function translateLine(cells){
       else t = k===core.length-1 ? w : '';
       out[off+k] = {t, say:w, word:R.word, canonical:R.canonical, failed:!!R.failed, a:off, b:off+core.length};
     });
+    if (R.failed){                                  // no se lee: se dice cada signo («l, e, ión»; los desconocidos, por sus puntos)
+      const sg = core.map(c=> LETTER[c] || CONTR_BY_CELL[c] || ('puntos '+[1,2,3,4,5,6].filter(d=>c&(1<<(d-1))).join(' ')));
+      out[off].spk = ' palabra no reconocida: '+sg.join(', ')+'. '; for (let k=1;k<core.length;k++) out[off+k].spk = '';
+    }
   }
   return out;
 }
@@ -3725,6 +3730,32 @@ function lineText(line){
 }
 /* F4: la línea donde está el cursor (de lectura o de escritura), sin moverlo */
 function readLine(){ const li = readPos ? readPos.line : doc.lines.length-1; sayRaw(speakFor('Línea '+(li+1)+': '+lineText(doc.lines[li])+splitNote(li), blockGrade(li)).replace(/\s+,/g,','), true); }
+/* F3: la palabra donde está el cursor y los puntos de sus celdas, agrupados por lo que representan
+   (en estenografía: «lección. 3 celdas: l, puntos 1 2 3; ección, puntos 1 5, 3 4 5 6») */
+function readWordDots(){
+  let li, ci;
+  if (readPos){ li = readPos.line; const map = charMaps[li]||[]; ci = map.length ? map[Math.min(readPos.col, map.length-1)] : 0; if (ci===undefined) ci = 0; }
+  else { li = doc.lines.length-1; ci = doc.lines[li].length-1; }
+  const line = doc.lines[li]||[];
+  if (!line.length){ say('Línea vacía'); return; }
+  if (ci<0 || line[ci]===0){ let k = Math.max(ci,0); while (k>=0 && line[k]===0) k--; if (k<0){ k = Math.max(ci,0); while (k<line.length && line[k]===0) k++; } ci = k; }
+  if (ci<0 || ci>=line.length || line[ci]===0){ say('No hay ninguna palabra aquí'); return; }
+  let a = ci, b = ci; while (a>0 && line[a-1]!==0) a--; while (b<line.length-1 && line[b+1]!==0) b++;
+  const items = translate(line), g = blockGrade(li);
+  const word = items.slice(a,b+1).map(it=> 'spk' in it ? (it.spk||'') : (it.t||'')).join('').replace(/ +/g,' ').trim() || 'palabra';
+  const groups = [];
+  const noPieces = g==='steno' && items.slice(a,b+1).some(it=>it.failed || (it.sig!=='May' && it.t==='' && it===items[a+(items[a]&&items[a].sig==='May'?1:0)]));
+  for (let k=a;k<=b;k++){
+    const it = items[k]||{}, d = dotsOf(line[k]).join(' ');
+    let piece;
+    if (g==='steno') piece = it.sig==='May' ? 'mayúscula' : noPieces ? (STENO.LETTER[line[k]] || STENO.CONTR_BY_CELL[line[k]] || '?') : (it.t||'');
+    else piece = it.sig ? (it.say||it.sig) : (it.t||'');
+    if (groups.length && piece==='') groups[groups.length-1].d.push(d);
+    else groups.push({p:piece, d:[d]});
+  }
+  const txt = groups.map(x=> (x.p && x.p!=='?' ? x.p.trim()+', ' : '')+'puntos '+x.d.join(', ')).join('; ');
+  sayRaw(speakFor(word, g)+'. '+(b>a ? (b-a+1)+' celdas: ' : 'Una celda: ')+txt+'.', true);
+}
 function readAll(){
   if (doc.lines.every(l=>!l.length)){ say('La hoja está vacía'); return; }
   if (stopReading()) return;                                            // F8 otra vez: detener
@@ -3875,6 +3906,7 @@ window.addEventListener('keydown', e=>{
   if (e.key==='F2'){ e.preventDefault(); setView(view==='ink'?'braille':'ink'); return; }
   if (e.key==='F7'){ e.preventDefault(); if (!e.repeat) gotoProblem(e.shiftKey ? -1 : 1); return; }
   if (e.key==='F4'){ e.preventDefault(); if (!e.repeat) readLine(); return; }
+  if (e.key==='F3'){ e.preventDefault(); if (!e.repeat) readWordDots(); return; }
   if (e.key==='F8'){ e.preventDefault(); if (!e.repeat) readAll(); return; }
   const NAV = {ArrowRight:1,ArrowLeft:1,ArrowUp:1,ArrowDown:1,Home:1,End:1};
   if (NAV[e.key] && !(e.target && /^(SELECT|INPUT|BUTTON)$/.test(e.target.tagName))){
